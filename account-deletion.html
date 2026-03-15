@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アカウント削除 / Account Deletion – SONO-HINO</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #222;
+      background: #fafafa;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    header .app-name {
+      font-size: 13px;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+    header .tagline {
+      font-size: 14px;
+      color: #666;
+      margin-top: 8px;
+    }
+    .lang-divider {
+      border: none;
+      border-top: 2px solid #e0e0e0;
+      margin: 56px 0 40px;
+    }
+    .lang-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 40px 0 16px;
+      color: #222;
+    }
+    p {
+      color: #444;
+      margin-bottom: 12px;
+      white-space: pre-line;
+    }
+    .step-box {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .step-box .step-title {
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 6px;
+    }
+    .step-box .step-desc {
+      color: #555;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 14px;
+    }
+    .data-table th, .data-table td {
+      border: 1px solid #e0e0e0;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .data-table th {
+      background: #f5f5f5;
+      font-weight: 700;
+      color: #333;
+    }
+    .data-table td {
+      color: #555;
+    }
+    .warning-box {
+      background: #fff8f0;
+      border: 1px solid #f0d0a0;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      color: #885500;
+      font-size: 14px;
+    }
+    .contact-box {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      padding: 24px;
+      margin-top: 16px;
+      text-align: center;
+    }
+    .contact-box a {
+      color: #5b5bd6;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+    }
+    .contact-box a:hover { text-decoration: underline; }
+    .contact-box .note {
+      font-size: 12px;
+      color: #999;
+      margin-top: 8px;
+    }
+    footer {
+      margin-top: 56px;
+      text-align: center;
+      font-size: 12px;
+      color: #bbb;
+    }
+    footer a { color: #5b5bd6; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="app-name">SONO-HINO</div>
+    <h1>アカウント削除<br><span style="font-size:16px;font-weight:400">Account Deletion</span></h1>
+    <p class="tagline">エレノア（Eleanor）が提供するタスク管理アプリ<br>
+    <span style="font-size:13px;color:#999">A task management app by Eleanor</span></p>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- 日本語 -->
+  <!-- ============================================================ -->
+  <div class="lang-label">日本語</div>
+
+  <h2>アカウント削除の手順</h2>
+  <p>SONO-HINO アプリ内から、以下の手順でアカウントを削除できます。</p>
+
+  <div class="step-box">
+    <div class="step-title">1. 設定画面を開く</div>
+    <div class="step-desc">アプリのタイムライン画面左上の設定アイコンをタップし、設定画面を開きます。</div>
+  </div>
+
+  <div class="step-box">
+    <div class="step-title">2. 「アカウント削除」をタップ</div>
+    <div class="step-desc">設定画面の下部にある「アカウント削除」をタップします。</div>
+  </div>
+
+  <div class="step-box">
+    <div class="step-title">3. 確認ダイアログで削除を確定</div>
+    <div class="step-desc">確認ダイアログが表示されます。「削除」をタップするとアカウントが完全に削除されます。</div>
+  </div>
+
+  <div class="warning-box">
+    アカウントを削除すると、すべてのデータが完全に削除され、復元できません。削除前に必要なデータがないことをご確認ください。
+  </div>
+
+  <h2>削除されるデータ</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>データの種類</th>
+        <th>削除時の扱い</th>
+        <th>保持期間</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>アカウント情報（メールアドレス）</td>
+        <td>完全に削除</td>
+        <td>即時削除</td>
+      </tr>
+      <tr>
+        <td>タスクデータ（タイムライン・Someday）</td>
+        <td>完全に削除</td>
+        <td>即時削除</td>
+      </tr>
+      <tr>
+        <td>サブタスクデータ</td>
+        <td>完全に削除</td>
+        <td>即時削除</td>
+      </tr>
+      <tr>
+        <td>アプリ設定（テーマ・言語）</td>
+        <td>端末のローカルデータを削除</td>
+        <td>即時削除</td>
+      </tr>
+      <tr>
+        <td>広告削除の購入情報</td>
+        <td>Apple / Google のアカウントに保持</td>
+        <td>ストア側で管理</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>メールでの削除リクエスト</h2>
+  <p>アプリにログインできない場合や、その他の理由でアプリ内から削除できない場合は、以下のメールアドレスまでアカウント削除をご依頼ください。ご登録のメールアドレスをお知らせいただければ、5営業日以内に削除を完了いたします。</p>
+  <div class="contact-box">
+    <a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a>
+    <div class="note">件名に「アカウント削除リクエスト」とご記載ください。</div>
+  </div>
+
+  <hr class="lang-divider">
+
+  <!-- ============================================================ -->
+  <!-- English -->
+  <!-- ============================================================ -->
+  <div class="lang-label">English</div>
+
+  <h2>How to Delete Your Account</h2>
+  <p>You can delete your account directly from the SONO-HINO app by following these steps.</p>
+
+  <div class="step-box">
+    <div class="step-title">1. Open Settings</div>
+    <div class="step-desc">Tap the settings icon at the top-left of the timeline screen to open the Settings page.</div>
+  </div>
+
+  <div class="step-box">
+    <div class="step-title">2. Tap "Delete Account"</div>
+    <div class="step-desc">Scroll to the bottom of the Settings page and tap "Delete Account".</div>
+  </div>
+
+  <div class="step-box">
+    <div class="step-title">3. Confirm Deletion</div>
+    <div class="step-desc">A confirmation dialog will appear. Tap "Delete" to permanently delete your account.</div>
+  </div>
+
+  <div class="warning-box">
+    Deleting your account will permanently remove all your data. This action cannot be undone. Please make sure you no longer need any data before proceeding.
+  </div>
+
+  <h2>Data That Will Be Deleted</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Data Type</th>
+        <th>Action on Deletion</th>
+        <th>Retention Period</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Account information (email address)</td>
+        <td>Permanently deleted</td>
+        <td>Immediate</td>
+      </tr>
+      <tr>
+        <td>Task data (Timeline &amp; Someday)</td>
+        <td>Permanently deleted</td>
+        <td>Immediate</td>
+      </tr>
+      <tr>
+        <td>Subtask data</td>
+        <td>Permanently deleted</td>
+        <td>Immediate</td>
+      </tr>
+      <tr>
+        <td>App settings (theme, language)</td>
+        <td>Local data cleared from device</td>
+        <td>Immediate</td>
+      </tr>
+      <tr>
+        <td>Ad removal purchase</td>
+        <td>Retained by Apple / Google</td>
+        <td>Managed by store</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Request Deletion via Email</h2>
+  <p>If you are unable to log in or cannot delete your account from within the app, please send an account deletion request to the email address below. Provide us with your registered email address, and we will complete the deletion within 5 business days.</p>
+  <div class="contact-box">
+    <a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a>
+    <div class="note">Please include "Account Deletion Request" in the subject line.</div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 エレノア / Eleanor. All rights reserved.</p>
+    <p style="margin-top:8px">
+      <a href="index.html">プライバシーポリシー / Privacy Policy</a> ・
+      <a href="support.html">サポート / Support</a>
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>
