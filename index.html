@@ -3,240 +3,612 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>プライバシーポリシー / Privacy Policy – SONO-HINO</title>
+  <title>Eleanor – スマートフォンアプリ開発・提供</title>
+  <meta name="description" content="エレノアは、日常生活をシンプルに豊かにするスマートフォンアプリを開発・提供する個人事業です。iOS・Android 向けアプリ「SONO-HINO」を提供。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7C3AED;
+      --purple-light: #A78BFA;
+      --purple-dark: #5B21B6;
+      --purple-bg: #F5F3FF;
+      --dark: #0a0616;
+      --dark-2: #130d2a;
+      --text: #1a1a2e;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --white: #ffffff;
+    }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
-      font-size: 15px;
-      line-height: 1.8;
-      color: #222;
-      background: #fafafa;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      overflow-x: hidden;
     }
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 40px 24px 80px;
+    a { color: inherit; text-decoration: none; }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 40px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 6, 22, 0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
     }
-    header {
-      text-align: center;
-      margin-bottom: 48px;
+    .nav-logo { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: 0.01em; }
+    .nav-logo span { color: var(--purple-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta {
+      background: var(--purple) !important; color: #fff !important;
+      padding: 8px 22px; border-radius: 100px; font-weight: 600 !important;
+      transition: background 0.2s, transform 0.2s !important;
+      box-shadow: 0 4px 16px rgba(124,58,237,0.35);
     }
-    header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 6px;
+    .nav-cta:hover { background: var(--purple-dark) !important; transform: translateY(-1px); }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: 0.3s; }
+    .mobile-menu {
+      display: none; position: fixed; top: 64px; left: 0; right: 0;
+      background: rgba(10, 6, 22, 0.97);
+      padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 99;
     }
-    header .app-name {
-      font-size: 13px;
-      color: #888;
-      letter-spacing: 0.05em;
+    .mobile-menu.open { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-menu a {
+      color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 500;
+      padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
     }
-    .lang-divider {
-      border: none;
-      border-top: 2px solid #e0e0e0;
-      margin: 56px 0 40px;
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0616 0%, #130d2a 55%, #0d1626 100%);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 24px 80px;
+      position: relative; overflow: hidden;
     }
-    .lang-label {
-      text-align: center;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #aaa;
-      margin-bottom: 32px;
+    .hero-orb {
+      position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.3; pointer-events: none;
     }
-    .updated {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 32px;
+    .orb1 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, #7C3AED 0%, transparent 70%);
+      top: -180px; left: -180px;
+      animation: orbFloat1 14s ease-in-out infinite alternate;
     }
-    section {
-      margin-bottom: 32px;
+    .orb2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #2563EB 0%, transparent 70%);
+      bottom: -120px; right: -120px;
+      animation: orbFloat2 11s ease-in-out infinite alternate;
     }
-    section h2 {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: #333;
+    .orb3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, #7C3AED 0%, transparent 70%);
+      top: 40%; right: 15%; opacity: 0.15;
+      animation: orbFloat1 9s ease-in-out infinite alternate-reverse;
     }
-    section p {
-      white-space: pre-line;
-      color: #444;
+    @keyframes orbFloat1 { from { transform: translate(0,0); } to { transform: translate(70px, 60px); } }
+    @keyframes orbFloat2 { from { transform: translate(0,0); } to { transform: translate(-60px,-50px); } }
+    .hero-content { position: relative; z-index: 1; max-width: 820px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.35);
+      color: var(--purple-light); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.12em; padding: 7px 18px; border-radius: 100px;
+      margin-bottom: 36px; text-transform: uppercase;
     }
-    footer {
-      margin-top: 56px;
-      text-align: center;
-      font-size: 12px;
-      color: #bbb;
+    .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple-light); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(1.3);} }
+    .hero h1 {
+      font-size: clamp(42px, 7.5vw, 88px);
+      font-weight: 800; color: #fff;
+      line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 28px;
     }
-    a { color: #5b5bd6; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--purple-light), #60a5fa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,0.55);
+      max-width: 540px; margin: 0 auto 44px; line-height: 1.75;
+    }
+    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--purple); color: #fff;
+      padding: 15px 34px; border-radius: 100px; font-size: 15px; font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.45);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(124,58,237,0.55); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8);
+      padding: 15px 34px; border-radius: 100px; font-size: 15px; font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.14);
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.13); color: #fff; }
+    .hero-scroll {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,0.25); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: scrollBounce 2.5s ease-in-out infinite;
+    }
+    @keyframes scrollBounce { 0%,100%{transform:translateX(-50%) translateY(0);opacity:0.5;} 50%{transform:translateX(-50%) translateY(10px);opacity:1;} }
+
+    /* ===== SECTION COMMON ===== */
+    .section { padding: 100px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--purple); margin-bottom: 12px; display: block;
+    }
+    .section-title {
+      font-size: clamp(30px, 4vw, 46px); font-weight: 800;
+      letter-spacing: -0.025em; color: var(--text); margin-bottom: 16px; line-height: 1.15;
+    }
+    .section-desc {
+      font-size: 16px; color: var(--text-muted); max-width: 560px; line-height: 1.75; margin-bottom: 60px;
+    }
+
+    /* ===== APPS SECTION ===== */
+    .apps-section { background: var(--purple-bg); }
+    .app-card {
+      background: #fff; border-radius: 28px; padding: 44px;
+      box-shadow: 0 4px 40px rgba(124,58,237,0.1), 0 1px 3px rgba(0,0,0,0.05);
+      display: grid; grid-template-columns: 112px 1fr; gap: 36px; align-items: start;
+      max-width: 760px;
+    }
+    .app-icon {
+      width: 96px; height: 96px; border-radius: 24px;
+      background: linear-gradient(135deg, #7C3AED, #5B21B6);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 28px rgba(124,58,237,0.35); flex-shrink: 0;
+    }
+    .app-icon svg { width: 46px; height: 46px; }
+    .app-badge {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--purple);
+      background: rgba(124,58,237,0.1); padding: 4px 12px; border-radius: 100px; margin-bottom: 12px;
+    }
+    .app-name { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .app-sub { font-size: 14px; color: var(--purple); font-weight: 600; margin-bottom: 16px; }
+    .app-desc { font-size: 15px; color: var(--text-muted); line-height: 1.75; margin-bottom: 24px; }
+    .app-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    .app-tag {
+      font-size: 12px; color: #374151; background: #f3f4f6;
+      padding: 5px 13px; border-radius: 100px; font-weight: 500;
+    }
+    .store-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .store-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: #1a1a2e; color: #fff;
+      padding: 11px 22px; border-radius: 14px;
+      opacity: 0.45; cursor: default;
+    }
+    .store-btn-text .store-btn-label { font-size: 10px; color: rgba(255,255,255,0.55); line-height: 1; margin-bottom: 2px; }
+    .store-btn-text .store-btn-name { font-size: 14px; font-weight: 700; line-height: 1; }
+
+    /* ===== FEATURES ===== */
+    .features-section { background: #fff; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+    .feature-card {
+      background: #fff; border: 1.5px solid var(--border); border-radius: 22px; padding: 36px;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.25); }
+    .feature-icon-wrap {
+      width: 54px; height: 54px; border-radius: 16px;
+      background: var(--purple-bg); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 22px;
+    }
+    .feature-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em; }
+    .feature-desc { font-size: 14px; color: var(--text-muted); line-height: 1.75; }
+
+    /* ===== ABOUT ===== */
+    .about-section {
+      background: linear-gradient(135deg, #0a0616 0%, #130d2a 60%, #0d1626 100%);
+      position: relative; overflow: hidden;
+    }
+    .about-section::before {
+      content: ''; position: absolute;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.2), transparent 70%);
+      right: -150px; bottom: -150px; pointer-events: none;
+    }
+    .about-section .section-label { color: var(--purple-light); }
+    .about-section .section-title { color: #fff; }
+    .about-section .section-desc { color: rgba(255,255,255,0.55); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; position: relative; z-index: 1; }
+    .about-table { width: 100%; border-collapse: collapse; }
+    .about-table tr { border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .about-table tr:last-child { border-bottom: none; }
+    .about-table th {
+      text-align: left; padding: 18px 0; font-size: 12px;
+      color: rgba(255,255,255,0.35); font-weight: 600; width: 38%; white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+    .about-table td { padding: 18px 0 18px 20px; font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.6; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .stat-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px; padding: 28px 20px; text-align: center;
+      transition: background 0.2s;
+    }
+    .stat-card:hover { background: rgba(255,255,255,0.07); }
+    .stat-num { font-size: 28px; font-weight: 800; color: var(--purple-light); line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,0.35); font-weight: 500; }
+
+    /* ===== CONTACT ===== */
+    .contact-section { background: var(--purple-bg); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+    .contact-info-title { font-size: 22px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.01em; }
+    .contact-info-desc { font-size: 14px; color: var(--text-muted); line-height: 1.75; margin-bottom: 36px; }
+    .contact-items { display: flex; flex-direction: column; gap: 22px; }
+    .contact-item { display: flex; align-items: flex-start; gap: 16px; }
+    .contact-item-icon {
+      width: 46px; height: 46px; flex-shrink: 0; border-radius: 14px;
+      background: rgba(124,58,237,0.1); display: flex; align-items: center; justify-content: center;
+    }
+    .contact-item-icon svg { color: var(--purple); }
+    .contact-item-label { font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+    .contact-item-value { font-size: 14px; color: var(--text); font-weight: 500; line-height: 1.6; }
+    .contact-item-value a { color: var(--purple); }
+    .contact-item-value a:hover { text-decoration: underline; }
+    .contact-form-wrap {
+      background: #fff; border-radius: 28px; padding: 44px;
+      box-shadow: 0 4px 40px rgba(124,58,237,0.1), 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .form-title { font-size: 18px; font-weight: 700; margin-bottom: 24px; letter-spacing: -0.01em; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+    input, textarea {
+      width: 100%; padding: 13px 16px;
+      border: 1.5px solid var(--border); border-radius: 12px;
+      font-size: 14px; color: var(--text); background: #fafafa;
+      font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; outline: none;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--purple); background: #fff;
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+    }
+    textarea { resize: vertical; min-height: 130px; }
+    .btn-submit {
+      width: 100%; background: var(--purple); color: #fff;
+      padding: 15px; border-radius: 14px; font-size: 15px; font-weight: 700;
+      border: none; cursor: pointer; font-family: inherit;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(124,58,237,0.35);
+    }
+    .btn-submit:hover { background: var(--purple-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,0.45); }
+    .form-note { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 12px; }
+
+    /* ===== FOOTER ===== */
+    .footer { background: #080412; padding: 64px 40px 32px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 48px;
+      padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .footer-logo { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .footer-logo span { color: var(--purple-light); }
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.8; }
+    .footer-col-title {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255,255,255,0.25); margin-bottom: 18px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 12px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: rgba(255,255,255,0.25); flex-wrap: wrap; gap: 8px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .about-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .footer { padding: 48px 20px 24px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .form-row { grid-template-columns: 1fr; }
+      .app-card { grid-template-columns: 1fr; }
+      .app-icon { width: 80px; height: 80px; }
+      .contact-form-wrap { padding: 28px 24px; }
+      .section { padding: 72px 20px; }
+    }
   </style>
 </head>
 <body>
-<div class="container">
 
-  <header>
-    <div class="app-name">SONO-HINO</div>
-    <h1>プライバシーポリシー<br><span style="font-size:16px;font-weight:400">Privacy Policy</span></h1>
-  </header>
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Eleanor<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#apps">アプリ</a></li>
+      <li><a href="company.html">会社情報</a></li>
+      <li><a href="support.html">サポート</a></li>
+      <li><a href="#contact" class="nav-cta">お問い合わせ</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="toggleMenu()" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#apps" onclick="closeMenu()">アプリ</a>
+    <a href="company.html">会社情報</a>
+    <a href="support.html">サポート</a>
+    <a href="#contact" onclick="closeMenu()">お問い合わせ</a>
+  </div>
 
-  <!-- ============================================================ -->
-  <!-- 日本語 -->
-  <!-- ============================================================ -->
-  <div class="lang-label">日本語</div>
-  <p class="updated">最終更新日: 2026年3月10日</p>
-
-  <section>
-    <h2>1. はじめに</h2>
-    <p>SONO-HINO（以下「本アプリ」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めます。本ポリシーは、本アプリが収集・利用する情報とその取り扱いについて説明するものです。</p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-orb orb1"></div>
+    <div class="hero-orb orb2"></div>
+    <div class="hero-orb orb3"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Eleanor – Mobile App Development
+      </div>
+      <h1>日常をシンプルに、<br><span class="accent">豊かにする。</span></h1>
+      <p class="hero-sub">エレノアは、スマートフォンアプリの企画・開発・提供を行う個人事業です。iOS・Android 向けに、あなたの毎日をスマートにするアプリを届けます。</p>
+      <div class="hero-btns">
+        <a href="#apps" class="btn-primary">
+          アプリを見る
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="company.html" class="btn-secondary">会社情報</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
   </section>
 
-  <section>
-    <h2>2. 収集する情報</h2>
-    <p>本アプリでは、以下の情報を収集します。
-
-・メールアドレス: アカウント登録・認証のために使用します。
-・タスクデータ: ユーザーが作成したタスクの内容（タイトル、メモ、日付等）を保存します。
-・広告識別子・デバイス情報: 広告表示のために Google AdMob を使用しており、広告識別子（IDFA/GAID）やデバイス情報を収集する場合があります。これらは広告の配信および改善に使用されます。</p>
+  <!-- APPS -->
+  <section class="section apps-section" id="apps">
+    <div class="section-inner">
+      <span class="section-label">Products</span>
+      <h2 class="section-title">提供アプリ</h2>
+      <p class="section-desc">日常の課題を解決するシンプルで使いやすいアプリを開発・提供しています。</p>
+      <div class="app-card">
+        <div class="app-icon">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+        </div>
+        <div>
+          <span class="app-badge">Task Management</span>
+          <h3 class="app-name">SONO-HINO</h3>
+          <p class="app-sub">その日の・タスク管理アプリ</p>
+          <p class="app-desc">「今日やること」と「いつかやること」を一画面で整理するシンプルなタスク管理アプリ。未完了のタスクは翌日に自動で繰り越し、毎日をすっきりと管理できます。クラウド同期で複数デバイスからアクセス可能。</p>
+          <div class="app-tags">
+            <span class="app-tag">📋 タイムライン管理</span>
+            <span class="app-tag">🔮 いつかリスト</span>
+            <span class="app-tag">☁️ クラウド同期</span>
+            <span class="app-tag">🌙 ダークモード</span>
+            <span class="app-tag">🌍 日英対応</span>
+          </div>
+          <div class="store-btns">
+            <div class="store-btn" title="Coming Soon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11"/></svg>
+              <div class="store-btn-text">
+                <div class="store-btn-label">Coming Soon</div>
+                <div class="store-btn-name">App Store</div>
+              </div>
+            </div>
+            <div class="store-btn" title="Coming Soon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.33.18.7.26 1.09.21l12.48-7.2-2.51-2.5-11.06 9.49zm15.6-14.49L16.15 7.6 3.17.24C2.8.01 2.41-.05 2.05.09L13.27 11.3l5.51-2.03zm2.04 1.2l-2.67-1.54-2.8 2.8 2.8 2.8 2.69-1.55c.77-.45.77-1.07.77-1.07 0-.02-.79-.44-.79-.44zm-17.46 9.03l11.06-9.5-2.51-2.51L3.18.24c-.37.06-.69.24-.93.5-.24.26-.38.6-.38.97v21.15c0 .37.14.7.38.97.2.22.46.38.74.47l.37-1.23z"/></svg>
+              <div class="store-btn-text">
+                <div class="store-btn-label">Coming Soon</div>
+                <div class="store-btn-name">Google Play</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section>
-    <h2>3. 情報の利用目的</h2>
-    <p>収集した情報は、以下の目的で利用します。
-
-・アカウントの認証およびサービスの提供
-・タスクデータの保存・同期
-・関連性の高い広告の表示
-・サービスの改善および不具合の修正</p>
+  <!-- FEATURES -->
+  <section class="section features-section">
+    <div class="section-inner">
+      <span class="section-label">Why Eleanor</span>
+      <h2 class="section-title">こだわりのポイント</h2>
+      <p class="section-desc">ユーザー体験を最優先に、細部まで丁寧に作り込んでいます。</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>
+          </div>
+          <h3 class="feature-title">シンプルな設計</h3>
+          <p class="feature-desc">余計な機能を排除し、本当に必要な操作だけを残した直感的な UI。誰でも迷わず使えるデザインにこだわっています。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+          </div>
+          <h3 class="feature-title">リアルタイム クラウド同期</h3>
+          <p class="feature-desc">Supabase によるセキュアなクラウド同期で、iPhone・Android・複数台のデバイスで常に最新の状態を保てます。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3 class="feature-title">プライバシーを尊重</h3>
+          <p class="feature-desc">データの暗号化と行レベルのアクセス制御で、ユーザーのデータを厳重に保護。収集する情報は必要最小限に留めています。</p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section>
-    <h2>4. 情報の保存・管理</h2>
-    <p>ユーザーのデータは Supabase（クラウドデータベースサービス）上に安全に保存されます。データの送受信は暗号化通信（HTTPS）を使用し、適切なアクセス制御を実施しています。</p>
+  <!-- ABOUT -->
+  <section class="section about-section">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div>
+          <span class="section-label">About</span>
+          <h2 class="section-title">事業者情報</h2>
+          <p class="section-desc">スマートフォンアプリの企画・開発・運営を行う個人事業です。iOS および Android 向けに、日常生活をシンプルに豊かにするアプリを提供しています。</p>
+          <table class="about-table">
+            <tr><th>屋号</th><td>エレノア（Eleanor）</td></tr>
+            <tr><th>代表者</th><td>豊島 悠右</td></tr>
+            <tr><th>設立</th><td>2026年</td></tr>
+            <tr><th>事業内容</th><td>スマートフォンアプリの企画・開発・運営</td></tr>
+            <tr><th>所在地</th><td>〒160-0022<br>東京都新宿区新宿2丁目8番15号<br>パークフロント新宿 202号室</td></tr>
+          </table>
+        </div>
+        <div class="about-stats">
+          <div class="stat-card">
+            <div class="stat-num">iOS</div>
+            <div class="stat-label">App Store 対応</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">Android</div>
+            <div class="stat-label">Google Play 対応</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">JP / EN</div>
+            <div class="stat-label">多言語対応</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">2026</div>
+            <div class="stat-label">創業年</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section>
-    <h2>5. 第三者サービスの利用</h2>
-    <p>本アプリは以下の第三者サービスを利用しており、各サービスのプライバシーポリシーが適用されます。
-
-・Supabase（データ保存・認証）
-  プライバシーポリシー: https://supabase.com/privacy
-
-・Google AdMob（広告表示）
-  プライバシーポリシー: https://policies.google.com/privacy
-  広告ポリシー: https://support.google.com/admob/answer/6128543</p>
+  <!-- CONTACT -->
+  <!-- TODO: contact@eleanor-dev.com を使用。Cloudflare Email Routing の設定が完了してから公開すること -->
+  <section class="section contact-section" id="contact">
+    <div class="section-inner">
+      <span class="section-label">Contact</span>
+      <h2 class="section-title">お問い合わせ</h2>
+      <p class="section-desc">ご質問・ご意見・ご要望など、お気軽にお問い合わせください。通常 2〜3 営業日以内にご返信いたします。</p>
+      <div class="contact-grid">
+        <div>
+          <h3 class="contact-info-title">ご連絡先</h3>
+          <p class="contact-info-desc">フォームからのお問い合わせが最も確実です。メールでの直接ご連絡も歓迎いたします。</p>
+          <div class="contact-items">
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <div class="contact-item-label">Email</div>
+                <div class="contact-item-value"><a href="mailto:contact@eleanor-dev.com">contact@eleanor-dev.com</a></div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div class="contact-item-label">Address</div>
+                <div class="contact-item-value">〒160-0022<br>東京都新宿区新宿2丁目8番15号<br>パークフロント新宿 202号室</div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="contact-item-label">Hours</div>
+                <div class="contact-item-value">平日 10:00 – 18:00 JST<br><span style="font-size:12px;color:#9ca3af;">返信は 2〜3 営業日以内</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form-wrap">
+          <p class="form-title">メッセージを送る</p>
+          <form id="contact-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">お名前 <span style="color:#EF4444">*</span></label>
+                <input type="text" id="name" placeholder="山田 太郎" required>
+              </div>
+              <div class="form-group">
+                <label for="email">メールアドレス <span style="color:#EF4444">*</span></label>
+                <input type="email" id="email" placeholder="email@example.com" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="subject">件名 <span style="color:#EF4444">*</span></label>
+              <input type="text" id="subject" placeholder="お問い合わせ内容を入力してください" required>
+            </div>
+            <div class="form-group">
+              <label for="message">メッセージ <span style="color:#EF4444">*</span></label>
+              <textarea id="message" placeholder="詳細をご記入ください..." required></textarea>
+            </div>
+            <button type="submit" class="btn-submit">送信する →</button>
+            <p class="form-note">送信するとメールアプリが開きます</p>
+          </form>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section>
-    <h2>6. 第三者への提供</h2>
-    <p>法令に基づく場合、および上記第三者サービスへのデータ提供を除き、ユーザーの個人情報を第三者に提供することはありません。</p>
-  </section>
-
-  <section>
-    <h2>7. ユーザーの権利</h2>
-    <p>ユーザーは、自身のアカウントおよびデータの削除を請求する権利を有します。アカウント削除をご希望の場合は、下記のお問い合わせ先までご連絡ください。</p>
-  </section>
-
-  <section>
-    <h2>8. お子様のプライバシー</h2>
-    <p>本アプリは13歳未満のお子様を対象としていません。13歳未満のお子様から意図的に個人情報を収集することはありません。</p>
-  </section>
-
-  <section>
-    <h2>9. ポリシーの変更</h2>
-    <p>本ポリシーは予告なく変更されることがあります。変更後のポリシーは、本ページに掲示した時点から効力を有するものとします。</p>
-  </section>
-
-  <section>
-    <h2>10. お問い合わせ</h2>
-    <p>本ポリシーに関するお問い合わせは、以下の連絡先までお願いいたします。
-
-メール: <a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a></p>
-  </section>
-
-  <hr class="lang-divider">
-
-  <!-- ============================================================ -->
-  <!-- English -->
-  <!-- ============================================================ -->
-  <div class="lang-label">English</div>
-  <p class="updated">Last updated: March 10, 2026</p>
-
-  <section>
-    <h2>1. Introduction</h2>
-    <p>SONO-HINO (hereinafter "the App") respects your privacy and is committed to protecting your personal information. This policy explains what information we collect and how we handle it.</p>
-  </section>
-
-  <section>
-    <h2>2. Information We Collect</h2>
-    <p>The App collects the following information:
-
-· Email address: Used for account registration and authentication.
-· Task data: Content of tasks you create (titles, notes, dates, etc.) is stored.
-· Advertising identifiers and device information: The App uses Google AdMob to display ads, which may collect advertising identifiers (IDFA/GAID) and device information. These are used for ad delivery and improvement.</p>
-  </section>
-
-  <section>
-    <h2>3. How We Use Your Information</h2>
-    <p>We use the collected information for the following purposes:
-
-· Account authentication and service provision
-· Storing and syncing task data
-· Displaying relevant advertisements
-· Improving the service and fixing issues</p>
-  </section>
-
-  <section>
-    <h2>4. Data Storage and Management</h2>
-    <p>Your data is securely stored on Supabase (a cloud database service). All data transmission is encrypted via HTTPS, and appropriate access controls are in place.</p>
-  </section>
-
-  <section>
-    <h2>5. Third-Party Services</h2>
-    <p>The App uses the following third-party services, each governed by their own privacy policies:
-
-· Supabase (data storage and authentication)
-  Privacy Policy: https://supabase.com/privacy
-
-· Google AdMob (advertising)
-  Privacy Policy: https://policies.google.com/privacy
-  Ad Policy: https://support.google.com/admob/answer/6128543</p>
-  </section>
-
-  <section>
-    <h2>6. Third-Party Disclosure</h2>
-    <p>We do not share your personal information with third parties, except as required by law or as described under Third-Party Services above.</p>
-  </section>
-
-  <section>
-    <h2>7. Your Rights</h2>
-    <p>You have the right to request deletion of your account and data. If you wish to delete your account, please contact us at the address below.</p>
-  </section>
-
-  <section>
-    <h2>8. Children's Privacy</h2>
-    <p>The App is not intended for children under 13. We do not knowingly collect personal information from children under 13.</p>
-  </section>
-
-  <section>
-    <h2>9. Changes to This Policy</h2>
-    <p>This policy may be changed without notice. Revised policies take effect upon posting on this page.</p>
-  </section>
-
-  <section>
-    <h2>10. Contact Us</h2>
-    <p>For questions about this policy, please contact us at:
-
-Email: <a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a></p>
-  </section>
-
-  <footer>
-    <p>&copy; 2026 エレノア / Eleanor. All rights reserved.</p>
-    <p style="margin-top:8px"><a href="support.html">サポート / Support</a></p>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Eleanor<span>.</span></div>
+          <p class="footer-tagline">日常をシンプルに、豊かにするアプリを。<br>iOS・Android 向けモバイルアプリ開発・提供。</p>
+        </div>
+        <div>
+          <p class="footer-col-title">プロダクト</p>
+          <div class="footer-links">
+            <a href="#apps">SONO-HINO</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">リンク</p>
+          <div class="footer-links">
+            <a href="company.html">会社情報</a>
+            <a href="support.html">サポート</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="account-deletion.html">アカウント削除</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 エレノア（Eleanor）. All rights reserved.</span>
+        <span>〒160-0022 東京都新宿区新宿2丁目8番15号</span>
+      </div>
+    </div>
   </footer>
 
-</div>
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    function closeMenu() {
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      const body = 'お名前: ' + name + '\nメールアドレス: ' + email + '\n\n' + message;
+      window.location.href = 'mailto:contact@eleanor-dev.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    });
+  </script>
 </body>
 </html>

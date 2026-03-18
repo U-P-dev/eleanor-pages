@@ -3,224 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>サポート / Support – SONO-HINO</title>
+  <title>サポート – SONO-HINO | Eleanor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
-      font-size: 15px;
-      line-height: 1.8;
-      color: #222;
-      background: #fafafa;
+    :root { --purple: #7C3AED; --purple-light: #A78BFA; --purple-dark: #5B21B6; --purple-bg: #F5F3FF; --text: #1a1a2e; --text-muted: #6b7280; --border: #e5e7eb; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif; color: var(--text); background: #fafafa; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(10,6,22,0.85); border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .nav-logo { font-size: 20px; font-weight: 800; color: #fff; }
+    .nav-logo span { color: var(--purple-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { background: var(--purple) !important; color: #fff !important; padding: 8px 22px; border-radius: 100px; font-weight: 600 !important; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(10,6,22,0.97); padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 99; }
+    .mobile-menu.open { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-menu a { color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 500; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+    /* PAGE HEADER */
+    .page-header { background: linear-gradient(135deg, #0a0616 0%, #130d2a 100%); padding: 120px 24px 64px; text-align: center; }
+    .page-header .label { font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple-light); margin-bottom: 12px; }
+    .page-header h1 { font-size: clamp(32px, 5vw, 50px); font-weight: 800; color: #fff; letter-spacing: -0.025em; margin-bottom: 12px; }
+    .page-header .sub { font-size: 15px; color: rgba(255,255,255,0.45); }
+
+    /* CONTENT */
+    .container { max-width: 760px; margin: 0 auto; padding: 56px 24px 96px; }
+    .lang-divider { border: none; border-top: 2px solid var(--border); margin: 64px 0 48px; }
+    .lang-label { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 36px; }
+    .section-heading { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin: 40px 0 20px; }
+    p { color: #444; margin-bottom: 12px; font-size: 14px; line-height: 1.8; }
+
+    /* FAQ */
+    .faq-item { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; padding: 20px 24px; margin-bottom: 12px; transition: border-color 0.2s, box-shadow 0.2s; }
+    .faq-item:hover { border-color: rgba(124,58,237,0.25); box-shadow: 0 4px 16px rgba(124,58,237,0.07); }
+    .faq-q { font-weight: 700; color: var(--text); margin-bottom: 8px; font-size: 14px; display: flex; align-items: flex-start; gap: 10px; }
+    .faq-q::before { content: 'Q'; font-size: 11px; font-weight: 800; color: var(--purple); background: var(--purple-bg); padding: 2px 7px; border-radius: 6px; flex-shrink: 0; margin-top: 1px; }
+    .faq-a { color: #555; font-size: 14px; line-height: 1.75; padding-left: 30px; }
+
+    /* CONTACT BOX */
+    .contact-box { background: linear-gradient(135deg, #0a0616, #130d2a); border-radius: 20px; padding: 36px; margin-top: 20px; text-align: center; }
+    .contact-box-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .contact-box-desc { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 20px; }
+    .contact-box a.email-link { display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: #fff; padding: 12px 28px; border-radius: 100px; font-weight: 600; font-size: 15px; transition: background 0.2s, transform 0.2s; }
+    .contact-box a.email-link:hover { background: var(--purple-dark); transform: translateY(-1px); }
+    .contact-box .note { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 12px; }
+
+    /* FOOTER */
+    .footer { background: #080412; color: rgba(255,255,255,0.4); padding: 48px 40px 28px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .footer-logo { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+    .footer-logo span { color: var(--purple-light); }
+    .footer-tagline { font-size: 13px; line-height: 1.7; }
+    .footer-col-title { font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { font-size: 13px; text-align: center; }
+
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; } .nav-links { display: none; } .nav-hamburger { display: flex; }
+      .footer-top { grid-template-columns: 1fr; } .footer { padding: 40px 20px 24px; }
     }
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 40px 24px 80px;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-    header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    header .app-name {
-      font-size: 13px;
-      color: #888;
-      letter-spacing: 0.05em;
-    }
-    header .tagline {
-      font-size: 14px;
-      color: #666;
-      margin-top: 8px;
-    }
-    .lang-divider {
-      border: none;
-      border-top: 2px solid #e0e0e0;
-      margin: 56px 0 40px;
-    }
-    .lang-label {
-      text-align: center;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #aaa;
-      margin-bottom: 32px;
-    }
-    h2 {
-      font-size: 17px;
-      font-weight: 700;
-      margin: 40px 0 16px;
-      color: #222;
-    }
-    h3 {
-      font-size: 14px;
-      font-weight: 700;
-      color: #444;
-      margin-top: 20px;
-      margin-bottom: 4px;
-    }
-    p {
-      color: #444;
-      margin-bottom: 12px;
-      white-space: pre-line;
-    }
-    .faq-item {
-      background: #fff;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin-bottom: 12px;
-    }
-    .faq-item .q {
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 6px;
-    }
-    .faq-item .a {
-      color: #555;
-    }
-    .contact-box {
-      background: #fff;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
-      padding: 24px;
-      margin-top: 16px;
-      text-align: center;
-    }
-    .contact-box a {
-      color: #5b5bd6;
-      font-weight: 600;
-      font-size: 16px;
-      text-decoration: none;
-    }
-    .contact-box a:hover { text-decoration: underline; }
-    .contact-box .note {
-      font-size: 12px;
-      color: #999;
-      margin-top: 8px;
-    }
-    footer {
-      margin-top: 56px;
-      text-align: center;
-      font-size: 12px;
-      color: #bbb;
-    }
-    footer a { color: #5b5bd6; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-<div class="container">
 
-  <header>
-    <div class="app-name">SONO-HINO</div>
-    <h1>サポート<br><span style="font-size:16px;font-weight:400">Support</span></h1>
-    <p class="tagline">単発タスクの整理に特化したタスク管理アプリ<br>
-    <span style="font-size:13px;color:#999">A task management app for one-off tasks</span></p>
-  </header>
-
-  <!-- ============================================================ -->
-  <!-- 日本語 -->
-  <!-- ============================================================ -->
-  <div class="lang-label">日本語</div>
-
-  <h2>よくある質問</h2>
-
-  <div class="faq-item">
-    <div class="q">Q. アカウントを削除するには？</div>
-    <div class="a">設定画面 → 「アカウント削除」からお手続きいただけます。削除後はすべてのデータが消去され、復元できません。</div>
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Eleanor<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#apps">アプリ</a></li>
+      <li><a href="company.html">会社情報</a></li>
+      <li><a href="support.html">サポート</a></li>
+      <li><a href="index.html#contact" class="nav-cta">お問い合わせ</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="document.getElementById('m').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="m">
+    <a href="index.html#apps">アプリ</a>
+    <a href="company.html">会社情報</a>
+    <a href="support.html">サポート</a>
+    <a href="index.html#contact">お問い合わせ</a>
   </div>
 
-  <div class="faq-item">
-    <div class="q">Q. タスクデータはどこに保存されますか？</div>
-    <div class="a">タスクデータはクラウド（Supabase）に暗号化して保存されます。複数端末でも同じアカウントでログインすると同期されます。</div>
+  <div class="page-header">
+    <p class="label">Support</p>
+    <h1>サポート</h1>
+    <p class="sub">SONO-HINO よくある質問・お問い合わせ</p>
   </div>
 
-  <div class="faq-item">
-    <div class="q">Q. 「広告を削除」を購入したが反映されない</div>
-    <div class="a">設定画面 → 「購入を復元」をタップしてください。Apple ID / Google アカウントが購入時と同じであることをご確認ください。</div>
+  <div class="container">
+
+    <!-- 日本語 -->
+    <div class="lang-label">日本語</div>
+
+    <h2 class="section-heading">よくある質問</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">アカウントを削除するには？</div>
+      <div class="faq-a">設定画面 → 「アカウント削除」からお手続きいただけます。削除後はすべてのデータが消去され、復元できません。<br><a href="account-deletion.html" style="color:var(--purple);font-weight:600;">→ 詳細な手順はこちら</a></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">タスクデータはどこに保存されますか？</div>
+      <div class="faq-a">タスクデータはクラウド（Supabase）に暗号化して保存されます。複数端末でも同じアカウントでログインすると同期されます。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">「広告を削除」を購入したが反映されない</div>
+      <div class="faq-a">設定画面 → 「購入を復元」をタップしてください。Apple ID / Google アカウントが購入時と同じであることをご確認ください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">「広告を削除」は複数のデバイスで使えますか？</div>
+      <div class="faq-a">はい。同じ Apple ID（iOS）または Google アカウント（Android）でログインし、「購入を復元」をタップすると他のデバイスでも広告フリーになります。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">パスワードを忘れてしまった</div>
+      <div class="faq-a">ログイン画面のメールアドレス入力後、パスワードリセットメールを送信できます。メールが届かない場合は迷惑メールフォルダをご確認ください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">アプリが正常に動作しない</div>
+      <div class="faq-a">アプリを最新バージョンにアップデートの上、一度アプリを終了して再起動してみてください。それでも解決しない場合は下記よりお問い合わせください。</div>
+    </div>
+
+    <h2 class="section-heading">お問い合わせ</h2>
+    <p>上記で解決しない場合は、メールにてお問い合わせください。通常 2〜3 営業日以内にご返信いたします。</p>
+    <div class="contact-box">
+      <p class="contact-box-title">メールでお問い合わせ</p>
+      <p class="contact-box-desc">お問い合わせの際は、アプリのバージョンと OS バージョンをお知らせください。</p>
+      <a href="mailto:contact@eleanor-dev.com" class="email-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        contact@eleanor-dev.com
+      </a>
+      <p class="note">平日 10:00 – 18:00 JST 対応</p>
+    </div>
+
+    <hr class="lang-divider">
+
+    <!-- English -->
+    <div class="lang-label">English</div>
+
+    <h2 class="section-heading">FAQ</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I delete my account?</div>
+      <div class="faq-a">Go to Settings → "Delete Account". Once deleted, all your data will be permanently removed and cannot be recovered.<br><a href="account-deletion.html" style="color:var(--purple);font-weight:600;">→ View detailed instructions</a></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Where is my task data stored?</div>
+      <div class="faq-a">Task data is securely stored in the cloud (Supabase) with encryption. Logging in with the same account on multiple devices will sync your data automatically.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">I purchased "Remove Ads" but it's not applied</div>
+      <div class="faq-a">Please go to Settings → "Restore Purchase". Make sure you are signed in with the same Apple ID or Google account used for the original purchase.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I use "Remove Ads" on multiple devices?</div>
+      <div class="faq-a">Yes. Sign in with the same Apple ID (iOS) or Google account (Android) on your other device and tap "Restore Purchase" to apply your ad-free status.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">I forgot my password</div>
+      <div class="faq-a">On the login screen, enter your email address and request a password reset email. If you don't receive it, please check your spam folder.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">The app is not working correctly</div>
+      <div class="faq-a">Please update the app to the latest version and try restarting it. If the issue persists, please contact us below.</div>
+    </div>
+
+    <h2 class="section-heading">Contact Us</h2>
+    <p>If the FAQ above didn't resolve your issue, please reach out via email. We typically respond within 2–3 business days.</p>
+    <div class="contact-box">
+      <p class="contact-box-title">Contact by Email</p>
+      <p class="contact-box-desc">Please include your app version and OS version when contacting us.</p>
+      <a href="mailto:contact@eleanor-dev.com" class="email-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        contact@eleanor-dev.com
+      </a>
+      <p class="note">Business hours: Weekdays 10:00 – 18:00 JST</p>
+    </div>
+
   </div>
 
-  <div class="faq-item">
-    <div class="q">Q. 「広告を削除」は複数のデバイスで使えますか？</div>
-    <div class="a">はい。同じ Apple ID（iOS）または Google アカウント（Android）でログインし、「購入を復元」をタップすると他のデバイスでも広告フリーになります。</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="q">Q. パスワードを忘れてしまった</div>
-    <div class="a">ログイン画面のメールアドレス入力後、パスワードリセットメールを送信できます。メールが届かない場合は迷惑メールフォルダをご確認ください。</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="q">Q. アプリが正常に動作しない</div>
-    <div class="a">アプリを最新バージョンにアップデートの上、一度アプリを終了して再起動してみてください。それでも解決しない場合は下記よりお問い合わせください。</div>
-  </div>
-
-  <h2>お問い合わせ</h2>
-  <p>上記で解決しない場合は、以下のメールアドレスまでお問い合わせください。通常2〜3営業日以内にご返信いたします。</p>
-  <div class="contact-box">
-    <a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a>
-    <div class="note">お問い合わせの際は、アプリのバージョンとOSバージョンをお知らせください。</div>
-  </div>
-
-  <hr class="lang-divider">
-
-  <!-- ============================================================ -->
-  <!-- English -->
-  <!-- ============================================================ -->
-  <div class="lang-label">English</div>
-
-  <h2>FAQ</h2>
-
-  <div class="faq-item">
-    <div class="q">Q. How do I delete my account?</div>
-    <div class="a">Go to Settings → "Delete Account". Once deleted, all your data will be permanently removed and cannot be recovered.</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="q">Q. Where is my task data stored?</div>
-    <div class="a">Task data is securely stored in the cloud (Supabase) with encryption. Logging in with the same account on multiple devices will sync your data automatically.</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="q">Q. I purchased "Remove Ads" but it's not applied</div>
-    <div class="a">Please go to Settings → "Restore Purchase". Make sure you are signed in with the same Apple ID or Google account used for the original purchase.</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="q">Q. Can I use "Remove Ads" on multiple devices?</div>
-    <div class="a">Yes. Sign in with the same Apple ID (iOS) or Google account (Android) on your other device and tap "Restore Purchase" to apply your ad-free status.</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="q">Q. I forgot my password</div>
-    <div class="a">On the login screen, enter your email address and request a password reset email. If you don't receive it, please check your spam folder.</div>
-  </div>
-
-  <div class="faq-item">
-    <div class="q">Q. The app is not working correctly</div>
-    <div class="a">Please update the app to the latest version and try restarting it. If the issue persists, please contact us below.</div>
-  </div>
-
-  <h2>Contact Us</h2>
-  <p>If the FAQ above didn't resolve your issue, please reach out via email. We typically respond within 2–3 business days.</p>
-  <div class="contact-box">
-    <a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a>
-    <div class="note">Please include your app version and OS version when contacting us.</div>
-  </div>
-
-  <footer>
-    <p>&copy; 2026 エレノア / Eleanor. All rights reserved.</p>
-    <p style="margin-top:8px">
-      <a href="index.html">プライバシーポリシー / Privacy Policy</a>
-    </p>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Eleanor<span>.</span></div>
+          <p class="footer-tagline">日常をシンプルに、豊かにするアプリを。<br>iOS・Android 向けモバイルアプリ開発・提供。</p>
+        </div>
+        <div>
+          <p class="footer-col-title">プロダクト</p>
+          <div class="footer-links"><a href="index.html#apps">SONO-HINO</a></div>
+        </div>
+        <div>
+          <p class="footer-col-title">リンク</p>
+          <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="company.html">会社情報</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="account-deletion.html">アカウント削除</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 エレノア（Eleanor）. All rights reserved.</p>
+      </div>
+    </div>
   </footer>
 
-</div>
 </body>
 </html>

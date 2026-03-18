@@ -3,302 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>アカウント削除 / Account Deletion – SONO-HINO</title>
+  <title>アカウント削除 – SONO-HINO | Eleanor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
-      font-size: 15px;
-      line-height: 1.8;
-      color: #222;
-      background: #fafafa;
+    :root { --purple: #7C3AED; --purple-light: #A78BFA; --purple-dark: #5B21B6; --purple-bg: #F5F3FF; --text: #1a1a2e; --text-muted: #6b7280; --border: #e5e7eb; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif; color: var(--text); background: #fafafa; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(10,6,22,0.85); border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .nav-logo { font-size: 20px; font-weight: 800; color: #fff; }
+    .nav-logo span { color: var(--purple-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { background: var(--purple) !important; color: #fff !important; padding: 8px 22px; border-radius: 100px; font-weight: 600 !important; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(10,6,22,0.97); padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 99; }
+    .mobile-menu.open { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-menu a { color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 500; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+    /* PAGE HEADER */
+    .page-header { background: linear-gradient(135deg, #0a0616 0%, #130d2a 100%); padding: 120px 24px 64px; text-align: center; }
+    .page-header .label { font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple-light); margin-bottom: 12px; }
+    .page-header h1 { font-size: clamp(28px, 4.5vw, 46px); font-weight: 800; color: #fff; letter-spacing: -0.025em; margin-bottom: 12px; }
+    .page-header .sub { font-size: 15px; color: rgba(255,255,255,0.45); }
+
+    /* CONTENT */
+    .container { max-width: 760px; margin: 0 auto; padding: 56px 24px 96px; }
+    .lang-divider { border: none; border-top: 2px solid var(--border); margin: 64px 0 48px; }
+    .lang-label { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 36px; }
+    .section-heading { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin: 40px 0 20px; }
+    p { color: #444; margin-bottom: 12px; font-size: 14px; line-height: 1.8; }
+
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    .step { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; padding: 20px 24px; display: flex; gap: 18px; align-items: flex-start; transition: border-color 0.2s; }
+    .step:hover { border-color: rgba(124,58,237,0.25); }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--purple); color: #fff; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-title { font-weight: 700; color: var(--text); font-size: 14px; margin-bottom: 4px; }
+    .step-desc { color: #555; font-size: 14px; line-height: 1.7; }
+
+    /* WARNING */
+    .warning { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 14px; padding: 16px 20px; margin: 20px 0; color: #92400e; font-size: 14px; line-height: 1.7; display: flex; gap: 12px; align-items: flex-start; }
+    .warning svg { flex-shrink: 0; margin-top: 1px; }
+
+    /* DATA TABLE */
+    .data-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 16px; overflow: hidden; border: 1.5px solid var(--border); margin: 16px 0 24px; font-size: 14px; }
+    .data-table th { padding: 12px 16px; background: #f9fafb; font-weight: 700; color: var(--text); border-bottom: 1.5px solid var(--border); text-align: left; }
+    .data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: #444; }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* CONTACT BOX */
+    .contact-box { background: linear-gradient(135deg, #0a0616, #130d2a); border-radius: 20px; padding: 36px; margin-top: 20px; text-align: center; }
+    .contact-box-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .contact-box-desc { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 20px; }
+    .contact-box a.email-link { display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: #fff; padding: 12px 28px; border-radius: 100px; font-weight: 600; font-size: 15px; transition: background 0.2s, transform 0.2s; }
+    .contact-box a.email-link:hover { background: var(--purple-dark); transform: translateY(-1px); }
+    .contact-box .note { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 12px; }
+
+    /* FOOTER */
+    .footer { background: #080412; color: rgba(255,255,255,0.4); padding: 48px 40px 28px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .footer-logo { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+    .footer-logo span { color: var(--purple-light); }
+    .footer-tagline { font-size: 13px; line-height: 1.7; }
+    .footer-col-title { font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { font-size: 13px; text-align: center; }
+
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; } .nav-links { display: none; } .nav-hamburger { display: flex; }
+      .footer-top { grid-template-columns: 1fr; } .footer { padding: 40px 20px 24px; }
     }
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 40px 24px 80px;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-    header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    header .app-name {
-      font-size: 13px;
-      color: #888;
-      letter-spacing: 0.05em;
-    }
-    header .tagline {
-      font-size: 14px;
-      color: #666;
-      margin-top: 8px;
-    }
-    .lang-divider {
-      border: none;
-      border-top: 2px solid #e0e0e0;
-      margin: 56px 0 40px;
-    }
-    .lang-label {
-      text-align: center;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #aaa;
-      margin-bottom: 32px;
-    }
-    h2 {
-      font-size: 17px;
-      font-weight: 700;
-      margin: 40px 0 16px;
-      color: #222;
-    }
-    p {
-      color: #444;
-      margin-bottom: 12px;
-      white-space: pre-line;
-    }
-    .step-box {
-      background: #fff;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
-      padding: 20px 24px;
-      margin-bottom: 16px;
-    }
-    .step-box .step-title {
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 6px;
-    }
-    .step-box .step-desc {
-      color: #555;
-    }
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0 24px;
-      font-size: 14px;
-    }
-    .data-table th, .data-table td {
-      border: 1px solid #e0e0e0;
-      padding: 10px 14px;
-      text-align: left;
-    }
-    .data-table th {
-      background: #f5f5f5;
-      font-weight: 700;
-      color: #333;
-    }
-    .data-table td {
-      color: #555;
-    }
-    .warning-box {
-      background: #fff8f0;
-      border: 1px solid #f0d0a0;
-      border-radius: 10px;
-      padding: 16px 20px;
-      margin: 20px 0;
-      color: #885500;
-      font-size: 14px;
-    }
-    .contact-box {
-      background: #fff;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
-      padding: 24px;
-      margin-top: 16px;
-      text-align: center;
-    }
-    .contact-box a {
-      color: #5b5bd6;
-      font-weight: 600;
-      font-size: 16px;
-      text-decoration: none;
-    }
-    .contact-box a:hover { text-decoration: underline; }
-    .contact-box .note {
-      font-size: 12px;
-      color: #999;
-      margin-top: 8px;
-    }
-    footer {
-      margin-top: 56px;
-      text-align: center;
-      font-size: 12px;
-      color: #bbb;
-    }
-    footer a { color: #5b5bd6; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-<div class="container">
 
-  <header>
-    <div class="app-name">SONO-HINO</div>
-    <h1>アカウント削除<br><span style="font-size:16px;font-weight:400">Account Deletion</span></h1>
-    <p class="tagline">エレノア（Eleanor）が提供するタスク管理アプリ<br>
-    <span style="font-size:13px;color:#999">A task management app by Eleanor</span></p>
-  </header>
-
-  <!-- ============================================================ -->
-  <!-- 日本語 -->
-  <!-- ============================================================ -->
-  <div class="lang-label">日本語</div>
-
-  <h2>アカウント削除の手順</h2>
-  <p>SONO-HINO アプリ内から、以下の手順でアカウントを削除できます。</p>
-
-  <div class="step-box">
-    <div class="step-title">1. 設定画面を開く</div>
-    <div class="step-desc">アプリのタイムライン画面左上の設定アイコンをタップし、設定画面を開きます。</div>
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Eleanor<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#apps">アプリ</a></li>
+      <li><a href="company.html">会社情報</a></li>
+      <li><a href="support.html">サポート</a></li>
+      <li><a href="index.html#contact" class="nav-cta">お問い合わせ</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="document.getElementById('m').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="m">
+    <a href="index.html#apps">アプリ</a>
+    <a href="company.html">会社情報</a>
+    <a href="support.html">サポート</a>
+    <a href="index.html#contact">お問い合わせ</a>
   </div>
 
-  <div class="step-box">
-    <div class="step-title">2. 「アカウント削除」をタップ</div>
-    <div class="step-desc">設定画面の下部にある「アカウント削除」をタップします。</div>
+  <div class="page-header">
+    <p class="label">Account</p>
+    <h1>アカウント削除</h1>
+    <p class="sub">Account Deletion – SONO-HINO</p>
   </div>
 
-  <div class="step-box">
-    <div class="step-title">3. 確認ダイアログで削除を確定</div>
-    <div class="step-desc">確認ダイアログが表示されます。「削除」をタップするとアカウントが完全に削除されます。</div>
+  <div class="container">
+
+    <!-- 日本語 -->
+    <div class="lang-label">日本語</div>
+
+    <h2 class="section-heading">アカウント削除の手順</h2>
+    <p>SONO-HINO アプリ内から、以下の手順でアカウントを削除できます。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">設定画面を開く</div>
+          <div class="step-desc">アプリのタイムライン画面左上の設定アイコンをタップし、設定画面を開きます。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">「アカウント削除」をタップ</div>
+          <div class="step-desc">設定画面の下部にある「アカウント削除」をタップします。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">確認ダイアログで削除を確定</div>
+          <div class="step-desc">確認ダイアログが表示されます。「削除」をタップするとアカウントが完全に削除されます。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      アカウントを削除すると、すべてのデータが完全に削除され、復元できません。削除前に必要なデータがないことをご確認ください。
+    </div>
+
+    <h2 class="section-heading">削除されるデータ</h2>
+    <table class="data-table">
+      <thead><tr><th>データの種類</th><th>削除時の扱い</th><th>保持期間</th></tr></thead>
+      <tbody>
+        <tr><td>アカウント情報（メールアドレス）</td><td>完全に削除</td><td>即時削除</td></tr>
+        <tr><td>タスクデータ（タイムライン・Someday）</td><td>完全に削除</td><td>即時削除</td></tr>
+        <tr><td>サブタスクデータ</td><td>完全に削除</td><td>即時削除</td></tr>
+        <tr><td>アプリ設定（テーマ・言語）</td><td>端末のローカルデータを削除</td><td>即時削除</td></tr>
+        <tr><td>広告削除の購入情報</td><td>Apple / Google のアカウントに保持</td><td>ストア側で管理</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-heading">メールでの削除リクエスト</h2>
+    <p>アプリにログインできない場合や、その他の理由でアプリ内から削除できない場合は、以下のメールアドレスまでアカウント削除をご依頼ください。ご登録のメールアドレスをお知らせいただければ、5営業日以内に削除を完了いたします。</p>
+    <div class="contact-box">
+      <p class="contact-box-title">削除リクエストを送信</p>
+      <p class="contact-box-desc">件名に「アカウント削除リクエスト」とご記載ください。</p>
+      <a href="mailto:contact@eleanor-dev.com?subject=アカウント削除リクエスト" class="email-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        contact@eleanor-dev.com
+      </a>
+      <p class="note">5営業日以内に削除を完了いたします</p>
+    </div>
+
+    <hr class="lang-divider">
+
+    <!-- English -->
+    <div class="lang-label">English</div>
+
+    <h2 class="section-heading">How to Delete Your Account</h2>
+    <p>You can delete your account directly from the SONO-HINO app by following these steps.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Open Settings</div>
+          <div class="step-desc">Tap the settings icon at the top-left of the timeline screen to open the Settings page.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Tap "Delete Account"</div>
+          <div class="step-desc">Scroll to the bottom of the Settings page and tap "Delete Account".</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Confirm Deletion</div>
+          <div class="step-desc">A confirmation dialog will appear. Tap "Delete" to permanently delete your account.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Deleting your account will permanently remove all your data. This action cannot be undone. Please make sure you no longer need any data before proceeding.
+    </div>
+
+    <h2 class="section-heading">Data That Will Be Deleted</h2>
+    <table class="data-table">
+      <thead><tr><th>Data Type</th><th>Action on Deletion</th><th>Retention Period</th></tr></thead>
+      <tbody>
+        <tr><td>Account information (email address)</td><td>Permanently deleted</td><td>Immediate</td></tr>
+        <tr><td>Task data (Timeline &amp; Someday)</td><td>Permanently deleted</td><td>Immediate</td></tr>
+        <tr><td>Subtask data</td><td>Permanently deleted</td><td>Immediate</td></tr>
+        <tr><td>App settings (theme, language)</td><td>Local data cleared from device</td><td>Immediate</td></tr>
+        <tr><td>Ad removal purchase</td><td>Retained by Apple / Google</td><td>Managed by store</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-heading">Request Deletion via Email</h2>
+    <p>If you are unable to log in or cannot delete your account from within the app, please send an account deletion request to the email address below. Provide us with your registered email address, and we will complete the deletion within 5 business days.</p>
+    <div class="contact-box">
+      <p class="contact-box-title">Send Deletion Request</p>
+      <p class="contact-box-desc">Please include "Account Deletion Request" in the subject line.</p>
+      <a href="mailto:contact@eleanor-dev.com?subject=Account%20Deletion%20Request" class="email-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        contact@eleanor-dev.com
+      </a>
+      <p class="note">Deletion will be completed within 5 business days</p>
+    </div>
+
   </div>
 
-  <div class="warning-box">
-    アカウントを削除すると、すべてのデータが完全に削除され、復元できません。削除前に必要なデータがないことをご確認ください。
-  </div>
-
-  <h2>削除されるデータ</h2>
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>データの種類</th>
-        <th>削除時の扱い</th>
-        <th>保持期間</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>アカウント情報（メールアドレス）</td>
-        <td>完全に削除</td>
-        <td>即時削除</td>
-      </tr>
-      <tr>
-        <td>タスクデータ（タイムライン・Someday）</td>
-        <td>完全に削除</td>
-        <td>即時削除</td>
-      </tr>
-      <tr>
-        <td>サブタスクデータ</td>
-        <td>完全に削除</td>
-        <td>即時削除</td>
-      </tr>
-      <tr>
-        <td>アプリ設定（テーマ・言語）</td>
-        <td>端末のローカルデータを削除</td>
-        <td>即時削除</td>
-      </tr>
-      <tr>
-        <td>広告削除の購入情報</td>
-        <td>Apple / Google のアカウントに保持</td>
-        <td>ストア側で管理</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2>メールでの削除リクエスト</h2>
-  <p>アプリにログインできない場合や、その他の理由でアプリ内から削除できない場合は、以下のメールアドレスまでアカウント削除をご依頼ください。ご登録のメールアドレスをお知らせいただければ、5営業日以内に削除を完了いたします。</p>
-  <div class="contact-box">
-    <a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a>
-    <div class="note">件名に「アカウント削除リクエスト」とご記載ください。</div>
-  </div>
-
-  <hr class="lang-divider">
-
-  <!-- ============================================================ -->
-  <!-- English -->
-  <!-- ============================================================ -->
-  <div class="lang-label">English</div>
-
-  <h2>How to Delete Your Account</h2>
-  <p>You can delete your account directly from the SONO-HINO app by following these steps.</p>
-
-  <div class="step-box">
-    <div class="step-title">1. Open Settings</div>
-    <div class="step-desc">Tap the settings icon at the top-left of the timeline screen to open the Settings page.</div>
-  </div>
-
-  <div class="step-box">
-    <div class="step-title">2. Tap "Delete Account"</div>
-    <div class="step-desc">Scroll to the bottom of the Settings page and tap "Delete Account".</div>
-  </div>
-
-  <div class="step-box">
-    <div class="step-title">3. Confirm Deletion</div>
-    <div class="step-desc">A confirmation dialog will appear. Tap "Delete" to permanently delete your account.</div>
-  </div>
-
-  <div class="warning-box">
-    Deleting your account will permanently remove all your data. This action cannot be undone. Please make sure you no longer need any data before proceeding.
-  </div>
-
-  <h2>Data That Will Be Deleted</h2>
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Data Type</th>
-        <th>Action on Deletion</th>
-        <th>Retention Period</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Account information (email address)</td>
-        <td>Permanently deleted</td>
-        <td>Immediate</td>
-      </tr>
-      <tr>
-        <td>Task data (Timeline &amp; Someday)</td>
-        <td>Permanently deleted</td>
-        <td>Immediate</td>
-      </tr>
-      <tr>
-        <td>Subtask data</td>
-        <td>Permanently deleted</td>
-        <td>Immediate</td>
-      </tr>
-      <tr>
-        <td>App settings (theme, language)</td>
-        <td>Local data cleared from device</td>
-        <td>Immediate</td>
-      </tr>
-      <tr>
-        <td>Ad removal purchase</td>
-        <td>Retained by Apple / Google</td>
-        <td>Managed by store</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2>Request Deletion via Email</h2>
-  <p>If you are unable to log in or cannot delete your account from within the app, please send an account deletion request to the email address below. Provide us with your registered email address, and we will complete the deletion within 5 business days.</p>
-  <div class="contact-box">
-    <a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a>
-    <div class="note">Please include "Account Deletion Request" in the subject line.</div>
-  </div>
-
-  <footer>
-    <p>&copy; 2026 エレノア / Eleanor. All rights reserved.</p>
-    <p style="margin-top:8px">
-      <a href="index.html">プライバシーポリシー / Privacy Policy</a> ・
-      <a href="support.html">サポート / Support</a>
-    </p>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Eleanor<span>.</span></div>
+          <p class="footer-tagline">日常をシンプルに、豊かにするアプリを。<br>iOS・Android 向けモバイルアプリ開発・提供。</p>
+        </div>
+        <div>
+          <p class="footer-col-title">プロダクト</p>
+          <div class="footer-links"><a href="index.html#apps">SONO-HINO</a></div>
+        </div>
+        <div>
+          <p class="footer-col-title">リンク</p>
+          <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="company.html">会社情報</a>
+            <a href="support.html">サポート</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 エレノア（Eleanor）. All rights reserved.</p>
+      </div>
+    </div>
   </footer>
 
-</div>
 </body>
 </html>

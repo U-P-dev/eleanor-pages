@@ -3,175 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>事業者情報 – エレノア</title>
+  <title>会社情報 – Eleanor（エレノア）</title>
+  <meta name="description" content="エレノアはスマートフォンアプリの企画・開発・運営を行う個人事業です。代表: 豊島 悠右。東京都新宿区。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
-      font-size: 15px;
-      line-height: 1.8;
-      color: #222;
-      background: #fafafa;
-    }
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 40px 24px 80px;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-    header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
-    }
-    header .tagline {
-      font-size: 13px;
-      color: #888;
-      letter-spacing: 0.05em;
-    }
-    section {
-      margin-bottom: 40px;
-    }
-    section h2 {
-      font-size: 16px;
-      font-weight: 700;
-      border-left: 4px solid #7c5cbf;
-      padding-left: 10px;
-      margin-bottom: 16px;
-      color: #333;
-    }
-    p {
-      color: #444;
-      margin-bottom: 8px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    th, td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #e8e8e8;
-      text-align: left;
-      vertical-align: top;
-    }
-    th {
-      width: 36%;
-      color: #888;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-    td {
-      color: #222;
-    }
-    .product-card {
-      background: #fff;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
-      padding: 20px 24px;
-      margin-bottom: 16px;
-    }
-    .product-card h3 {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: #7c5cbf;
-    }
-    .product-card p {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 0;
-    }
-    a {
-      color: #7c5cbf;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #aaa;
-      margin-top: 48px;
+    :root { --purple: #7C3AED; --purple-light: #A78BFA; --purple-dark: #5B21B6; --purple-bg: #F5F3FF; --dark: #0a0616; --text: #1a1a2e; --text-muted: #6b7280; --border: #e5e7eb; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif; color: var(--text); background: #fafafa; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(10,6,22,0.85); border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .nav-logo { font-size: 20px; font-weight: 800; color: #fff; }
+    .nav-logo span { color: var(--purple-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { background: var(--purple) !important; color: #fff !important; padding: 8px 22px; border-radius: 100px; font-weight: 600 !important; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(10,6,22,0.97); padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 99; }
+    .mobile-menu.open { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-menu a { color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 500; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+    /* PAGE HEADER */
+    .page-header { background: linear-gradient(135deg, #0a0616 0%, #130d2a 100%); padding: 120px 24px 64px; text-align: center; position: relative; overflow: hidden; }
+    .page-header::before { content: ''; position: absolute; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(124,58,237,0.25), transparent 70%); top: -100px; left: 50%; transform: translateX(-50%); pointer-events: none; }
+    .page-header .label { font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple-light); margin-bottom: 12px; position: relative; }
+    .page-header h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; color: #fff; letter-spacing: -0.025em; margin-bottom: 12px; position: relative; }
+    .page-header .sub { font-size: 15px; color: rgba(255,255,255,0.5); position: relative; }
+
+    /* CONTENT */
+    .main { max-width: 1100px; margin: 0 auto; padding: 64px 24px 96px; }
+
+    /* OVERVIEW */
+    .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 64px; }
+    .card { background: #fff; border: 1.5px solid var(--border); border-radius: 20px; padding: 32px; }
+    .card-label { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--purple); margin-bottom: 20px; }
+    .card-title { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.75; }
+    .card-icon { width: 52px; height: 52px; border-radius: 14px; background: var(--purple-bg); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .card-icon svg { color: var(--purple); }
+
+    /* INFO TABLE */
+    .section-title { font-size: clamp(22px, 3vw, 30px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 32px; }
+    .info-table { width: 100%; border-collapse: collapse; }
+    .info-table tr { border-bottom: 1px solid var(--border); }
+    .info-table tr:last-child { border-bottom: none; }
+    .info-table th { text-align: left; padding: 20px 0; font-size: 12px; color: var(--text-muted); font-weight: 700; width: 28%; white-space: nowrap; letter-spacing: 0.04em; vertical-align: top; }
+    .info-table td { padding: 20px 0 20px 24px; font-size: 15px; color: var(--text); line-height: 1.6; }
+    .info-table td a { color: var(--purple); }
+    .info-table td a:hover { text-decoration: underline; }
+
+    /* PRODUCTS */
+    .products-section { margin-top: 64px; }
+    .product-card { background: #fff; border: 1.5px solid var(--border); border-radius: 20px; padding: 36px; display: grid; grid-template-columns: 72px 1fr; gap: 24px; align-items: start; transition: box-shadow 0.2s; }
+    .product-card:hover { box-shadow: 0 8px 32px rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.25); }
+    .product-icon { width: 72px; height: 72px; border-radius: 18px; background: linear-gradient(135deg, var(--purple), var(--purple-dark)); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(124,58,237,0.3); flex-shrink: 0; }
+    .product-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); background: rgba(124,58,237,0.1); padding: 3px 10px; border-radius: 100px; margin-bottom: 8px; }
+    .product-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 6px; }
+    .product-sub { font-size: 13px; color: var(--purple); font-weight: 600; margin-bottom: 12px; }
+    .product-desc { font-size: 14px; color: var(--text-muted); line-height: 1.75; }
+
+    /* MAP PLACEHOLDER */
+    .map-section { margin-top: 64px; }
+    .map-box { background: #fff; border: 1.5px solid var(--border); border-radius: 20px; overflow: hidden; }
+    .map-placeholder { background: linear-gradient(135deg, #f3f0ff, #ede9fe); height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+    .map-placeholder svg { color: var(--purple); opacity: 0.4; }
+    .map-placeholder p { font-size: 14px; color: var(--text-muted); }
+    .map-info { padding: 24px 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .map-info-item .label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .map-info-item .value { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+    /* FOOTER */
+    .footer { background: #080412; color: rgba(255,255,255,0.4); padding: 48px 40px 28px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .footer-logo { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+    .footer-logo span { color: var(--purple-light); }
+    .footer-tagline { font-size: 13px; line-height: 1.7; }
+    .footer-col-title { font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { font-size: 13px; text-align: center; }
+
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; } .nav-links { display: none; } .nav-hamburger { display: flex; }
+      .overview-grid { grid-template-columns: 1fr; }
+      .product-card { grid-template-columns: 1fr; }
+      .map-info { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .footer { padding: 40px 20px 24px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
 
-    <header>
-      <h1>エレノア</h1>
-      <p class="tagline">Eleanor – Mobile App Development</p>
-    </header>
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Eleanor<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#apps">アプリ</a></li>
+      <li><a href="company.html">会社情報</a></li>
+      <li><a href="support.html">サポート</a></li>
+      <li><a href="index.html#contact" class="nav-cta">お問い合わせ</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="document.getElementById('m').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="m">
+    <a href="index.html#apps">アプリ</a>
+    <a href="company.html">会社情報</a>
+    <a href="support.html">サポート</a>
+    <a href="index.html#contact">お問い合わせ</a>
+  </div>
 
-    <section>
-      <h2>事業概要</h2>
-      <p>
-        エレノアは、スマートフォンアプリの企画・開発・運営を行う個人事業です。
-        iOSおよびAndroidプラットフォーム向けに、日常生活をシンプルに豊かにするアプリケーションを開発・提供しています。
-      </p>
-    </section>
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <p class="label">About Us</p>
+    <h1>会社情報</h1>
+    <p class="sub">Company Information – Eleanor</p>
+  </div>
 
-    <section>
-      <h2>事業者情報</h2>
-      <table>
+  <div class="main">
+
+    <!-- OVERVIEW CARDS -->
+    <div class="overview-grid">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <p class="card-label">Mission</p>
+        <h3 class="card-title">日常をシンプルに</h3>
+        <p class="card-desc">複雑になりがちな日常のタスクや情報を、誰でも直感的に使えるアプリでシンプルに整理できる世界を目指しています。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <p class="card-label">Vision</p>
+        <h3 class="card-title">丁寧なプロダクト</h3>
+        <p class="card-desc">機能を詰め込むのではなく、本当に必要なものだけを磨き込む。ユーザーが「気持ちよく使える」プロダクトを一つひとつ丁寧に作ります。</p>
+      </div>
+    </div>
+
+    <!-- COMPANY INFO -->
+    <h2 class="section-title">事業者情報</h2>
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:8px 32px 8px;">
+      <table class="info-table">
         <tr>
           <th>屋号</th>
-          <td>エレノア（Eleanor）</td>
+          <td><strong>エレノア（Eleanor）</strong></td>
         </tr>
         <tr>
           <th>代表者</th>
           <td>豊島 悠右</td>
         </tr>
         <tr>
-          <th>所在地</th>
-          <td>〒160-0022<br>東京都新宿区新宿2丁目8番15号<br>パークフロント新宿 202号室</td>
-        </tr>
-        <tr>
-          <th>事業内容</th>
-          <td>スマートフォンアプリの企画・開発・運営</td>
-        </tr>
-        <tr>
-          <th>対応プラットフォーム</th>
-          <td>iOS / Android</td>
+          <th>事業形態</th>
+          <td>個人事業主（Sole Proprietorship）</td>
         </tr>
         <tr>
           <th>設立</th>
           <td>2026年</td>
         </tr>
         <tr>
+          <th>事業内容</th>
+          <td>スマートフォンアプリの企画・開発・運営<br>iOS / Android プラットフォーム向けアプリ提供</td>
+        </tr>
+        <tr>
+          <th>所在地</th>
+          <td>
+            〒160-0022<br>
+            東京都新宿区新宿2丁目8番15号<br>
+            パークフロント新宿 202号室
+          </td>
+        </tr>
+        <tr>
           <th>連絡先</th>
-          <td><a href="mailto:yusuke.p.development@gmail.com">yusuke.p.development@gmail.com</a></td>
+          <td><a href="mailto:contact@eleanor-dev.com">contact@eleanor-dev.com</a></td>
+        </tr>
+        <tr>
+          <th>対応時間</th>
+          <td>平日 10:00 – 18:00（JST）<br><span style="font-size:13px;color:var(--text-muted)">※返信は 2〜3 営業日以内</span></td>
+        </tr>
+        <tr>
+          <th>ウェブサイト</th>
+          <td><a href="https://eleanor-dev.com">eleanor-dev.com</a></td>
         </tr>
       </table>
-    </section>
+    </div>
 
-    <section>
-      <h2>提供アプリ</h2>
+    <!-- PRODUCTS -->
+    <div class="products-section">
+      <h2 class="section-title">提供アプリ</h2>
       <div class="product-card">
-        <h3>SONO-HINO（その日の）</h3>
-        <p>
-          「今日やること」と「いつかやること」を一画面で整理するシンプルなタスク管理アプリ。
-          iOS・Android向けに提供予定。
-        </p>
+        <div class="product-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+        </div>
+        <div>
+          <span class="product-badge">Task Management</span>
+          <h3 class="product-name">SONO-HINO（その日の）</h3>
+          <p class="product-sub">タスク管理アプリ for iOS &amp; Android</p>
+          <p class="product-desc">「今日やること」と「いつかやること」を一画面で整理するシンプルなタスク管理アプリ。未完了のタスクは翌日に自動で繰り越し、毎日をすっきりと管理できます。Supabase によるクラウド同期対応、日本語・英語の多言語対応、ダークモード対応。iOS・Android 向けに提供予定。</p>
+        </div>
       </div>
-    </section>
+    </div>
 
-    <section>
-      <h2>関連ページ</h2>
-      <p><a href="./index.html">プライバシーポリシー</a></p>
-      <p><a href="./support.html">サポート</a></p>
-    </section>
-
-    <footer>
-      <p>&copy; 2026 エレノア（Eleanor）. All rights reserved.</p>
-    </footer>
+    <!-- LOCATION -->
+    <div class="map-section">
+      <h2 class="section-title">所在地</h2>
+      <div class="map-box">
+        <div class="map-placeholder">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <p>東京都新宿区新宿2丁目8番15号</p>
+        </div>
+        <div class="map-info">
+          <div class="map-info-item">
+            <p class="label">住所</p>
+            <p class="value">〒160-0022<br>東京都新宿区新宿2丁目8番15号<br>パークフロント新宿 202号室</p>
+          </div>
+          <div class="map-info-item">
+            <p class="label">アクセス</p>
+            <p class="value">東京メトロ丸ノ内線・副都心線<br>新宿三丁目駅 徒歩3分</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Eleanor<span>.</span></div>
+          <p class="footer-tagline">日常をシンプルに、豊かにするアプリを。<br>iOS・Android 向けモバイルアプリ開発・提供。</p>
+        </div>
+        <div>
+          <p class="footer-col-title">プロダクト</p>
+          <div class="footer-links"><a href="index.html#apps">SONO-HINO</a></div>
+        </div>
+        <div>
+          <p class="footer-col-title">リンク</p>
+          <div class="footer-links">
+            <a href="index.html">ホーム</a>
+            <a href="support.html">サポート</a>
+            <a href="privacy.html">プライバシーポリシー</a>
+            <a href="account-deletion.html">アカウント削除</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 エレノア（Eleanor）. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
