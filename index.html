@@ -306,22 +306,24 @@
     /* Comparison */
     .comparison { margin-bottom: 56px; }
     .comparison-title { font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted2); margin-bottom: 20px; }
-    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .compare-col {
-      border-radius: 20px; padding: 28px 32px;
-    }
-    .compare-col.old { background: rgba(255,255,255,.02); border: 1px solid var(--border); }
-    .compare-col.new { background: linear-gradient(135deg, rgba(124,58,237,.1), rgba(59,130,246,.07)); border: 1px solid rgba(124,58,237,.2); }
-    .compare-head { font-size: 13px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-    .compare-col.old .compare-head { color: rgba(255,255,255,.35); }
-    .compare-col.new .compare-head { color: var(--purple-l); }
-    .compare-items { display: flex; flex-direction: column; gap: 12px; }
-    .compare-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; }
-    .compare-col.old .compare-item { color: rgba(255,255,255,.4); }
-    .compare-col.new .compare-item { color: rgba(255,255,255,.8); }
-    .compare-bullet { flex-shrink: 0; margin-top: 3px; width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-    .compare-col.old .compare-bullet { background: rgba(255,255,255,.06); color: rgba(255,255,255,.25); font-size: 8px; }
-    .compare-col.new .compare-bullet { background: rgba(124,58,237,.2); color: var(--purple-l); }
+    .compare-table { width: 100%; border-collapse: collapse; }
+    .compare-table thead th { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; padding: 14px 20px 12px; border-bottom: 1px solid var(--border2); text-align: center; }
+    .compare-table thead th:first-child { text-align: left; color: var(--muted2); }
+    .compare-table thead th.th-si { color: rgba(255,255,255,.4); }
+    .compare-table thead th.th-el { color: var(--purple-l); }
+    .compare-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+    .compare-table tbody tr:last-child { border-bottom: none; }
+    .compare-table tbody tr:hover { background: rgba(255,255,255,.02); }
+    .compare-table td { padding: 14px 20px; font-size: 13px; line-height: 1.55; vertical-align: middle; }
+    .compare-table td:first-child { font-weight: 700; color: rgba(255,255,255,.5); font-size: 12px; letter-spacing: .02em; }
+    .compare-table td.col-si { text-align: center; color: rgba(255,255,255,.45); }
+    .compare-table td.col-el { text-align: center; color: rgba(255,255,255,.72); font-weight: 600; }
+    .compare-table .val-good-si { color: rgba(255,255,255,.75); }
+    .compare-table .val-good-el { color: var(--purple-l); }
+    .compare-table .val-weak { color: rgba(255,255,255,.28); font-weight: 400; }
+    .compare-note { margin-top: 14px; padding: 18px 22px; background: rgba(251,191,36,.04); border: 1px solid rgba(251,191,36,.15); border-radius: 14px; display: flex; gap: 12px; align-items: flex-start; }
+    .compare-note p { font-size: 13px; color: rgba(251,191,36,.65); line-height: 1.75; }
+    .compare-note p strong { color: rgba(251,191,36,.85); font-weight: 700; }
 
     /* Process steps */
     .process-wrap { margin-bottom: 48px; }
@@ -491,7 +493,7 @@
       .s { padding: 80px 24px; }
       .product-grid { grid-template-columns: 1fr; }
       .svc-grid { grid-template-columns: 1fr; }
-      .compare-grid { grid-template-columns: 1fr; }
+      .compare-table thead th, .compare-table td { padding: 12px 14px; font-size: 12px; }
       .process-steps { grid-template-columns: 1fr 1fr; gap: 20px; }
       .process-steps::before { display: none; }
       .svc-cta { flex-direction: column; padding: 36px 28px; }
@@ -704,7 +706,7 @@
   <div class="s-inner">
     <span class="s-eyebrow" data-a>Development Services</span>
     <h2 class="s-title" data-a="1">プロダクト開発で鍛えた<br>実行力を、あなたへ。</h2>
-    <p class="s-desc" data-a="2">自社で複数プロダクトを同時に設計・開発・リリースしているプロセスそのものが、スピードと品質の証明です。同じアプローチで、あなたのビジネスの開発課題を解決します。</p>
+    <p class="s-desc" data-a="2">堅牢さよりスピードと価格を優先したい小規模企業・スタートアップ向けの開発支援です。AI を全工程に組み込み、従来の何分の一かのコスト・期間で動くプロダクトを届けます。</p>
 
     <!-- Why banner -->
     <div class="why-banner" data-a="2">
@@ -712,7 +714,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
       <div class="why-text">
-        <p><strong>なぜプロダクト会社が受託をやるのか。</strong> 自社サービスを育てながら、リアルな技術スタックと開発ノウハウを常にアップデートしているからこそ、クライアントに最前線の開発を届けられます。「提案だけして実装は丸投げ」のような SI とは根本的に異なるアプローチです。</p>
+        <p><strong>エレノアは SI の代替ではありません。</strong> 大規模開発・高度なセキュリティ要件・充実したドキュメントが必要な案件には、従来の SI が適しています。エレノアの強みは<strong>圧倒的な低価格と開発スピード</strong>。AI を全工程に組み込むことで、MVP・社内ツール・小規模サービスを従来の何分の一かのコスト・期間で届けます。大企業の基幹システムではなく、「まず動くものを作りたい」小規模企業・スタートアップのための選択肢です。</p>
       </div>
     </div>
 
@@ -778,34 +780,63 @@
 
     <!-- Comparison -->
     <div class="comparison" data-a="3">
-      <p class="comparison-title">従来の SI / フリーランスとの違い</p>
-      <div class="compare-grid">
-        <div class="compare-col old">
-          <p class="compare-head">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            従来の開発
-          </p>
-          <div class="compare-items">
-            <div class="compare-item"><div class="compare-bullet">✕</div><span>要件定義・設計で数ヶ月かかる</span></div>
-            <div class="compare-item"><div class="compare-bullet">✕</div><span>固定スコープ・追加費用が発生しやすい</span></div>
-            <div class="compare-item"><div class="compare-bullet">✕</div><span>AI ツールが開発プロセスに組み込まれていない</span></div>
-            <div class="compare-item"><div class="compare-bullet">✕</div><span>納品後のフィードバック反映が遅い</span></div>
-            <div class="compare-item"><div class="compare-bullet">✕</div><span>スモールビジネスには費用・規模が合わない</span></div>
-          </div>
-        </div>
-        <div class="compare-col new">
-          <p class="compare-head">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            エレノアの開発
-          </p>
-          <div class="compare-items">
-            <div class="compare-item"><div class="compare-bullet">✓</div><span>ヒアリング〜MVP まで最短 2〜4 週間</span></div>
-            <div class="compare-item"><div class="compare-bullet">✓</div><span>スプリント単位で柔軟にスコープを調整</span></div>
-            <div class="compare-item"><div class="compare-bullet">✓</div><span>全工程に AI を組み込み、開発速度を最大化</span></div>
-            <div class="compare-item"><div class="compare-bullet">✓</div><span>動くものを早期公開し、実データでアジャイル改善</span></div>
-            <div class="compare-item"><div class="compare-bullet">✓</div><span>スモールスタート対応・継続的な改善をサポート</span></div>
-          </div>
-        </div>
+      <p class="comparison-title">大手 SI とエレノアの正直な比較</p>
+      <div style="background:rgba(255,255,255,.015);border:1px solid var(--border);border-radius:20px;overflow:hidden;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;">観点</th>
+              <th class="th-si">大手 SI</th>
+              <th class="th-el">エレノア</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>価格</td>
+              <td class="col-si val-weak">数百万〜数千万円</td>
+              <td class="col-el val-good-el">数十万円〜（圧倒的低価格）</td>
+            </tr>
+            <tr>
+              <td>開発期間</td>
+              <td class="col-si val-weak">数ヶ月〜1年以上</td>
+              <td class="col-el val-good-el">MVP まで 2〜8 週間</td>
+            </tr>
+            <tr>
+              <td>プロダクト品質</td>
+              <td class="col-si val-good-si">高い（設計・レビュー工程が充実）</td>
+              <td class="col-el val-weak">実用レベル（99点だが 100点は目指さない）</td>
+            </tr>
+            <tr>
+              <td>セキュリティ</td>
+              <td class="col-si val-good-si">極めて堅牢・監査・ペネトレーション対応</td>
+              <td class="col-el val-weak">標準的（金融・医療レベルは非対応）</td>
+            </tr>
+            <tr>
+              <td>保守性・ドキュメント</td>
+              <td class="col-si val-good-si">高い（仕様書・設計書・引継ぎ資料が充実）</td>
+              <td class="col-el val-weak">最小限（ドキュメントにほぼ工数を割かない）</td>
+            </tr>
+            <tr>
+              <td>大規模開発</td>
+              <td class="col-si val-good-si">◎（複数チームで対応可能）</td>
+              <td class="col-el val-weak">× （個人・小規模チームに特化）</td>
+            </tr>
+            <tr>
+              <td>開発スピード・柔軟性</td>
+              <td class="col-si val-weak">遅い（工程・承認フローが固定）</td>
+              <td class="col-el val-good-el">◎（AI 活用・週次イテレーション）</td>
+            </tr>
+            <tr>
+              <td>向いている用途</td>
+              <td class="col-si" style="color:rgba(255,255,255,.5);">金融・医療・官公庁・大企業の基幹システム</td>
+              <td class="col-el" style="color:rgba(255,255,255,.6);">MVP・社内ツール・スモールビジネス向けサービス</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="compare-note">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(251,191,36,.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p>エレノアは SI の上位互換ではありません。<strong>高いセキュリティ要件・大規模チーム開発・長期保証が必要な案件には従来の SI が適切です。</strong>エレノアが提供するのは「堅牢さよりスピードと価格」を優先する小規模企業・スタートアップ向けの選択肢です。</p>
       </div>
     </div>
 
