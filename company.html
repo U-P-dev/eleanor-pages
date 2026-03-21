@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>会社情報 – Eleanor（エレノア）</title>
-  <meta name="description" content="エレノアはスマートフォンアプリの企画・開発・運営を行う個人事業です。代表: 豊島 悠右。東京都新宿区。">
+  <meta name="description" content="エレノアはスマートフォンアプリ・SaaS の開発・提供と、小規模企業向けAI駆動アジャイル開発を行う個人事業です。代表: 豊島 悠右。東京都新宿区。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -105,7 +105,8 @@
   <nav class="nav">
     <a href="index.html" class="nav-logo">Eleanor<span>.</span></a>
     <ul class="nav-links">
-      <li><a href="index.html#apps">アプリ</a></li>
+      <li><a href="index.html#app">プロダクト</a></li>
+      <li><a href="index.html#services">開発支援</a></li>
       <li><a href="company.html">会社情報</a></li>
       <li><a href="support.html">サポート</a></li>
       <li><a href="index.html#contact" class="nav-cta">お問い合わせ</a></li>
@@ -115,7 +116,8 @@
     </div>
   </nav>
   <div class="mobile-menu" id="m">
-    <a href="index.html#apps">アプリ</a>
+    <a href="index.html#app">プロダクト</a>
+    <a href="index.html#services">開発支援</a>
     <a href="company.html">会社情報</a>
     <a href="support.html">サポート</a>
     <a href="index.html#contact">お問い合わせ</a>
@@ -148,6 +150,14 @@
         <h3 class="card-title">丁寧なプロダクト</h3>
         <p class="card-desc">機能を詰め込むのではなく、本当に必要なものだけを磨き込む。ユーザーが「気持ちよく使える」プロダクトを一つひとつ丁寧に作ります。</p>
       </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <p class="card-label">Service</p>
+        <h3 class="card-title">AI 駆動アジャイル開発</h3>
+        <p class="card-desc">自社プロダクト開発で磨いた技術スタックと AI 活用ノウハウを活かし、小規模企業・スタートアップの Web / モバイル開発を高速に推進します。</p>
+      </div>
     </div>
 
     <!-- COMPANY INFO -->
@@ -172,7 +182,7 @@
         </tr>
         <tr>
           <th>事業内容</th>
-          <td>スマートフォンアプリの企画・開発・運営<br>iOS / Android プラットフォーム向けアプリ提供</td>
+          <td>スマートフォンアプリ・SaaS の企画・開発・運営<br>iOS / Android / Web プラットフォーム向けプロダクト提供<br>小規模企業向け AI 駆動アジャイル開発（受託）</td>
         </tr>
         <tr>
           <th>所在地</th>
@@ -199,7 +209,7 @@
 
     <!-- PRODUCTS -->
     <div class="products-section">
-      <h2 class="section-title">提供アプリ</h2>
+      <h2 class="section-title">開発プロダクト</h2>
       <div class="product-card">
         <div class="product-icon">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -207,11 +217,84 @@
           </svg>
         </div>
         <div>
-          <span class="product-badge">Task Management</span>
+          <span class="product-badge">Task Management · Coming Soon</span>
           <h3 class="product-name">SONO-HINO（その日の）</h3>
           <p class="product-sub">タスク管理アプリ for iOS &amp; Android</p>
-          <p class="product-desc">「今日やること」と「いつかやること」を一画面で整理するシンプルなタスク管理アプリ。未完了のタスクは翌日に自動で繰り越し、毎日をすっきりと管理できます。Supabase によるクラウド同期対応、日本語・英語の多言語対応、ダークモード対応。iOS・Android 向けに提供予定。</p>
+          <p class="product-desc">「今日やること」と「いつかやること」を一画面で整理するシンプルなタスク管理アプリ。未完了のタスクは翌日に自動で繰り越し、毎日をすっきりと管理できます。Supabase によるクラウド同期対応、日本語・英語の多言語対応、ダークモード対応。Flutter 製、iOS・Android 向けに提供予定。</p>
         </div>
+      </div>
+
+      <div class="product-card" style="margin-top:20px;">
+        <div class="product-icon" style="background: linear-gradient(135deg, #7C3AED, #3b82f6);">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="product-badge">AI Learning · 開発中</span>
+          <h3 class="product-name">Memoria</h3>
+          <p class="product-sub">AI 学習アプリ for iOS / Android / Web</p>
+          <p class="product-desc">問題・数式の画像を撮影すると AI（GPT-4o Vision）が自動で解説を生成。FSRS アルゴリズムによる間隔反復スケジューリングで、記憶の定着を最大化する学習アプリ。Expo（React Native）+ Next.js のマルチプラットフォーム構成で、iOS・Android・Web に対応。</p>
+        </div>
+      </div>
+
+      <div class="product-card" style="margin-top:20px;">
+        <div class="product-icon" style="background: linear-gradient(135deg, #0ea5e9, #7C3AED);">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+          </svg>
+        </div>
+        <div>
+          <span class="product-badge">AI Design SaaS · 開発中</span>
+          <h3 class="product-name">ScreenCraft</h3>
+          <p class="product-sub">AI スクリーンショットデザイン SaaS</p>
+          <p class="product-desc">自然言語でアプリストア用スクリーンショットを自動生成する Web サービス。Claude AI が指示をデザイン操作に変換し、Fabric.js キャンバス上でリアルタイムに反映。5 レイアウト・20 スタイル・7 デバイステンプレートに対応。Next.js + Cloudflare Workers 構成。</p>
+        </div>
+      </div>
+
+      <div class="product-card" style="margin-top:20px;">
+        <div class="product-icon" style="background: linear-gradient(135deg, #059669, #3b82f6);">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13l2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <span class="product-badge">Business SaaS · 開発中</span>
+          <h3 class="product-name">インボイス番号確認ツール</h3>
+          <p class="product-sub">適格請求書番号 検証 SaaS</p>
+          <p class="product-desc">国税庁の公開 API と連携し、インボイス（適格請求書）登録番号（T + 13桁）をリアルタイム検証。CSV 一括処理・API 提供など複数ティアを持つ、会計担当者・フリーランス向けの業務効率化 SaaS。Next.js + Supabase + Stripe 構成。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="products-section" style="margin-top:64px;">
+      <h2 class="section-title">開発支援サービス</h2>
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:32px;">
+        <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:24px;">自社プロダクト開発で蓄積した技術スタックと AI 活用ノウハウを活かし、小規模企業・スタートアップ向けに高速アジャイル開発を提供します。大手 SI のような長い要件定義・工数見積もりは行いません。まず動くものを作り、素早くフィードバックを反映します。</p>
+        <table class="info-table">
+          <tr>
+            <th>対象</th>
+            <td>小規模企業・スタートアップ・個人事業主</td>
+          </tr>
+          <tr>
+            <th>提供内容</th>
+            <td>
+              Web アプリ・SaaS 開発（Next.js / Supabase / Cloudflare）<br>
+              モバイルアプリ開発（Flutter / iOS・Android）<br>
+              AI 機能の組み込み（Claude / GPT-4o）<br>
+              業務自動化・スクレイピング（Python / Playwright）
+            </td>
+          </tr>
+          <tr>
+            <th>開発スタイル</th>
+            <td>AI 駆動・高速アジャイル（1〜2 週スプリント）</td>
+          </tr>
+          <tr>
+            <th>お問い合わせ</th>
+            <td><a href="mailto:contact@eleanor-dev.com">contact@eleanor-dev.com</a></td>
+          </tr>
+        </table>
       </div>
     </div>
 
@@ -248,7 +331,19 @@
         </div>
         <div>
           <p class="footer-col-title">プロダクト</p>
-          <div class="footer-links"><a href="index.html#apps">SONO-HINO</a></div>
+          <div class="footer-links">
+            <a href="index.html#app">SONO-HINO</a>
+            <a href="index.html#app">Memoria</a>
+            <a href="index.html#app">ScreenCraft</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">開発支援</p>
+          <div class="footer-links">
+            <a href="index.html#services">Web / SaaS 開発</a>
+            <a href="index.html#services">モバイルアプリ開発</a>
+            <a href="index.html#services">AI 機能組み込み</a>
+          </div>
         </div>
         <div>
           <p class="footer-col-title">リンク</p>
