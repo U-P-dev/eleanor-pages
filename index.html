@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="google-adsense-account" content="ca-pub-6133561595210589">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eleanor – プロダクトスタジオ & AI アジャイル開発</title>
-  <meta name="description" content="エレノアは、モバイルアプリ・SaaS を自社開発しながら、小規模企業向けに AI 駆動の高速アジャイル開発を提供する個人事業です。">
+  <title>Eleanor – チームなし。会議なし。言い訳なし。</title>
+  <meta name="description" content="エレノアは、ひとりの開発者が責任を持ってすべてを作る個人事業です。AI 駆動の高速開発でアイデアを素早くプロダクトへ。小規模企業向け受託開発も受付中。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
   <style>
@@ -267,7 +267,7 @@
     .store-btn-sub { font-size: 9px; color: rgba(255,255,255,.4); letter-spacing: .06em; margin-bottom: 2px; }
     .store-btn-name { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.7); }
 
-    .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .prod-card {
       background: rgba(255,255,255,.03); border: 1px solid var(--border);
       border-radius: 14px; padding: 36px 30px;
@@ -572,6 +572,140 @@
       .footer-grid { grid-template-columns: 1fr; }
       .process-steps { grid-template-columns: 1fr; }
     }
+
+    /* ── HERO GRID OVERLAY ── */
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, black 0%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, black 0%, transparent 100%);
+    }
+
+    /* ── HERO H1 LINE ANIMATION ── */
+    .hero h1 { overflow: visible; }
+    .h1-line {
+      display: block;
+      opacity: 0; transform: translateY(22px);
+      animation: lineReveal .65s cubic-bezier(.16,1,.3,1) forwards;
+    }
+    .h1-line:nth-child(1) { animation-delay: .1s; }
+    .h1-line:nth-child(2) { animation-delay: .32s; }
+    .h1-line:nth-child(3) { animation-delay: .54s; }
+    @keyframes lineReveal { to { opacity: 1; transform: none; } }
+
+    /* ── TERMINAL ── */
+    .terminal {
+      background: rgba(3,3,12,.98);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px; overflow: hidden;
+      max-width: 440px; width: 100%;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04),
+        0 40px 80px rgba(0,0,0,.75),
+        0 0 100px rgba(37,99,235,.12),
+        0 0 40px rgba(124,58,237,.08);
+      font-family: 'SF Mono','Fira Code','Consolas','Courier New',monospace;
+      animation: float 6s ease-in-out infinite;
+      position: relative;
+    }
+    .terminal::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: var(--grad); opacity: .6;
+    }
+    .term-bar {
+      background: rgba(255,255,255,.03);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .term-dots { display: flex; gap: 6px; }
+    .term-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .td-r { background: #FF5F57; }
+    .td-y { background: #FFBD2E; }
+    .td-g { background: #28CA41; }
+    .term-title {
+      font-size: 11px; color: rgba(255,255,255,.25);
+      letter-spacing: .04em; margin: 0 auto; font-family: inherit;
+    }
+    .term-body { padding: 22px; display: flex; flex-direction: column; gap: 5px; }
+    .term-line { font-size: 13px; color: rgba(255,255,255,.42); line-height: 1.6; font-family: inherit; }
+    .term-p { color: var(--blue-l); margin-right: 8px; }
+    .term-cmd { color: rgba(255,255,255,.82); }
+    .term-ok { color: #4ADE80; }
+    .term-bright { color: #fff; font-weight: 700; }
+    .term-dim { color: rgba(255,255,255,.22); font-style: italic; }
+    .term-cursor {
+      display: inline-block; width: 7px; height: 14px;
+      background: var(--blue-l); border-radius: 1px;
+      animation: cursorBlink 1.1s step-end infinite;
+      vertical-align: text-bottom; margin-left: 2px;
+    }
+    @keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+    .term-footer {
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 10px 22px;
+      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    }
+    .term-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 4px; font-family: inherit;
+      color: rgba(255,255,255,.38);
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+    }
+    .term-badge-live {
+      color: #4ADE80;
+      background: rgba(74,222,128,.07); border-color: rgba(74,222,128,.18);
+    }
+
+    /* ── STATS BAR ── */
+    .stats-s {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 80px;
+      display: flex; align-items: stretch;
+    }
+    .stat-block {
+      flex: 1; padding: 38px 20px; text-align: center;
+      transition: background .2s;
+      position: relative;
+    }
+    .stat-block::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--grad); opacity: 0; transition: opacity .3s;
+    }
+    .stat-block:hover { background: rgba(37,99,235,.035); }
+    .stat-block:hover::after { opacity: 1; }
+    .stat-n {
+      font-size: 42px; font-weight: 900; letter-spacing: -.05em; line-height: 1;
+      background: var(--grad-text);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 8px;
+    }
+    .stat-l { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+    .stat-sep { width: 1px; background: var(--border); margin: 16px 0; flex-shrink: 0; }
+
+    /* ── ENHANCED CARD GLOW ── */
+    .prod-card:hover { box-shadow: 0 0 40px rgba(37,99,235,.08), 0 20px 40px rgba(0,0,0,.4); }
+    .feat-card:hover { box-shadow: 0 0 40px rgba(124,58,237,.07), 0 20px 40px rgba(0,0,0,.4); }
+
+    @media (max-width: 900px) {
+      .stats-inner { padding: 0 24px; flex-wrap: wrap; }
+      .stat-block { flex: 1 1 45%; padding: 24px 12px; }
+      .stat-sep { display: none; }
+      .terminal { max-width: 100%; }
+      .term-body { padding: 16px; }
+      .term-line { font-size: 12px; }
+    }
+    @media (max-width: 480px) {
+      .stat-block { flex: 1 1 100%; }
+      .stat-n { font-size: 36px; }
+    }
   </style>
 </head>
 <body>
@@ -606,58 +740,92 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
   <div class="hero-left">
-    <div class="hero-pill"><div class="hero-pill-dot"></div> Product Studio &amp; AI-Driven Dev</div>
-    <h1>作りながら、<br><em>証明する。</em></h1>
-    <p class="hero-sub">自社プロダクトを複数並行で開発しながら、同じ技術力・スピード・AI 活用ノウハウを、小規模企業の開発案件に提供します。</p>
+    <div class="hero-pill"><div class="hero-pill-dot"></div> Solo Dev · AI-Powered · No Excuses</div>
+    <h1>
+      <span class="h1-line">チームなし。</span>
+      <span class="h1-line">会議なし。</span>
+      <span class="h1-line"><em>言い訳なし。</em></span>
+    </h1>
+    <p class="hero-sub">ひとりの開発者が、責任を持ってすべてを作る。設計・実装・リリース・運用まで、担当者は全員私です。AI 駆動の高速開発で、あなたのアイデアを動くプロダクトへ。</p>
     <div class="hero-btns">
-      <a href="#products" class="btn-primary">
-        プロダクトを見る
+      <a href="#services" class="btn-primary">
+        開発を依頼する
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a href="#services" class="btn-ghost">開発支援について</a>
+      <a href="#products" class="btn-ghost">プロダクトを見る</a>
     </div>
     <div class="hero-floats">
-      <div class="hero-float"><div class="float-dot dot-b"></div>4 プロダクト並行開発中</div>
-      <div class="hero-float"><div class="float-dot dot-p"></div>Flutter · Next.js · Cloudflare</div>
-      <div class="hero-float"><div class="float-dot dot-r"></div>Claude AI · GPT-4o 組み込み</div>
+      <div class="hero-float"><div class="float-dot dot-b"></div>MVP まで最短 2 週間</div>
+      <div class="hero-float"><div class="float-dot dot-p"></div>担当者は全員、私</div>
+      <div class="hero-float"><div class="float-dot dot-r"></div>AI 駆動・全工程一貫</div>
     </div>
   </div>
   <div class="hero-right">
-    <div class="phone-scene">
-      <div class="phone-glow"></div>
-      <div class="phone">
-        <div class="phone-island"></div>
-        <div class="phone-screen">
-          <div class="ui-bar">
-            <span class="ui-bar-label">Today</span>
-            <span class="ui-bar-date">2026.03.21</span>
-          </div>
-          <div class="ui-title">SONO-HINO</div>
-          <div class="ui-sub">Today · 4 tasks</div>
-          <div class="ui-task-list">
-            <div class="ui-task"><div class="ui-check done"></div><div class="ui-line done w70"></div></div>
-            <div class="ui-task"><div class="ui-check"></div><div class="ui-line"></div></div>
-            <div class="ui-task"><div class="ui-check done"></div><div class="ui-line done"></div></div>
-            <div class="ui-task"><div class="ui-check"></div><div class="ui-line w50"></div></div>
-          </div>
-          <div class="ui-section-label">Someday</div>
-          <div class="ui-task-list">
-            <div class="ui-task"><div class="ui-check"></div><div class="ui-line w70"></div></div>
-            <div class="ui-task"><div class="ui-check"></div><div class="ui-line w50"></div></div>
-          </div>
-          <div class="ui-bottom">
-            <div class="ui-tab active"></div>
-            <div class="ui-tab"></div>
-            <div class="ui-tab"></div>
-          </div>
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="term-dots">
+          <span class="term-dot td-r"></span>
+          <span class="term-dot td-y"></span>
+          <span class="term-dot td-g"></span>
         </div>
+        <span class="term-title">eleanor@studio — deploy</span>
+      </div>
+      <div class="term-body">
+        <p class="term-line"><span class="term-p">$</span><span class="term-cmd">git push origin main</span></p>
+        <p class="term-line term-dim">Connecting to remote...</p>
+        <p class="term-line term-dim">Triggering CI pipeline...</p>
+        <p class="term-line" style="margin-top:4px;"></p>
+        <p class="term-line term-ok">✓ TypeScript — 0 errors</p>
+        <p class="term-line term-ok">✓ Tests — 52 / 52 passing</p>
+        <p class="term-line term-ok">✓ Bundle optimized</p>
+        <p class="term-line term-ok">✓ Edge deployed — 99 regions</p>
+        <p class="term-line" style="margin-top:4px;"></p>
+        <p class="term-line term-bright">✓ Live in 4.2s &nbsp;<span style="font-size:11px;color:rgba(255,255,255,.35);">eleanor-dev.com</span></p>
+        <p class="term-line" style="margin-top:12px;"><span class="term-p">$</span><span class="term-cursor"></span></p>
+      </div>
+      <div class="term-footer">
+        <span class="term-badge term-badge-live">● Live</span>
+        <span class="term-badge">1 developer</span>
+        <span class="term-badge">0 meetings</span>
+        <span class="term-badge">no excuses</span>
       </div>
     </div>
   </div>
   <div class="scroll-hint">
     <span>Scroll</span>
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section class="stats-s">
+  <div class="stats-inner">
+    <div class="stat-block" data-a>
+      <div class="stat-n">1</div>
+      <div class="stat-l">開発者</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-block" data-a="1">
+      <div class="stat-n">4+</div>
+      <div class="stat-l">開発中プロダクト</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-block" data-a="2">
+      <div class="stat-n">0</div>
+      <div class="stat-l">社内会議</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-block" data-a="3">
+      <div class="stat-n">0</div>
+      <div class="stat-l">言い訳</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-block" data-a="4">
+      <div class="stat-n">∞</div>
+      <div class="stat-l">次のアイデア</div>
+    </div>
   </div>
 </section>
 
@@ -668,42 +836,26 @@
   <div class="s-inner">
     <span class="s-eyebrow" data-a>Products</span>
     <h2 class="s-title" data-a="1">開発プロダクト</h2>
-    <p class="s-desc" data-a="2">日常の課題とビジネスの非効率を解消するアプリ・SaaS を、AI を活用しながら並行開発しています。</p>
-
-    <div class="flagship" data-a="2">
-      <div class="flagship-icon">
-        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-        </svg>
-      </div>
-      <div>
-        <div class="flagship-status"><div class="status-dot"></div> リリース準備中</div>
-        <h3 class="flagship-name">SONO-HINO</h3>
-        <p class="flagship-sub">その日の — タスク管理アプリ for iOS &amp; Android</p>
-        <p class="flagship-desc">「今日やること」と「いつかやること」を一画面で整理するシンプルなタスク管理アプリ。未完了タスクは翌日へ自動繰り越し。Supabase によるリアルタイムクラウド同期、日英多言語対応、ダークモード対応。Flutter 製でネイティブ品質の操作感を実現。</p>
-        <div class="tag-row">
-          <span class="tag">Flutter / Dart</span>
-          <span class="tag">Supabase</span>
-          <span class="tag">AdMob</span>
-          <span class="tag">IAP</span>
-          <span class="tag">iOS · Android</span>
-          <span class="tag">日英対応</span>
-        </div>
-        <div class="store-row">
-          <div class="store-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11"/></svg>
-            <div><div class="store-btn-sub">Coming Soon</div><div class="store-btn-name">App Store</div></div>
-          </div>
-          <div class="store-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)"><path d="M3.18 23.76c.33.18.7.26 1.09.21l12.48-7.2-2.51-2.5-11.06 9.49zm15.6-14.49L16.15 7.6 3.17.24C2.8.01 2.41-.05 2.05.09L13.27 11.3l5.51-2.03zm2.04 1.2l-2.67-1.54-2.8 2.8 2.8 2.8 2.69-1.55c.77-.45.77-1.07.77-1.07 0-.02-.79-.44-.79-.44zm-17.46 9.03l11.06-9.5-2.51-2.51L3.18.24c-.37.06-.69.24-.93.5-.24.26-.38.6-.38.97v21.15c0 .37.14.7.38.97.2.22.46.38.74.47l.37-1.23z"/></svg>
-            <div><div class="store-btn-sub">Coming Soon</div><div class="store-btn-name">Google Play</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <p class="s-desc" data-a="2">好奇心の向く先でプロダクトを作り続ける。ジャンルにこだわらず、AI 駆動の高速開発でアイデアを次々とサービスに変えていきます。</p>
 
     <div class="product-grid">
-      <div class="prod-card" style="--card-border:rgba(124,58,237,.35);--card-grad:linear-gradient(135deg,rgba(124,58,237,.05),transparent);" data-a="1">
+
+      <div class="prod-card" style="--card-border:rgba(37,99,235,.35);--card-grad:linear-gradient(135deg,rgba(37,99,235,.05),transparent);" data-a="1">
+        <div class="prod-icon" style="background:linear-gradient(135deg,#2563EB,#7C3AED);">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        </div>
+        <span class="prod-label" style="color:var(--blue-l);background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.2);">リリース準備中</span>
+        <h3 class="prod-name">SONO-HINO</h3>
+        <p class="prod-desc">「今日やること」と「いつかやること」を一画面で整理するタスク管理アプリ。未完了タスクは翌日へ自動繰り越し。Supabase クラウド同期・日英対応・AdMob / IAP 収益化対応。Flutter 製でネイティブ品質。</p>
+        <div class="prod-tags">
+          <span class="prod-tag">Flutter / Dart</span>
+          <span class="prod-tag">Supabase</span>
+          <span class="prod-tag">AdMob · IAP</span>
+          <span class="prod-tag">iOS · Android</span>
+        </div>
+      </div>
+
+      <div class="prod-card" style="--card-border:rgba(124,58,237,.35);--card-grad:linear-gradient(135deg,rgba(124,58,237,.05),transparent);" data-a="2">
         <div class="prod-icon" style="background:linear-gradient(135deg,#7C3AED,#3b82f6);">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         </div>
@@ -712,13 +864,13 @@
         <p class="prod-desc">問題・数式の画像を撮影すると AI が解説を自動生成。FSRS 間隔反復アルゴリズムで記憶の定着を最大化する学習アプリ。iOS / Android / Web に対応。</p>
         <div class="prod-tags">
           <span class="prod-tag">Expo / React Native</span>
-          <span class="prod-tag">Next.js 14</span>
+          <span class="prod-tag">Next.js</span>
           <span class="prod-tag">GPT-4o Vision</span>
           <span class="prod-tag">Stripe</span>
         </div>
       </div>
 
-      <div class="prod-card" style="--card-border:rgba(37,99,235,.35);--card-grad:linear-gradient(135deg,rgba(37,99,235,.05),transparent);" data-a="2">
+      <div class="prod-card" style="--card-border:rgba(37,99,235,.35);--card-grad:linear-gradient(135deg,rgba(37,99,235,.05),transparent);" data-a="3">
         <div class="prod-icon" style="background:linear-gradient(135deg,#2563EB,#7C3AED);">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         </div>
@@ -733,7 +885,7 @@
         </div>
       </div>
 
-      <div class="prod-card" style="--card-border:rgba(225,29,72,.3);--card-grad:linear-gradient(135deg,rgba(225,29,72,.04),transparent);" data-a="3">
+      <div class="prod-card" style="--card-border:rgba(225,29,72,.3);--card-grad:linear-gradient(135deg,rgba(225,29,72,.04),transparent);" data-a="4">
         <div class="prod-icon" style="background:linear-gradient(135deg,#E11D48,#7C3AED);">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13l2 2 4-4"/></svg>
         </div>
@@ -747,6 +899,7 @@
           <span class="prod-tag">Stripe</span>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -765,7 +918,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
       <div class="why-text">
-        <p><strong>エレノアは SI の代替ではありません。</strong> 大規模開発・極めて堅牢なセキュリティ・充実したドキュメントが必要な案件には従来の SI が適しています。エレノアの強みは<strong>圧倒的な低価格と開発スピード</strong>。AI を全工程に組み込むことで、MVP・社内ツール・小規模サービスを従来の何分の一かのコスト・期間で届けます。</p>
+        <p><strong>エレノアは SI の代替ではありません。</strong> 大規模開発・極めて堅牢なセキュリティ・充実したドキュメントが必要な案件には従来の SI が適しています。エレノアが提供するのは<strong>圧倒的なスピード・低価格・そして個人の責任</strong>。担当者が変わらないから、コンテキストが途切れない。ひとりだから、意思決定に承認フローがない。AI を全工程に組み込むことで、MVP・社内ツール・小規模サービスを従来の何分の一かのコスト・期間で届けます。</p>
       </div>
     </div>
 
@@ -878,23 +1031,23 @@
 <section class="s feat-s">
   <div class="s-inner">
     <span class="s-eyebrow" data-a>Why Eleanor</span>
-    <h2 class="s-title" data-a="1">こだわりのポイント</h2>
-    <p class="s-desc" data-a="2">プロダクト開発でも受託開発でも、ユーザー体験・開発品質・スピードを妥協しません。</p>
+    <h2 class="s-title" data-a="1">担当者は、<em>全員私です。</em></h2>
+    <p class="s-desc" data-a="2">設計・実装・テスト・リリース・運用。すべての工程に同じ一人が責任を持つ。それがエレノアの強みです。</p>
     <div class="feat-grid">
       <div class="feat-card" data-a="1">
         <p class="feat-num">01</p>
-        <h3 class="feat-title">シンプルな設計思想</h3>
-        <p class="feat-desc">機能を詰め込むのではなく、本当に必要なものだけを磨き込む。余計なものを排除したシンプルな UI が、長期的なユーザー満足度と保守性を高めます。</p>
+        <h3 class="feat-title">責任の所在が明確</h3>
+        <p class="feat-desc">大企業では「担当が違う」で話が止まる。エレノアでは設計・実装・品質・納期、すべての責任が私一人にある。だから判断が速く、言い訳が生まれません。</p>
       </div>
       <div class="feat-card" data-a="2">
         <p class="feat-num">02</p>
         <h3 class="feat-title">AI 駆動の高速開発</h3>
-        <p class="feat-desc">Claude・GPT-4o などの LLM を開発プロセスに深く組み込み、設計・実装・テストを高速化。同じ品質を、従来の何分の一かのスピードで届けます。</p>
+        <p class="feat-desc">Claude・GPT-4o などの LLM を全工程に組み込み、設計・実装・テストを高速化。ひとりでも大きなチームに匹敵するアウトプットを、短期間・低コストで届けます。</p>
       </div>
       <div class="feat-card" data-a="3">
         <p class="feat-num">03</p>
-        <h3 class="feat-title">クラウドネイティブ設計</h3>
-        <p class="feat-desc">Supabase・Cloudflare・Vercel を組み合わせたサーバーレスアーキテクチャで、初期コストを抑えながらスケーラブルな構成を標準で提供します。</p>
+        <h3 class="feat-title">コンテキストが途切れない</h3>
+        <p class="feat-desc">担当者の交代・引き継ぎなし。最初の打ち合わせから最終リリースまで、同じ人間がプロダクトの文脈をすべて把握し続けます。仕様漏れ・認識ズレを最小化。</p>
       </div>
     </div>
   </div>
@@ -913,7 +1066,7 @@
         <div style="flex:1;min-width:0;">
           <p class="dev-eyebrow">Founder &amp; Developer</p>
           <h3 class="dev-name">豊島 悠右</h3>
-          <p class="dev-bio">モバイルアプリ・Web SaaS を複数並行で設計・開発しながら、AI 駆動の高速開発手法を日々実践しています。プロダクト開発で培った技術スタック・AI 活用ノウハウをそのまま受託開発でも提供します。</p>
+          <p class="dev-bio">好奇心の向く先でジャンルを問わずプロダクトを設計・開発しています。AI 駆動の高速開発が得意で、モバイルアプリから Web サービス・自動化ツールまで、アイデアを素早くリリースすることを日々実践しています。グローバル展開を視野に次のプロダクトを量産中。</p>
           <div class="dev-stack">
             <span class="dev-tag">Flutter / Dart</span>
             <span class="dev-tag">Next.js</span>
@@ -946,12 +1099,12 @@
       <div>
         <span class="s-eyebrow" data-a>About</span>
         <h2 class="s-title" data-a="1">事業者情報</h2>
-        <p class="s-desc" data-a="2" style="margin-bottom:36px;">スマートフォンアプリ・SaaS の企画・開発・運営と、小規模企業向け AI 駆動アジャイル開発を行う個人事業。</p>
+        <p class="s-desc" data-a="2" style="margin-bottom:36px;">好奇心の向く先でプロダクトを作り続ける個人事業。ジャンルを問わず AI 駆動の高速開発でアイデアをリリースし、グローバル展開を視野に成長させていきます。</p>
         <table class="about-table" data-a="3">
           <tr><th>屋号</th><td>エレノア（Eleanor）</td></tr>
           <tr><th>代表者</th><td>豊島 悠右</td></tr>
           <tr><th>設立</th><td>2026年</td></tr>
-          <tr><th>事業内容</th><td>スマートフォンアプリ・SaaS の企画・開発・運営<br>小規模企業向け AI 駆動アジャイル開発（受託）</td></tr>
+          <tr><th>事業内容</th><td>モバイルアプリ・Web サービスの企画・開発・運営（ジャンル問わず）<br>小規模企業向け AI 駆動アジャイル開発（受託）</td></tr>
           <tr><th>所在地</th><td>〒160-0022 東京都新宿区<br>新宿2丁目8番15号 パークフロント新宿 202号室</td></tr>
           <tr><th>連絡先</th><td><a href="mailto:contact@eleanor-dev.com">contact@eleanor-dev.com</a></td></tr>
         </table>
@@ -1041,7 +1194,7 @@
     <div class="footer-grid">
       <div>
         <div class="f-logo">Eleanor<span>.</span></div>
-        <p class="f-tagline">プロダクトで証明した技術力を、届ける。<br>iOS · Android · Web SaaS 開発 &amp; AI 駆動アジャイル開発。<br>東京・新宿区</p>
+        <p class="f-tagline">チームなし。会議なし。言い訳なし。<br>ひとりの開発者が、責任を持ってすべてを作る。<br>東京・新宿区</p>
       </div>
       <div>
         <p class="f-col-title">プロダクト</p>
