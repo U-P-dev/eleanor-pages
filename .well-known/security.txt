@@ -1,0 +1,5 @@
+Contact: https://github.com/U-P-dev/eleanor-pages/issues
+Expires: 2027-03-22T00:00:00.000Z
+Preferred-Languages: ja, en
+Canonical: https://eleanor-dev.com/.well-known/security.txt
+Policy: https://eleanor-dev.com/.well-known/security.txt
