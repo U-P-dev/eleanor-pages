@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+> **制約：このファイルは常に100行未満を維持すること。追記時は既存の記述を圧縮・docs/に移動して行数を守る。**
 
 ## Project Overview
 
@@ -77,10 +77,16 @@ All design decisions are documented in `DESIGN.md`. Key points:
 3. No external dependencies beyond Google Fonts CDN
 4. Maintain WCAG AA contrast (4.5:1+) for all body text
 
+## docs/ 参照ガイド
+
+| ファイル | 参照タイミング |
+|----------|---------------|
+| `docs/infra/README.md` | 全プロジェクトのインフラ情報（**索引**） |
+| `docs/infra/local-dev.md` | リモート開発環境の設定・接続時 |
+| `docs/adsense-setup.md` | AdSense 関連の設定変更時 |
+
 ## Infrastructure Notes
 
-- **Cloudflare Proxy must be OFF** (DNS only mode) — enabling it causes HTTPS certificate conflicts with GitHub Pages
-- **Do not delete `CNAME`** — it's required for the custom domain to work
-- `PROGRESS.md` tracks business progress (D-U-N-S, app store registration, etc.) — commit it but it's not a public page
-- **全プロジェクトのインフラ情報**: `docs/infra/` に集約（`docs/infra/README.md` がインデックス）
-- **リモート開発環境**: [docs/infra/local-dev.md](./docs/infra/local-dev.md) 参照
+- **Cloudflare Proxy must be OFF** (DNS only mode) — HTTPS certificate conflicts with GitHub Pages
+- **Do not delete `CNAME`** — required for the custom domain
+- `PROGRESS.md` tracks business progress — commit it but it's not a public page
