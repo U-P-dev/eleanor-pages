@@ -4,15 +4,21 @@
 
 ## 作業ディレクトリ構成
 
-| パス | 内容 |
+| パス（Linux / M8） | 内容 |
 |---|---|
-| `C:\Projects\00_eleanor\` | コーポレートサイト作業ディレクトリ（git 管理外） |
-| `C:\Projects\eleanor-pages\` | GitHub Pages リポジトリ（`U-P-dev/eleanor-pages`） |
-| `C:\Projects\sono_hino\` | SONO-HINO Flutter コード |
-| `C:\Projects\screencraft\` | Screencraft モノレポ |
-| `C:\Projects\KEIBA_MatchFixing_Detection\` | KEIBA-YARAZU |
-| `C:\Projects\invoice-validator-pro\` | インボイスバリデーター Pro |
-| `C:\Projects\Memoria\` | Memoria モノレポ |
+| `/home/dev/projects/eleanor-pages/` | GitHub Pages リポジトリ（`U-P-dev/eleanor-pages`） |
+| `/home/dev/projects/sono-hino/` | SONO-HINO Flutter コード |
+| `/home/dev/projects/screencraft/` | Screencraft モノレポ |
+| `/home/dev/projects/KEIBA_MatchFixing_Detection/` | KEIBA-YARAZU |
+| `/home/dev/projects/invoice-validator-pro/` | インボイスバリデーター Pro |
+| `/home/dev/projects/Memoria/` | Memoria モノレポ |
+| `/home/dev/projects/paper-search/` | AI 論文検索 |
+| `/home/dev/projects/jido-lp-sales/` | LP 制作自動化 |
+| `/home/dev/projects/powpo-samurai/` | パワポ侍 |
+| `/home/dev/projects/fx-tool-platform/` | FX ツール |
+| `/home/dev/projects/kindle-auto-summary/` | Kindle スクショ→PDF |
+
+> Dev Server プレビュー方法（LAN / Tailscale / Funnel）→ [localhost-preview-guide.md](../guides/localhost-preview-guide.md)
 
 ---
 

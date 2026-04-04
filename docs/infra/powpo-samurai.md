@@ -1,7 +1,7 @@
 # パワポ侍 インフラ構成
 
 > **概要**: PowerPoint ショートカットキーを侍テーマのドリル形式で学習する Web サービス
-> **リポジトリ**: `C:\Projects\powpo-samurai\`
+> **リポジトリ**: `/home/dev/projects/powpo-samurai/`
 > **ステータス**: 開発中（未デプロイ）
 
 ---

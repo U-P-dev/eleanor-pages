@@ -3,7 +3,18 @@
 > **概要**: 自然言語 AI による App Store / Google Play スクリーンショットデザイン作成 SaaS
 > **リポジトリ**: `U-P-dev/screencraft`（pnpm モノレポ、コードは `screencraft/` 配下）
 > **ステータス**: 開発中（本番環境デプロイ済み）
-> **最終更新**: 2026-04-01
+> **最終更新**: 2026-03-31
+
+### 主要機能（2026-03-31 時点）
+
+- 3段階 AI 品質レビューパイプライン（Interpretation → Operations → Quality Review、WCAG AA 検査含む）
+- ギャラリーテンプレート 16 種 / カラーパレット 12 種 / デザインレシピ 6 種
+- デバイスフレーム描画（FrameColor: black/silver/gold/white/blue）+ スクリーンショット埋め込み
+- ハーフデバイスレイアウト（M/N/O）含むレイアウト 15 種（A〜O）
+- 手動編集プロパティパネル（フォント・色・シャドウ・グラデーション・ストローク）
+- マルチフォーマットエクスポート（PNG/WebP/JPEG 品質調整）
+- 自動保存（IndexedDB）/ 整列ガイド＆スナッピング / キーボードショートカット
+- 参考画像 AI 分析 / デザインリサーチ事前調査 / AI フォローアップ提案
 
 ---
 
@@ -23,7 +34,7 @@
 ```
 ユーザー
   ↓ HTTPS
-Cloudflare Pages（Next.js 15 / apps/web）  ← GitHub 連携で自動デプロイ
+Cloudflare Pages（Next.js 15 / apps/web）  ← Direct Upload でデプロイ
   ↓ API リクエスト
 Cloudflare Workers（Hono / apps/api）      ← wrangler deploy で手動デプロイ
   ├── Supabase（認証 + PostgreSQL）
@@ -44,11 +55,12 @@ Cloudflare Workers（Hono / apps/api）      ← wrangler deploy で手動デプ
 | プロジェクト名 | `screencraft-web` |
 | フレームワーク | Next.js 15（App Router、Edge Runtime） |
 | Production branch | `main` |
-| デプロイ方式 | GitHub 連携（main push で自動デプロイ） |
+| デプロイ方式 | Direct Upload（`wrangler pages deploy`） |
 | ビルドツール | `@cloudflare/next-on-pages`（`vercel build` 経由） |
 | ビルドコマンド | `pnpm pages:build`（apps/web 配下） |
 
-> ビルド設定（Root directory / Build command / Build output directory）は Cloudflare ダッシュボードの UI 上から確認・編集不可。プロジェクト作成時に設定済み。
+> **ビルドパイプライン**: `vercel build` → `_not-found.func` 削除（Node.js ランタイム回避） → `npx @cloudflare/next-on-pages --skip-build` → `wrangler pages deploy .vercel/output/static`
+> GitHub 連携による自動デプロイは使用していない。Direct Upload 方式で手動デプロイ。
 
 ### API — Cloudflare Workers (screencraft-api)
 
@@ -216,9 +228,23 @@ NEXT_PUBLIC_SENTRY_DSN=https://2b44c8e7f2f881c0258bdc177535bb03@o451109821952819
 
 ## デプロイ手順
 
-### フロントエンド（自動）
+### フロントエンド（Direct Upload）
 
-`main` ブランチに push するだけで Cloudflare Pages が自動ビルド・デプロイ。
+```bash
+export CLOUDFLARE_API_TOKEN="..."
+cd screencraft/apps/web
+
+# ビルドパイプライン
+npx vercel build
+rm -rf .vercel/output/functions/_not-found.func   # Node.js ランタイム回避
+npx @cloudflare/next-on-pages --skip-build
+npx wrangler pages deploy .vercel/output/static --project-name=screencraft-web
+
+# または一括コマンド
+pnpm pages:build && pnpm pages:deploy
+```
+
+> GitHub 連携自動デプロイは使用していない。`_not-found.func` の Node.js ランタイム問題があるため Direct Upload を採用。
 
 ### API（手動）
 

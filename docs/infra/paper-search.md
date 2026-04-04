@@ -1,7 +1,7 @@
 # paper-search インフラ構成
 
 > **概要**: 日本語クエリで PubMed を検索する AI 論文検索 Web アプリ
-> **リポジトリ**: `C:\Projects\paper-search\`
+> **リポジトリ**: `/home/dev/projects/paper-search/`
 > **URL**: `paper-search.eleanor-dev.com`（`eleanor-dev.com` のサブドメイン）
 
 ---

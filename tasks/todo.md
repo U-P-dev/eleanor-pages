@@ -8,26 +8,11 @@
 
 ## 📁 このフォルダについて（隣接プロジェクト向け）
 
-**フォルダパス（絶対）:** `/mnt/c/Projects/00_eleanor/tasks/`
+**フォルダパス:** `eleanor-pages/tasks/`（リポジトリ: `/home/dev/projects/eleanor-pages/`）
 
 このフォルダは **全プロジェクト共通の事業・インフラ情報の集約場所** として機能する。
-隣接する各プロジェクト（sono_hino, Memoria, paper-search, FX-tool-platform 等）は、
-以下の情報をこのフォルダ内のファイルに記載してよい：
 
-- 各種サービスの **承認コード・審査結果**
-- **サーバー ID、API キー、シークレット**
-- **パスワード・認証情報**（共有が必要なもの）
-- 事業全体に関わる **申請番号・ケース番号**
-
-> ⚠️ **セキュリティ注意**: このフォルダは `.gitignore` 対象外。
-> 公開リポジトリ（GitHub Pages）にプッシュされないよう、機密情報は
-> `tasks/secrets/` サブフォルダに置き、`.gitignore` に追加すること。
-
-**隣接プロジェクトからの参照方法:**
-```
-/mnt/c/Projects/00_eleanor/tasks/todo.md     ← このファイル（全体タスク）
-/mnt/c/Projects/00_eleanor/tasks/secrets/    ← 機密情報置き場（git除外）
-```
+> ⚠️ **セキュリティ注意**: 機密情報は `tasks/secrets/` サブフォルダに置き、`.gitignore` に追加すること。
 
 ---
 
@@ -76,9 +61,10 @@
   - Apple Registration 有効化: 発行から 24〜48 時間後（2026-03-25〜26 以降）
 - **次のアクション →** 下記「D-U-N-S 受領後」セクションへ
 
-### AdMob 支払い情報
-- [ ] AdMob Console でお支払いプロファイル設定（銀行口座追加）← **今すぐ可能**
+### Google お支払い（Eleanor 事業体共通 — 詳細: `docs/infra/google-payments.md`）
+- [ ] AdMob 銀行口座追加 ← **収益 ¥8,000 到達後にUI表示される（現在 ¥0）**
 - [ ] PIN レター受取（郵送、数週間）→ 住所確認完了
+- ⚠️ 住所・電話番号は変更不要（実住所のみ受付。`google-payments.md` 参照）
 
 ### SONO-HINO グラフィック
 - [ ] 外注中のスクリーンショット・フィーチャーグラフィック入稿待ち
@@ -86,15 +72,16 @@
 
 ---
 
-## 🟡 要確認（AdSense）
+## 🟡 AdSense（eleanor-dev.com ウェブ広告 — SONO-HINO とは無関係）
 
 > 実装済み: 全ページに `google-adsense-account` メタタグ（ca-pub-6133561595210589）・`ads.txt` 配置済み。
-> 以下の手続き状況を確認し、完了したら ✅ にチェック。
+> **現状**: 「収益性が低い」として広告掲載不可（2026-03-31 確認）。コーポレートサイトのトラフィック不足が原因。
+> **対応**: コンテンツ充実・トラフィック増加後に再申請。現時点では放置でOK。
 
-- [ ] AdSense Console で `eleanor-dev.com` のサイト登録済みか確認
-- [ ] 所有権確認（メタタグ方式）完了済みか確認
-- [ ] 審査リクエスト送信済みか確認（送信済みなら結果待ち、1〜14日）
-- [ ] 審査通過後：「広告」→「サマリー」→ 自動広告をオン
+- [x] AdSense Console で `eleanor-dev.com` のサイト登録済みか確認 → 登録済み
+- [x] 所有権確認（メタタグ方式）完了済みか確認 → 完了済み
+- [x] 審査リクエスト送信済みか確認 → 送信済み・「収益性が低い」で不承認（2026-03-31）
+- [ ] 再申請（トラフィック増加後）→ 審査通過後：「広告」→「サマリー」→ 自動広告をオン
 
 > ⚠️ AdSense の登録サイト URL は `eleanor-dev.com`（プロトコル・末尾スラッシュなし）。
 > `paper-search.eleanor-dev.com` サブドメインは審査通過後に自動カバーされる。
@@ -104,8 +91,8 @@
 ## 🟢 D-U-N-S 受領後（順番通りに実施）
 
 ### 1. 開発者アカウント登録（affects: SONO-HINO, Memoria）
-- [ ] Apple Developer Program 登録（Organization、$99/年）
-  - https://developer.apple.com/programs/enroll/ → Organization → D-U-N-S 入力
+- [x] Apple Developer Program 登録（Individual、$99/年、2026-03-31）
+  - → Organization 移行手順: [docs/guides/apple-developer-organization-migration.md](../docs/guides/apple-developer-organization-migration.md)
 - [ ] Google Play Developer 登録（$25）
   - https://play.google.com/console/ → Organization → D-U-N-S 入力
   - ドメイン: `eleanor-dev.com`、メール: `contact@eleanor-dev.com`

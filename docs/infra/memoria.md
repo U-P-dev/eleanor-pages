@@ -2,7 +2,7 @@
 
 > **概要**: 参考書・問題集写真を AI 解析→間隔反復復習通知する学習支援アプリ
 > **プラットフォーム**: iOS / Android（Expo）+ Web（Next.js）
-> **リポジトリ**: `U-P-dev/Memoria`（GitHub）/ `C:\Projects\Memoria\`
+> **リポジトリ**: `/home/dev/projects/Memoria/`（GitHub: `U-P-dev/Memoria`）
 > **ステータス**: Phase 4/7/8 進行中
 
 ---

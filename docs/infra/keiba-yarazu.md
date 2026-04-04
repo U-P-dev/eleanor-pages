@@ -1,7 +1,7 @@
 # KEIBA-YARAZU インフラ構成
 
 > **概要**: 地方競馬・競艇・競輪 D-Score 不正検知 & 自動投票システム
-> **リポジトリ**: `C:\Projects\KEIBA_MatchFixing_Detection\`
+> **リポジトリ**: `/home/dev/projects/KEIBA_MatchFixing_Detection/`
 > **IaC**: AWS CDK（Python）/ `cdk/stacks/yarazu_stack.py`
 > **リージョン**: `ap-northeast-1`（東京）
 

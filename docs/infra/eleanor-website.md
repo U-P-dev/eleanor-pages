@@ -1,8 +1,9 @@
 # コーポレートサイト インフラ構成
 
+> **概要**: Eleanor コーポレートサイト（事業紹介・プライバシーポリシー・サポート）
 > **URL**: https://eleanor-dev.com/
-> **リポジトリ**: https://github.com/U-P-dev/eleanor-pages
-> **ローカルパス**: `C:\Projects\eleanor-pages\`（git管理）
+> **リポジトリ**: `/home/dev/projects/eleanor-pages/`（GitHub: `U-P-dev/eleanor-pages`）
+> **ステータス**: 本番稼働中
 
 ---
 
@@ -19,7 +20,7 @@
 ### デプロイ手順
 
 ```bash
-# C:\Projects\eleanor-pages\ で操作
+# /home/dev/projects/eleanor-pages/ で操作
 git add <files>
 git commit -m "feat|fix|chore: description"
 git push origin main
@@ -67,8 +68,10 @@ gh api repos/U-P-dev/eleanor-pages/deployments --jq '.[0] | {sha, created_at}'
 | パブリッシャーID | `ca-pub-6133561595210589` |
 | 登録サイト | `eleanor-dev.com`（プロトコル・末尾スラッシュなし） |
 | 実装 | 全ページに `google-adsense-account` メタタグ・`ads.txt` 配置済み |
+| 審査状況 | 「収益性が低い」で不承認（2026-03-31）。トラフィック増加後に再申請 |
 
-詳細: [../adsense-setup.md](../adsense-setup.md)
+お支払いアカウント・プロファイル → [google-payments.md](./google-payments.md)（Eleanor 事業体共通）
+AdSense 実装手順 → [../adsense-setup.md](../adsense-setup.md)
 
 ---
 

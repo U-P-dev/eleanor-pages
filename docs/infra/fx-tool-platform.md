@@ -1,7 +1,7 @@
 # FX-tool-platform インフラ構成
 
 > **概要**: FX 自動売買ツールプラットフォーム
-> **リポジトリ**: `C:\Projects\FX-tool-platform\`
+> **リポジトリ**: `/home/dev/projects/fx-tool-platform/`
 > **ステータス**: 企画・構想段階
 
 ---

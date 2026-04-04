@@ -2,7 +2,7 @@
 
 > **概要**: 適格請求書発行事業者番号（T+13桁）リアルタイム照合 Web ツール
 > **事業ID**: `B-FN-002`
-> **リポジトリ**: `C:\Projects\invoice-validator-pro\`
+> **リポジトリ**: `/home/dev/projects/invoice-validator-pro/`
 > **ステータス**: 開発中（Phase 1: MVP）
 
 ---
