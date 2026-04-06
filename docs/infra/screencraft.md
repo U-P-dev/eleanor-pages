@@ -177,7 +177,7 @@ NEXT_PUBLIC_SENTRY_DSN=https://2b44c8e7f2f881c0258bdc177535bb03@o451109821952819
 | URL | `https://tkgcahfeqwmjajsougdw.supabase.co` |
 | ダッシュボード | https://supabase.com/dashboard/project/tkgcahfeqwmjajsougdw |
 | 認証方式 | Email + Google SSO |
-| マイグレーション | `supabase/migrations/001〜005` |
+| マイグレーション | `supabase/migrations/001〜007`（007 適用済み 2026-04-06） |
 
 ### カスタム RPC 関数
 
@@ -185,6 +185,8 @@ NEXT_PUBLIC_SENTRY_DSN=https://2b44c8e7f2f881c0258bdc177535bb03@o451109821952819
 |---|---|---|
 | `increment_usage()` | `003_usage.sql` | 使用量インクリメント |
 | `reset_monthly_usage()` | `003_usage.sql` | 月次使用量リセット |
+| `handle_new_user()` | `001_initial.sql` / `007_profiles_email.sql` | サインアップ時に profiles 行作成（email 含む） |
+| `handle_user_email_update()` | `007_profiles_email.sql` | auth.users のメール変更を profiles に同期 |
 
 ---
 
@@ -258,14 +260,24 @@ npx wrangler deploy
 
 ## 開発環境
 
-| 環境 | アクセス方法 | 成果物確認 URL |
-|------|-------------|---------------|
+| 環境 | アクセス方法 | URL |
+|------|-------------|-----|
 | 本番確認 | ブラウザ | https://screenshot-craft.app |
-| ローカル開発（自宅） | VS Code Remote-SSH | `localhost:3000`（自動ポートフォワード） |
-| ローカル開発（職場） | Tailscale 経由 | `http://100.83.181.125:3000` |
+| 開発（自宅 / VS Code Remote-SSH） | 自動ポートフォワード | `localhost:3000` |
+| 開発（職場 / 外部ネットワーク） | Tailscale Funnel | `https://m8.tailea005c.ts.net:8443` |
 
-> ローカル dev server 起動時は `apps/web/.env.local` の存在を確認すること。
-> 詳細 → `screencraft/docs/environment-switching.md`, `screencraft/docs/remote-dev-setup-log.md`
+**Tailscale Funnel 設定（M8 で起動済み）:**
+
+| Funnel ポート | ローカルポート | 用途 |
+|---|---|---|
+| 443 | 8080 | code-server（常時） |
+| 8443 | 3000 | Screencraft フロントエンド |
+| 10000 | 8787 | Screencraft API |
+
+`NEXT_PUBLIC_API_URL=https://m8.tailea005c.ts.net:10000`（開発時）
+
+> Funnel 再設定: `tailscale funnel --https 8443 --bg 3000 && tailscale funnel --https 10000 --bg 8787`
+> 詳細 → `eleanor-pages/docs/guides/localhost-preview-guide.md`
 
 ---
 
