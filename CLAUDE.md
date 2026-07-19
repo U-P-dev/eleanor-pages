@@ -77,14 +77,14 @@ All design decisions are documented in `DESIGN.md`. Key points:
 3. No external dependencies beyond Google Fonts CDN
 4. Maintain WCAG AA contrast (4.5:1+) for all body text
 
-## docs/ 参照ガイド（MECE分類）
+## 運用ドキュメントは別リポジトリ（非公開）へ移設済み
 
-| パス | スコープ | 参照タイミング |
-|------|---------|---------------|
-| `docs/infra/README.md` | インフラ索引 | 全プロジェクトのインフラ情報（**初回はここ**） |
-| `docs/infra/*.md` | プロジェクト別インフラ | 各プロジェクトの接続情報・DB・デプロイ |
-| `docs/guides/*.md` | 横断ガイド | Apple移行・AdSense等の手順書 |
-| `tasks/todo.md` | 事業タスク | 事業横断の未完了タスク（正本） |
+インフラ構成・開発環境・事業タスク等の**非公開の運用ドキュメントは、このリポジトリには置かない**。
+これらは公開サイト（`eleanor-dev.com`）として配信されてしまうため、非公開リポジトリ `eleanor-ops`
+（ローカル: `/home/dev/projects/eleanor-ops/`）へ分離した。インフラ情報はそちらの `docs/infra/README.md` を参照。
+
+このリポジトリには**サイトのHTML/CSS/JSのみ**を置くこと。`CLAUDE.md` / `DESIGN.md` は開発用のため
+`_config.yml` の `exclude` で Pages 配信対象から除外している。
 
 ## Infrastructure Notes
 

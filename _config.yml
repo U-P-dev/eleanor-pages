@@ -1,0 +1,9 @@
+# GitHub Pages (Jekyll) configuration
+# 開発用ドキュメントは公開サイトに配信しない（情報漏洩防止）。
+# 運用ドキュメント(docs/ tasks/)は非公開リポジトリ eleanor-ops へ移設済み。
+exclude:
+  - CLAUDE.md
+  - DESIGN.md
+  - docs
+  - tasks
+  - README.md
