@@ -325,6 +325,15 @@
     .svc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .svc-tag { font-size: 10px; color: var(--muted); background: rgba(255,255,255,.04); border: 1px solid var(--border); padding: 3px 9px; border-radius: 4px; }
 
+    /* LP production */
+    .lp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .lp-price { font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -.03em; margin-bottom: 2px; }
+    .lp-price span { font-size: 13px; font-weight: 700; color: var(--muted); margin-left: 4px; letter-spacing: 0; }
+    .lp-tax { font-size: 11px; color: var(--muted); margin-bottom: 18px; }
+    .lp-sub-title { font-size: 12px; font-weight: 800; color: var(--body); letter-spacing: .14em; margin: 44px 0 18px; }
+    .lp-note { margin-top: 24px; padding: 20px 24px; background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; color: var(--body); line-height: 1.85; }
+    .lp-note a { color: #93C5FD; }
+
     /* Comparison */
     .comparison { margin-bottom: 52px; }
     .comparison-title { font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--muted2); margin-bottom: 18px; }
@@ -549,6 +558,7 @@
       .s { padding: 80px 24px; }
       .product-grid { grid-template-columns: 1fr; }
       .svc-grid { grid-template-columns: 1fr; }
+      .lp-grid { grid-template-columns: 1fr; }
       .compare-table thead th, .compare-table td { padding: 12px 14px; font-size: 12px; }
       .process-steps { grid-template-columns: 1fr 1fr; gap: 20px; }
       .process-steps::before { display: none; }
@@ -719,6 +729,7 @@
   <ul class="nav-links">
     <li><a href="#products">プロダクト</a></li>
     <li><a href="#services">開発支援</a></li>
+    <li><a href="#lp">LP 制作</a></li>
     <li><a href="#dev">開発者</a></li>
     <li><a href="company.html">会社情報</a></li>
     <li><a href="support.html">サポート</a></li>
@@ -731,6 +742,7 @@
 <div class="mob" id="mob">
   <a href="#products" onclick="this.closest('.mob').classList.remove('open')">プロダクト</a>
   <a href="#services" onclick="this.closest('.mob').classList.remove('open')">開発支援</a>
+  <a href="#lp" onclick="this.closest('.mob').classList.remove('open')">LP 制作</a>
   <a href="#dev" onclick="this.closest('.mob').classList.remove('open')">開発者</a>
   <a href="company.html">会社情報</a>
   <a href="support.html">サポート</a>
@@ -1023,6 +1035,84 @@
 <div class="glow-divider"></div>
 
 <!-- FEATURES -->
+<!-- LP PRODUCTION -->
+<section class="s lp-s" id="lp">
+  <div class="s-inner">
+    <span class="s-eyebrow" data-a>Landing Page Production</span>
+    <h2 class="s-title" data-a="1">小さなお店の、<br>最初の1ページを。</h2>
+    <p class="s-desc" data-a="2">ウェブサイトを持っていない、あるいは何年も更新できていない小規模事業者向けに、ランディングページを制作します。原稿・写真の用意からスマートフォン対応・公開までを代行し、公開後の更新や不具合対応は月額の保守で引き受けます。美容室・整体院・飲食店など、東京都内の店舗が主な対象です。</p>
+
+    <div class="lp-grid" data-a="2">
+      <div class="svc-card" style="--card-top: linear-gradient(90deg, #2563EB, #7C3AED);">
+        <p class="svc-num">SIMPLE</p>
+        <h3 class="svc-title">シンプル LP</h3>
+        <p class="lp-price">49,800<span>円</span></p>
+        <p class="lp-tax">税抜・別途消費税10%</p>
+        <p class="svc-desc">1ページ完結型。ヒアリング内容を反映して仕上げ、最短1営業日で公開します。</p>
+        <div class="svc-tags"><span class="svc-tag">スマホ対応</span><span class="svc-tag">お問い合わせフォーム</span><span class="svc-tag">地図・営業時間</span></div>
+      </div>
+      <div class="svc-card" style="--card-top: linear-gradient(90deg, #7C3AED, #E11D48);">
+        <p class="svc-num">STANDARD</p>
+        <h3 class="svc-title">スタンダード LP</h3>
+        <p class="lp-price">89,800<span>円</span></p>
+        <p class="lp-tax">税抜・別途消費税10%</p>
+        <p class="svc-desc">シンプル LP に実績ギャラリーと原稿の作り込みを加えたプラン。独自ドメインでの公開まで代行します。</p>
+        <div class="svc-tags"><span class="svc-tag">実績ギャラリー</span><span class="svc-tag">原稿作成</span><span class="svc-tag">独自ドメイン公開</span></div>
+      </div>
+      <div class="svc-card" style="--card-top: linear-gradient(90deg, #2563EB, #E11D48);">
+        <p class="svc-num">RICH</p>
+        <h3 class="svc-title">リッチ LP</h3>
+        <p class="lp-price">148,000<span>円</span></p>
+        <p class="lp-tax">税抜・別途消費税10%</p>
+        <p class="svc-desc">3〜5ページ構成の本格サイト。ページごとに原稿を書き分け、英語版も用意します。</p>
+        <div class="svc-tags"><span class="svc-tag">3〜5ページ</span><span class="svc-tag">ページ別原稿</span><span class="svc-tag">英語版</span></div>
+      </div>
+    </div>
+
+    <p class="lp-sub-title" data-a="2">公開後の保守メンテナンス</p>
+    <div class="svc-grid" data-a="2" style="margin-bottom:0;">
+      <div class="svc-card" style="--card-top: linear-gradient(90deg, #2563EB, #7C3AED);">
+        <h3 class="svc-title">メンテ ライト</h3>
+        <p class="lp-price">5,500<span>円 / 月</span></p>
+        <p class="lp-tax">税抜・別途消費税10%　年額一括 55,000円（2ヶ月無料相当）</p>
+        <p class="svc-desc">月1回、リンク切れ・セキュリティ・PC / スマートフォンでの表示崩れを確認し、結果をレポートメールでお送りします。</p>
+      </div>
+      <div class="svc-card" style="--card-top: linear-gradient(90deg, #7C3AED, #E11D48);">
+        <h3 class="svc-title">メンテ スタンダード</h3>
+        <p class="lp-price">14,000<span>円 / 月</span></p>
+        <p class="lp-tax">税抜・別途消費税10%　年額一括 140,000円（2ヶ月無料相当）</p>
+        <p class="svc-desc">週1回の点検に加え、コンテンツ更新1件 / 週・月次アクセスレポート・改善提案・競合監視・AI 検索（AIO）での露出チェックまで含みます。</p>
+      </div>
+    </div>
+
+    <p class="lp-sub-title" data-a="3">スポット対応</p>
+    <div class="svc-tags" data-a="3">
+      <span class="svc-tag">不具合の修正 5,000円</span>
+      <span class="svc-tag">AI 検索（AIO）対応 19,800円</span>
+      <span class="svc-tag">独自ドメイン設定代行 3,000円（＋ドメイン登録料の実費）</span>
+    </div>
+
+    <div class="lp-note" data-a="3">
+      表示価格はすべて<strong>税抜き</strong>です（別途消費税10%）。お支払いはクレジットカード（Stripe）による<strong>全額前払い</strong>、納品は<strong>ご入金の確認後 1〜3営業日</strong>です。制作着手前かつご入金から24時間以内であれば全額返金いたします。<br>
+      支払条件・返品・キャンセルの詳細は <a href="https://u-p-dev.github.io/tokusho/">特定商取引法に基づく表示</a> をご覧ください。
+    </div>
+
+    <div class="svc-cta" data-a="3" style="margin-top:44px;">
+      <div class="svc-cta-left">
+        <p class="svc-cta-eyebrow">まずは無料のたたき台から</p>
+        <h3 class="svc-cta-title">できあがりを見てから、決めてください。</h3>
+        <p class="svc-cta-desc">お店の情報をもとにしたたたき台を無料でお作りします。実物を見てから、進めるかどうかをご判断ください。</p>
+      </div>
+      <a href="#contact" class="btn-white">
+        相談する
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="glow-divider"></div>
+
 <section class="s feat-s">
   <div class="s-inner">
     <span class="s-eyebrow" data-a>Why Eleanor</span>
@@ -1207,6 +1297,7 @@
           <a href="#services">モバイルアプリ開発</a>
           <a href="#services">AI 機能組み込み</a>
           <a href="#services">業務自動化</a>
+          <a href="#lp">LP 制作・保守</a>
         </div>
       </div>
       <div>
@@ -1215,6 +1306,7 @@
           <a href="company.html">会社情報</a>
           <a href="support.html">サポート</a>
           <a href="privacy.html">プライバシーポリシー</a>
+          <a href="https://u-p-dev.github.io/tokusho/">特定商取引法に基づく表示</a>
           <a href="account-deletion.html">アカウント削除</a>
         </div>
       </div>
