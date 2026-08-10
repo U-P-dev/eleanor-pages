@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お支払いが完了しました | エレノア</title>
+  <meta name="description" content="お支払いが完了しました。ご入金の確認後、1〜3営業日で納品いたします。">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --purple: #7C3AED; --purple-light: #A78BFA; --text: #1a1a2e;
+            --text-muted: #6b7280; --border: #e5e7eb; --green: #059669; color-scheme: light; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      font-size: 15px; line-height: 1.8; color: var(--text); background: #fafafa;
+    }
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 40px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 6, 22, 0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .nav-logo { font-size: 20px; font-weight: 800; color: #fff; }
+    .nav-logo span { color: var(--purple-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; }
+    .nav-links a:hover { color: #fff; }
+
+    .page-header {
+      background: linear-gradient(135deg, #0a0616 0%, #130d2a 100%);
+      padding: 120px 24px 56px; text-align: center;
+    }
+    .page-header .check {
+      width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 20px;
+      background: rgba(5,150,105,.16); border: 1px solid rgba(52,211,153,.4);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .page-header h1 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; color: #fff;
+                      letter-spacing: -0.02em; margin-bottom: 10px; }
+    .page-header p { font-size: 14px; color: rgba(255,255,255,0.55); }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 56px 24px 96px; }
+    .card { background: #fff; border: 1px solid var(--border); border-radius: 16px;
+            padding: 28px 30px; margin-bottom: 20px; }
+    .card h2 { font-size: 15px; font-weight: 700; margin-bottom: 12px;
+               display: flex; align-items: center; gap: 10px; }
+    .card h2::before { content: ''; display: inline-block; width: 4px; height: 16px;
+                       background: var(--purple); border-radius: 2px; flex-shrink: 0; }
+    .card p { font-size: 14px; color: #444; }
+    .steps { list-style: none; counter-reset: s; }
+    .steps li { position: relative; padding-left: 34px; margin-bottom: 14px; font-size: 14px; color: #444; }
+    .steps li:last-child { margin-bottom: 0; }
+    .steps li::before {
+      counter-increment: s; content: counter(s);
+      position: absolute; left: 0; top: 3px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(124,58,237,.1); color: var(--purple);
+      font-size: 11px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .note { font-size: 13px; color: var(--text-muted); line-height: 1.85; }
+
+    footer { background: #080412; color: rgba(255,255,255,0.4); padding: 32px 24px;
+             text-align: center; font-size: 13px; }
+    footer a { color: var(--purple-light); }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px;
+                           margin-top: 12px; flex-wrap: wrap; }
+
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .page-header { padding: 100px 20px 44px; }
+      .card { padding: 24px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Eleanor<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#lp">LP 制作</a></li>
+      <li><a href="company.html">会社情報</a></li>
+      <li><a href="support.html">サポート</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="check">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h1>お支払いが完了しました</h1>
+    <p>ご依頼いただき、ありがとうございます。</p>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h2>このあとの流れ</h2>
+      <ol class="steps">
+        <li>決済プラットフォーム（Stripe）から、<strong>領収書がメールで自動送信</strong>されます。</li>
+        <li>ご入金の確認後、<strong>1〜3営業日</strong>で制作したページを納品いたします（プランにより異なります）。</li>
+        <li>納品時に、担当（豊島）から <strong>contact@eleanor-dev.com</strong> よりご連絡いたします。</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>ご連絡・ご相談</h2>
+      <p>ご不明な点や、原稿・写真のご提供については、そのまま担当者宛のメールにご返信ください。<br>
+      直接のご連絡は <a href="mailto:contact@eleanor-dev.com">contact@eleanor-dev.com</a> ／ 03-4218-8634（平日 10:00〜18:00）まで。</p>
+    </div>
+
+    <p class="note">
+      このページを閉じていただいて構いません。お支払い内容・返品・キャンセルの条件は
+      <a href="tokusho.html">特定商取引法に基づく表示</a> をご覧ください。
+    </p>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 エレノア（Eleanor）. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="index.html">ホーム</a>
+      <a href="company.html">会社情報</a>
+      <a href="tokusho.html">特定商取引法に基づく表示</a>
+    </div>
+  </footer>
+
+</body>
+</html>
