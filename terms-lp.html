@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<!--
+  ⚠️ このファイルは jido-lp-sales の scripts/terms_of_service.py が自動生成する。
+     **手で編集しない**（次回の公開で上書きされる）。
+     内容の正本は jido-lp-sales の config/terms_of_service.json・config/pricing.json・
+     config/privacy.json と eleanor-ops/docs/infra/eleanor-business.md。
+     版: 2026-09-15
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>利用規約（LP 制作・保守サービス） | エレノア</title>
+  <meta name="description" content="エレノアのランディングページ制作・保守サービスの利用規約です。">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://eleanor-dev.com/terms-lp.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --purple: #7C3AED; --purple-light: #A78BFA; --text: #1a1a2e;
+             --text-muted: #6b7280; --border: #e5e7eb; color-scheme: light; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      font-size: 15px; line-height: 1.8; color: var(--text); background: #fafafa;
+    }
+    a { color: var(--purple); text-decoration: none; word-break: break-all; }
+    a:hover { text-decoration: underline; }
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 40px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 6, 22, 0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .nav-logo { font-size: 20px; font-weight: 800; color: #fff; }
+    .nav-logo span { color: var(--purple-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { background: var(--purple) !important; color: #fff !important;
+                padding: 8px 22px; border-radius: 100px; font-weight: 600 !important; }
+    .page-header {
+      background: linear-gradient(135deg, #0a0616 0%, #130d2a 100%);
+      padding: 120px 24px 56px; text-align: center;
+    }
+    .page-header .label { font-size: 11px; font-weight: 800; letter-spacing: 0.2em;
+                           text-transform: uppercase; color: var(--purple-light); margin-bottom: 12px; }
+    .page-header h1 { font-size: clamp(24px, 4vw, 36px); font-weight: 800; color: #fff;
+                       letter-spacing: -0.02em; margin-bottom: 8px; }
+    .page-header .app-name { font-size: 14px; color: rgba(255,255,255,0.45); }
+    .container { max-width: 760px; margin: 0 auto; padding: 56px 24px 96px; }
+    .card { background: #fff; border: 1px solid var(--border); border-radius: 16px;
+             padding: 32px 28px; }
+    .card h2 { font-size: 17px; font-weight: 700; margin: 28px 0 10px; }
+    .card h2:first-child { margin-top: 0; }
+    .card ul { padding-left: 1.3em; }
+    .card li { font-size: 14px; color: #444; margin-bottom: 8px; }
+    .note { margin-top: 28px; font-size: 13px; color: var(--text-muted); line-height: 1.85; }
+    footer { background: #080412; color: rgba(255,255,255,0.4); padding: 32px 24px;
+              text-align: center; font-size: 13px; }
+    footer a { color: var(--purple-light); }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px;
+                            margin-top: 12px; flex-wrap: wrap; }
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .page-header { padding: 100px 20px 44px; }
+      .card { padding: 24px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Eleanor<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#lp">LP 制作</a></li>
+      <li><a href="company.html">会社情報</a></li>
+      <li><a href="support.html">サポート</a></li>
+      <li><a href="index.html#contact" class="nav-cta">お問い合わせ</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <p class="label">Legal</p>
+    <h1>利用規約</h1>
+    <p class="app-name">エレノア — ランディングページ制作・保守サービス（版 2026-09-15）</p>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h2>第1条（適用）</h2>
+      <ul>
+        <li>本規約は、エレノア（以下「当方」といいます）が提供するランディングページ（以下「LP」といいます）の制作および保守メンテナンスのサービス（以下「本サービス」といいます）の利用条件を定めるものです。</li>
+        <li>本サービスをお申し込みいただいた事業者（以下「お客様」といいます）には、本規約が適用されます。当方は、お客様ごとに本規約の条項を変えることはしません。</li>
+        <li>お客様の契約書・発注書・取引先登録などの書面は、本規約と矛盾しない範囲でお受けします。書面と本規約が矛盾するときは、当方が書面で個別に同意した条項を除き、本規約が優先します。</li>
+        <li>料金・お支払い方法・提供時期・返品の条件は「特定商取引法に基づく表示」（<a href="https://eleanor-dev.com/tokusho.html">https://eleanor-dev.com/tokusho.html</a>）に、個人情報の取り扱いは「プライバシーポリシー」（<a href="https://eleanor-dev.com/privacy-lp.html">https://eleanor-dev.com/privacy-lp.html</a>）に定め、いずれも本規約と一体のものとします。</li>
+      </ul>
+      <h2>第2条（定義）</h2>
+      <ul>
+        <li>「型」とは、LP の意匠・構成・HTML／CSS／JavaScript など、当方があらかじめ用意し、複数のお客様に提供するテンプレートの部分をいいます。</li>
+        <li>「中身」とは、店名・文章・写真・ロゴなど、お客様からお預かりした素材と、お客様のご回答をもとに当方が下書きした文章をいいます。</li>
+        <li>「保守」とは、公開後の点検・更新・レポートなど、月額または年額でお受けする保守メンテナンスをいいます。</li>
+        <li>「引き渡し版」とは、お問い合わせの受け付けとアクセス解析のための当方の仕組みを外した、LP のファイル一式をいいます。</li>
+        <li>「登録メール」とは、お申し込みの際にお客様が用いたメールアドレスで、当方の台帳に登録したものをいいます。</li>
+      </ul>
+      <h2>第3条（契約の成立と契約者）</h2>
+      <ul>
+        <li>契約は、お客様が決済画面で本規約に同意のうえ、お支払いを完了された時点で成立します。</li>
+        <li>契約者は、お申し込みをされた方（決済画面で同意された方・登録メールの持ち主）です。料金を負担される方が契約者と異なっても差し支えありません。</li>
+        <li>お客様は、本サービスの利用が事業のためのものであること、およびお申し込みをされた方がその事業者を代表して契約する権限を有することを表明します。</li>
+        <li>法人化・事業譲渡・相続などにより契約者の地位を承継するときは、登録メールからのお申し出と、新しい名義でのお支払いの登録により、当方がこれを承諾します。承継に伴う精算はありません。</li>
+      </ul>
+      <h2>第4条（料金と料金の改定）</h2>
+      <ul>
+        <li>料金は特定商取引法に基づく表示に記載のとおりとし、消費税は別途申し受けます（税抜・別途消費税10%）。</li>
+        <li>当方は料金を改定することがあります。改定するときは 30 日前までに登録メールへ通知し、その後の更新（年額は次の年）から新しい料金を適用します。改定に同意いただけないときは、適用前に解約できます。</li>
+      </ul>
+      <h2>第5条（お支払いと返金）</h2>
+      <ul>
+        <li>制作費はご注文時に全額をお支払いいただきます（ご入金の確認後に制作へ着手します）。掛売り（後払い）はお受けしておりません。</li>
+        <li>制作費は、お支払い後 24 時間以内は理由を問わず全額を返金します。それ以降は理由を問わず返金しません。</li>
+        <li>保守は、次回更新日の前日までにご連絡いただければ解約できます（日割りでの返金はありません）。年額でお支払いの保守は、期間の途中で解約されても返金せず、期間末まで提供します。</li>
+      </ul>
+      <h2>第6条（制作・お手直し・公開）</h2>
+      <ul>
+        <li>公開前のお手直しは、5回まで無料でお受けします（回数は特定商取引法に基づく表示に記載のとおりです）。</li>
+        <li>お客様は公開前に、価格・営業時間・サービス内容・法令（景品表示法・薬機法など）に触れるおそれのある表現・素材の権利を確認したうえで、公開を承認します。承認された内容に誤りがあったときの責任は、お客様が負います。</li>
+        <li>当方は法令に触れるおそれのある表現の点検を行いますが、すべてを検知することは保証しません。</li>
+        <li>お客様は、お客様が提供する文章・写真・ロゴ・人物の肖像などについて、お客様が権利を有するか、必要な許諾を得ていることを保証します。</li>
+        <li>当方は、文章の下書きなどに AI を用います。下書きは公開前に当方が確認し、お客様が承認します。</li>
+      </ul>
+      <h2>第7条（知的財産と利用権）</h2>
+      <ul>
+        <li>型の著作権その他の権利は当方（第三者のライセンスに基づく部分は、その権利者）に留保され、お客様に譲渡しません。当方は同じ型を他のお客様にも提供します（同じ地域・同じ業種でも同様で、対価をいただいても独占はお約束しません）。</li>
+        <li>中身の権利はお客様に帰属します。</li>
+        <li>当方はお客様に、LP をお客様の店舗・事業の LP として公開し、改変し、任意のサーバーで運用する権利（利用権）を許諾します。利用権は、引き渡し版の受け取りや買い取りにより LP を当方の外へ持ち出された後も、期限なく続きます。</li>
+        <li>ただし、次のことはできません: (1) 型を第三者に販売・配布・提供すること (2) LP を自ら制作したものとして別の商売に用いること (3) 写真をライセンスの範囲の外で用いること（第8条）。</li>
+        <li>AI が下書きした文章について、当方は権利を主張しません。なお、AI で作成した文章は著作権による保護を受けないことがあり、第三者による模倣を著作権で止められない場合があります。</li>
+        <li>オープンソースソフトウェアや許諾を得たテンプレートなど、第三者のライセンスに基づき LP に組み込んだ部分は、そのライセンスの条件（帰属表示の維持など）に従ってご利用いただきます。</li>
+      </ul>
+      <h2>第8条（写真素材）</h2>
+      <ul>
+        <li>当方が LP に用いる写真は Pexels・Pixabay の素材で、各供給元のライセンス条件はお客様にも及びます（Pexels: <a href="https://www.pexels.com/license/">https://www.pexels.com/license/</a>／Pixabay: <a href="https://pixabay.com/service/terms/">https://pixabay.com/service/terms/</a>）。</li>
+        <li>特に、写真を LP から切り出して単体で配布・販売すること、写真を屋号・ロゴ・商標の一部に用いること、写っている人物や団体がお客様の商品・サービスを推薦していると誤解させる用い方はできません。</li>
+        <li>これらは、LP を当方の外へ持ち出された後も同様です。</li>
+      </ul>
+      <h2>第9条（保守）</h2>
+      <ul>
+        <li>保守の内容は、特定商取引法に基づく表示およびお申し込み時にご案内したプランの内容のとおりです。</li>
+        <li>当方の都合により点検を行えなかった月があるときは、金銭による補償に代えて、その月の保守料を翌月の保守料に充てます。これ以外の補償は行いません。</li>
+      </ul>
+      <h2>第10条（ご指示の経路と本人確認）</h2>
+      <ul>
+        <li>内容の変更・公開の承認・解約・承継など、契約に関するご指示は、登録メールからのメールでのみお受けします。登録メールからのご指示は、お客様の同意があったものとして反映します。</li>
+        <li>他のメールアドレス・電話・SNS などからのご指示は、登録メールへ確認をお送りし、確認が取れないものは実行しません。</li>
+        <li>登録メールを変更したときは、変更後は元のメールアドレスからのご指示を受け付けません。</li>
+      </ul>
+      <h2>第11条（お客様による変更）</h2>
+      <ul>
+        <li>お客様が LP を自ら編集・改変した部分（引き渡し後を含みます）について、当方は責任を負いません。その部分の法令への適合と表示は、お客様の責任で行ってください。</li>
+      </ul>
+      <h2>第12条（非公開と一時停止）</h2>
+      <ul>
+        <li>お客様が非公開を求められたときは、契約中であっても速やかに LP を非公開にします（料金は解約の手続きのとおりです）。</li>
+        <li>法令・行政機関・裁判所・第三者からの削除の要請や権利侵害の申し立てがあったとき、または LP の内容が法令に触れると当方が判断したときは、当方は LP の全部または一部を一時的に非公開にできます。この間の料金は返金しません。当方はお客様に事情を通知し、対応を協議します。</li>
+      </ul>
+      <h2>第13条（解約と解約後の取り扱い）</h2>
+      <ul>
+        <li>保守の解約は第5条のとおりです。年額でお支払いの保守は、期間末を解約日とします。</li>
+        <li>解約日から 30 日間は LP を公開したままにし（猶予）、その後に非公開にします。解約日から 90 日を経過した日に LP のデータを削除し、当方の台帳は個人を識別できない形にします。</li>
+        <li>非公開の予告は、解約の受理時と非公開の 7 日前の 2 回、登録メールへお送りします。</li>
+        <li>削除の前であれば、第14条の買い取りにより LP をお渡しします。削除の後の再契約は、新規のお申し込みと同じ扱いです。</li>
+        <li>当方が取得を代行した独自ドメインはお客様の名義で登録しており、解約で消えることはありません。解約後は当方が更新費用を負担しなくなるため、失効の前に 1 度、更新または移管のご希望をお尋ねします。</li>
+        <li>災害・通信障害などによりお客様と連絡が取れないときは、削除を延ばします。</li>
+      </ul>
+      <h2>第14条（買い取り・引き渡し）</h2>
+      <ul>
+        <li>保守をやめられるお客様は、LP 単体プランとの差額（20,000円・税抜・別途消費税10%）をお支払いいただければ、引き渡し版と独自ドメインをそのままお持ち帰りいただけます。ドメイン移管の手数料は申し受けません。</li>
+        <li>LP 単体プランでお申し込みのお客様は、初期費用で精算済みのため、追加の費用はいただきません。</li>
+        <li>年額でお支払いの保守をご契約のお客様が期間の途中で引き渡しを希望されるときは、差額をお支払いいただいた時点でお渡しし、その時点で保守は終了します。残りの期間の保守料は返金しません（期間末まで待ってお受け取りいただくこともできます）。</li>
+        <li>お渡しするものは、お渡しする時点の最新の LP（お手直し・更新をすべて反映したもの）です。</li>
+        <li>引き渡し後の LP の公開・運用は、本サービスの対象外です。</li>
+      </ul>
+      <h2>第15条（当方からの解約・サービスの終了）</h2>
+      <ul>
+        <li>当方は、事業の終了・長期の不在などにより本サービスを終了するときは、3 か月前までに登録メールへ通知し、引き渡し版と独自ドメインの移管を無償で行い、年額の前払い分のうち未提供の期間に相当する額を返金します。</li>
+        <li>当方は、個別の契約を 3 か月前までの通知により解約できます。この場合も前項と同じく、無償で引き渡し、未提供の期間に相当する額を返金します。</li>
+        <li>次のいずれかに当たるときは、当方は通知のうえ直ちに契約を解除できます: (1) 第16条に違反したとき (2) LP の内容が法令に触れると指摘したにもかかわらず改めていただけないとき (3) お支払いの失敗が続くとき。</li>
+      </ul>
+      <h2>第16条（反社会的勢力の排除）</h2>
+      <ul>
+        <li>お客様および当方は、自らが暴力団・暴力団員・暴力団関係企業・総会屋その他これらに準ずる者（以下「反社会的勢力」といいます）に該当せず、反社会的勢力を利用せず、反社会的勢力に資金等を提供しないことを表明し、将来にわたっても該当しないことを確約します。</li>
+        <li>相手方がこれに違反したときは、催告なく直ちに契約を解除でき、解除により相手方に生じた損害を賠償する責任を負いません。</li>
+      </ul>
+      <h2>第17条（免責と責任の上限）</h2>
+      <ul>
+        <li>当方は、本サービスが特定の成果（お問い合わせの数・売上・検索順位など）をもたらすことを保証しません。</li>
+        <li>ホスティング・決済・地図・アクセス解析などの外部サービスの障害・仕様変更・提供終了によりお客様に生じた損害について、当方の責めに帰すべき事由による場合を除き、当方は責任を負いません。</li>
+        <li>当方がお客様に対して損害賠償の責任を負う場合、その額は、その損害が生じたサービスについて当方がお客様から直近 1 か月に受け取った金額（制作費についてはその制作費の額）を上限とします。</li>
+        <li>ただし、当方の故意または重大な過失による場合は、この上限を適用しません。</li>
+      </ul>
+      <h2>第18条（外部サービスの利用）</h2>
+      <ul>
+        <li>当方は本サービスの提供に次の外部サービスを利用し、お客様の情報（店舗の情報・原稿・素材・お問い合わせの内容など）がこれらを経由します。一部の事業者は日本国外でデータを保管します。</li>
+        <li>Google（Google Workspace）: メールの送受信と保管</li>
+        <li>Google（Google アナリティクス）: 制作したランディングページのアクセス解析（ご契約者への月次レポートに用います）</li>
+        <li>Stripe, Inc.: 決済の処理（カード番号は Stripe が取り扱い、当方は保持しません）</li>
+        <li>Cloudflare, Inc.: 制作したランディングページの公開、およびお問い合わせフォームの送信内容の受け取りと転送</li>
+        <li>Anthropic, PBC（AI サービス Claude）: 受信したメールの分類、返信文の下書き、ランディングページ原稿の下書きの作成（送る前に人が確認します）</li>
+      </ul>
+      <h2>第19条（秘密保持と個人情報）</h2>
+      <ul>
+        <li>当方は、本サービスを通じて知ったお客様の非公開の情報を、法令に基づく場合と第18条の外部サービスの利用を除き、第三者に開示しません。</li>
+        <li>個人情報の取り扱いは、プライバシーポリシー（<a href="https://eleanor-dev.com/privacy-lp.html">https://eleanor-dev.com/privacy-lp.html</a>）に定めるとおりです。</li>
+      </ul>
+      <h2>第20条（規約の改定）</h2>
+      <ul>
+        <li>当方は本規約を改定することがあります。改定するときは 30 日前までに登録メールへ通知し、その期間内に異議のお申し出が無ければ、改定後の規約が適用されます。異議のあるお客様は、適用前に解約できます。</li>
+        <li>改定後の規約はこのページで公表し、版（日付）で識別します。</li>
+      </ul>
+      <h2>第21条（準拠法と管轄）</h2>
+      <ul>
+        <li>本規約は日本法に準拠します。</li>
+        <li>本規約または本サービスに関する紛争は、東京地方裁判所を第一審の専属的合意管轄裁判所とします。</li>
+      </ul>
+      <h2>附則</h2>
+      <ul>
+        <li>制定: 2026-09-15　最終改定: 2026-09-15　版: 2026-09-15</li>
+      </ul>
+    </div>
+    <p class="note">特定商取引法に基づく表示は <a href="tokusho.html">こちら</a>。プライバシーポリシーは <a href="privacy-lp.html">こちら</a>。</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 エレノア（Eleanor）. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="index.html">ホーム</a>
+      <a href="company.html">会社情報</a>
+      <a href="support.html">サポート</a>
+      <a href="tokusho.html">特定商取引法に基づく表示</a>
+      <a href="privacy-lp.html">プライバシーポリシー</a>
+    </div>
+  </footer>
+
+</body>
+</html>
