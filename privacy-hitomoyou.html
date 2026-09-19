@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-adsense-account" content="ca-pub-6133561595210589">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://eleanor-dev.com/privacy-hitomoyou.html">
+  <title>プライバシーポリシー – ヒトモヨウ | Eleanor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --purple: #7C3AED; --purple-light: #A78BFA; --purple-dark: #5B21B6; --dark: #0a0616; --text: #1a1a2e; --text-muted: #6b7280; --border: #e5e7eb; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      font-size: 15px; line-height: 1.8; color: var(--text); background: #fafafa;
+    }
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 40px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 6, 22, 0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .nav-logo { font-size: 20px; font-weight: 800; color: #fff; }
+    .nav-logo span { color: var(--purple-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { background: var(--purple) !important; color: #fff !important; padding: 8px 22px; border-radius: 100px; font-weight: 600 !important; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(10,6,22,0.97); padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 99; }
+    .mobile-menu.open { display: flex; flex-direction: column; gap: 4px; }
+    .mobile-menu a { color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 500; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+    /* CONTENT */
+    .page-header {
+      background: linear-gradient(135deg, #0a0616 0%, #130d2a 100%);
+      padding: 120px 24px 56px; text-align: center;
+    }
+    .page-header .label { font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple-light); margin-bottom: 12px; }
+    .page-header h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; color: #fff; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .page-header .app-name { font-size: 14px; color: rgba(255,255,255,0.45); }
+    .container { max-width: 720px; margin: 0 auto; padding: 56px 24px 96px; }
+    .updated { font-size: 13px; color: var(--text-muted); margin-bottom: 40px; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; display: inline-block; }
+    .lang-divider { border: none; border-top: 2px solid var(--border); margin: 56px 0 44px; }
+    .lang-label { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 32px; }
+    section { margin-bottom: 36px; background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 24px 28px; }
+    section h2 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    section h2::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--purple); border-radius: 2px; flex-shrink: 0; }
+    section p { white-space: pre-line; color: #444; font-size: 14px; line-height: 1.8; }
+    footer { background: #080412; color: rgba(255,255,255,0.4); padding: 32px 24px; text-align: center; font-size: 13px; }
+    footer a { color: var(--purple-light); }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px; margin-top: 12px; flex-wrap: wrap; }
+    @media (max-width: 768px) { .nav { padding: 0 20px; } .nav-links { display: none; } .nav-hamburger { display: flex; } }
+    .container table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 0.95em; }
+    .container th, .container td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    .container th { width: 32%; font-weight: 600; color: var(--text); background: #faf5ff; }
+    .container p.meta { color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px; }
+    .container p { margin-bottom: 12px; }
+    .container ul { margin: 0 0 16px 20px; }
+    .container li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Eleanor<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#apps">アプリ</a></li>
+      <li><a href="company.html">会社情報</a></li>
+      <li><a href="support.html">サポート</a></li>
+      <li><a href="index.html#contact" class="nav-cta">お問い合わせ</a></li>
+    </ul>
+    <div class="nav-hamburger" onclick="document.getElementById('m').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="m">
+    <a href="index.html#apps">アプリ</a>
+    <a href="company.html">会社情報</a>
+    <a href="support.html">サポート</a>
+    <a href="index.html#contact">お問い合わせ</a>
+  </div>
+
+  <div class="page-header">
+    <p class="label">Legal</p>
+    <h1>プライバシーポリシー<br><span style="font-size:0.65em;font-weight:400;color:rgba(255,255,255,0.6)">Privacy Policy</span></h1>
+    <p class="app-name">ヒトモヨウ by Eleanor</p>
+  </div>
+
+  <div class="container">
+    <div class="lang-label">日本語</div>
+<p class="meta">アプリ「ヒトモヨウ」（以下「本アプリ」）／提供者: Eleanor Dev（屋号: エレノア・代表: 豊島 悠右）／最終更新: 2026年9月18日</p>
+
+<h2>1. 基本方針 — 本アプリはデータを収集しません</h2>
+<p>本アプリで入力された人物の情報（氏名、関係、写真、誕生日、命日、住所、電話番号、性格タイプ、メモ、自由属性など）は、<strong>お使いの端末内にのみ保存されます</strong>。提供者はサーバーを運営しておらず、これらの情報を取得・閲覧・保存・送信することはできません。</p>
+
+<h2>2. 情報収集モジュール（SDK）について</h2>
+<p>本アプリは、アクセス解析・広告配信・クラッシュレポート等の情報収集モジュールを組み込んでいません。提供者以外の第三者が本アプリを通じて利用者情報を取得することはありません。本アプリが行う通信は、App Store / Google Play によるアプリ内課金の確認のみです（課金に関する情報は各ストア事業者が取り扱い、提供者は決済情報にアクセスしません）。</p>
+
+<h2>3. 第三者提供・外国への提供・委託</h2>
+<p>提供者は本アプリの利用者情報を取得しないため、第三者提供、外国にある第三者への提供、取扱いの委託はいずれも行いません。</p>
+
+<h2>4. 保存と削除</h2>
+<ul>
+  <li>データは端末内の本アプリ領域に保存され、<strong>本アプリを削除すると消去されます</strong>。利用者はアプリ内でいつでも個々のデータやマップを削除できます。</li>
+  <li>お使いの OS のバックアップ機能（iCloud バックアップ、Google のバックアップ）が有効な場合、端末のデータの一部として複製されることがあります。これは Apple / Google が提供する機能であり、提供者はアクセスできません。</li>
+  <li>「書き出し」機能で利用者自身の操作により、データ（zip）や図（画像）を端末外へ保存・共有できます。共有先の取扱いは利用者の責任となります。</li>
+</ul>
+
+<h2>5. 端末の機能・権限</h2>
+<ul>
+  <li><strong>通知</strong>: 誕生日・命日のリマインド（任意）に使います。通知は端末内で予約され、外部サーバーは使いません。</li>
+  <li><strong>写真</strong>: 利用者が選んだ画像 1 枚を人物の写真として端末内に保存します。写真ライブラリ全体を読み取ることはありません。</li>
+  <li><strong>生体認証</strong>: アプリロック（任意）の解除に OS の Face ID / 指紋 / 画面ロックを使います。生体情報そのものは本アプリからアクセスできません。</li>
+  <li>将来、連絡先からの取り込み機能を追加する場合も、利用者が選択した連絡先のみを端末内に保存し、提供者は取得しません。</li>
+</ul>
+
+<h2>6. 第三者（家族・友人など）の情報について</h2>
+<p>本アプリに登録する家族・友人・知人などの情報は、利用者ご自身が入力・管理するものです。ご本人との関係で必要な配慮（同意の取得、公開範囲の判断など）は利用者の責任で行ってください。</p>
+
+<h2>7. お問い合わせで取得する情報</h2>
+<p>お問い合わせをいただいた際、メールアドレス・お名前・お問い合わせ内容を取得します。利用目的は<strong>お問い合わせへの回答および対応記録の保管</strong>に限り、第三者に提供しません。記録は対応完了後 1 年以内に削除します。</p>
+
+<h2>8. 対象年齢</h2>
+<p>本アプリは日本国内の利用者を対象としています。</p>
+
+<h2>9. 本ポリシーの変更</h2>
+<p>変更する場合は、本ページおよびアプリ内で告知します。重要な変更（データを端末外に送信する機能の追加など）は、施行前にアプリ内で明示します。</p>
+
+<h2>10. お問い合わせ窓口</h2>
+<p>Eleanor Dev（エレノア）<br>メール: contact@eleanor-dev.com<br>サポートページ: <a href="https://eleanor-dev.com/support-hitomoyou.html">https://eleanor-dev.com/support-hitomoyou.html</a></p>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2026 エレノア（Eleanor）. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="index.html">ホーム</a>
+      <a href="support-hitomoyou.html">サポート</a>
+      <a href="privacy-hitomoyou.html">プライバシーポリシー</a>
+      <a href="terms-hitomoyou.html">利用規約</a>
+      <a href="tokusho-hitomoyou.html">特定商取引法に基づく表記</a>
+    </div>
+  </footer>
+
+</body>
+</html>
