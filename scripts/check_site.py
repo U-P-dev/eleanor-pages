@@ -124,7 +124,8 @@ EYEBROW = re.compile(r"<p[^>]*>\s*[A-Za-z][A-Za-z0-9 &'’.\-]{0,30}\s*</p>\s*<h
 DASHES = ("—", "―")
 # ホスト名と IP アドレス（公開リポジトリと出力に持ち込まない。www は本体への転送なので許す）
 SUBDOMAIN = re.compile(r"\b(?!www\.)[a-z0-9-]+(?:\.[a-z0-9-]+)*\.eleanor-dev\.com\b", re.I)
-IPV4 = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
+# 「Chrome/140.0.0.0」のような製品名/版番号は IP アドレスとして扱わない（2026-09-24 に誤検出した）
+IPV4 = re.compile(r"(?<![\d.])(?<![A-Za-z]/)(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
 IP_OK = {"0.0.0.0", "127.0.0.1"}
 # 新しいページに無ければならないファイル（構造化データのロゴ・検索結果のアイコン・書体のライセンス・AI 向けの案内）
 REQUIRED = ["favicon.ico", "logo.png", "fonts/OFL.txt", "llms.txt"]
@@ -374,7 +375,9 @@ def check_leaks(dist: str, root: str) -> tuple[list[str], list[str]]:
             for hit in leak_findings(open(p, encoding="utf-8", errors="ignore").read())[:1]:
                 fails.append(f"  ✗ 出力 {os.path.relpath(p, dist)} にホスト名か IP アドレス「{hit}」がある")
     try:
-        tracked = subprocess.run(["git", "-C", root, "ls-files"], capture_output=True, text=True, check=True).stdout.split()
+        # まだコミットしていない新しいファイルも見る（手元で通って Cloudflare のビルドで落ちる、を防ぐ。2026-09-24）
+        tracked = subprocess.run(["git", "-C", root, "ls-files", "--cached", "--others", "--exclude-standard"],
+                                 capture_output=True, text=True, check=True).stdout.split()
     except (OSError, subprocess.CalledProcessError):
         notes.append("  · git が使えないので、追跡中のファイルのホスト名の検査は省いた")
         return fails, notes
