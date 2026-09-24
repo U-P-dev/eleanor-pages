@@ -1,0 +1,35 @@
+---
+// 代表の紹介（トップの「つくる人」と会社概要の「代表から」で共用）。
+// 写真は src/assets/person/ に 1 枚だけ置く（位置情報などの撮影データを消してから。scripts/strip_photo.mjs）。
+// 無いあいだは文章だけで組む（空の枠や仮の絵を置かない）。
+import { Picture } from 'astro:assets';
+import { SITE } from '../site.mjs';
+
+interface Props {
+  headingId: string;
+  heading: string;
+}
+const { headingId, heading } = Astro.props;
+const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/person/*.{jpg,jpeg,png,webp}', { eager: true });
+const photo = Object.values(photos)[0]?.default;
+---
+
+<div class={photo ? 'person person--photo' : 'person'}>
+  {
+    photo && (
+      <figure class="person__photo">
+        <Picture
+          src={photo}
+          alt={`エレノア代表の${SITE.operator.representative}`}
+          widths={[224, 448, 672]}
+          sizes="(min-width: 48rem) 14rem, 100vw"
+          formats={['avif', 'webp']}
+        />
+      </figure>
+    )
+  }
+  <div class="person__body">
+    <h2 class="section__title" id={headingId}>{heading}</h2>
+    <slot />
+  </div>
+</div>

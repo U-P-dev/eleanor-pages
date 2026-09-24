@@ -1,6 +1,8 @@
 ---
 import '../styles/tokens.css';
 import '../styles/global.css';
+import LogoMark from '../components/LogoMark.astro';
+import { graph, organization, person, webPage, website } from '../lib/jsonld.mjs';
 import { NAV, SITE } from '../site.mjs';
 
 interface Props {
@@ -8,19 +10,30 @@ interface Props {
   title: string;
   description: string;
   type?: 'website' | 'article';
+  /** このページだけの構造化データのノード（@context は付けない。事業者・サイト・ページのノードはここで足す） */
   jsonLd?: object[];
+  /** WebPage の種類（AboutPage・CollectionPage など） */
+  pageType?: string;
   noindex?: boolean;
 }
 
-const { title, description, type = 'website', jsonLd = [], noindex = false } = Astro.props;
+const { title, description, type = 'website', jsonLd = [], pageType = 'WebPage', noindex = false } = Astro.props;
 const path = Astro.url.pathname;
 const canonical = new URL(path === '/index.html' ? '/' : path, SITE.url).href;
 const isHome = path === '/' || path === '/index.html';
-// 確認用のビルド（next.eleanor-dev.com）は全ページを検索に出さない
+// 確認用のビルド（STAGING=1）は全ページを検索に出さない
 const staging = process.env.STAGING === '1';
 const ogImage = new URL('/og.jpg', SITE.url).href;
 // JSON-LD を <script> に埋めるので、</script> で閉じられないよう < を逃がす
 const ld = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c');
+const breadcrumbId = (jsonLd as { '@type'?: string; '@id'?: string }[]).find((n) => n['@type'] === 'BreadcrumbList')?.['@id'];
+const structured = graph([
+  organization(),
+  person(),
+  website(),
+  webPage({ url: canonical, title, description, type: pageType, breadcrumbId }),
+  ...jsonLd,
+]);
 const current = (href: string) => (href === path || (href === '/blog.html' && path.startsWith('/blog/')) ? 'page' : undefined);
 const beacon = SITE.analytics.cloudflareBeaconToken;
 ---
@@ -43,13 +56,14 @@ const beacon = SITE.analytics.cloudflareBeaconToken;
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${SITE.name} — ${SITE.tagline}`} />
+    <meta property="og:image:alt" content={`${SITE.name}のロゴと「「つくって終わり」。に、しない。」の文字`} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#7c3aed" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    {jsonLd.map((data) => <script type="application/ld+json" set:html={ld(data)} />)}
+    <script type="application/ld+json" set:html={ld(structured)} />
     {
       import.meta.env.PROD && beacon && !staging && (
         <script
@@ -66,19 +80,7 @@ const beacon = SITE.analytics.cloudflareBeaconToken;
     <header class="site-header">
       <div class="wrap site-header__inner">
         <a class="site-logo" href="/" aria-current={isHome ? 'page' : undefined}>
-          <svg class="site-logo__mark" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
-            <defs>
-              <linearGradient id="logo-grad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#8b008b"></stop>
-                <stop offset="0.52" stop-color="#7c3aed"></stop>
-                <stop offset="1" stop-color="#00118f"></stop>
-              </linearGradient>
-            </defs>
-            <rect width="32" height="32" rx="8" fill="url(#logo-grad)"></rect>
-            <rect x="9" y="8" width="14" height="3.2" rx="1.6" fill="#fff"></rect>
-            <rect x="9" y="14.4" width="10" height="3.2" rx="1.6" fill="#fff"></rect>
-            <rect x="9" y="20.8" width="14" height="3.2" rx="1.6" fill="#fff"></rect>
-          </svg>
+          <LogoMark class="site-logo__mark" />
           <span>{SITE.name}<span class="site-logo__en">{SITE.nameEn}</span></span>
         </a>
         <nav class="global-nav" aria-labelledby="global-nav-label">
@@ -121,7 +123,7 @@ const beacon = SITE.analytics.cloudflareBeaconToken;
                 </li>
               ))
             }
-            <li class="mobile-menu__cta"><a class="button button--primary button--large" href="/#contact">お問い合わせ</a></li>
+            <li class="mobile-menu__cta"><a class="button button--secondary button--large" href="/#contact">お問い合わせ</a></li>
           </ul>
         </div>
       </nav>
@@ -136,7 +138,7 @@ const beacon = SITE.analytics.cloudflareBeaconToken;
         <div class="site-footer__about">
           <p class="site-footer__tagline">「つくって終わり」。<br />に、しない。</p>
           <p>
-            {SITE.operator.name}（{SITE.operator.nameEn}）<br />代表 {SITE.operator.representative}<br />東京都新宿区
+            {SITE.operator.name}（{SITE.operator.nameEn}）<br />代表 {SITE.operator.representative}<br />東京都新宿区<br />{SITE.area}
           </p>
         </div>
         <nav aria-labelledby="footer-nav-site">

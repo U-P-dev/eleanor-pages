@@ -9,7 +9,6 @@ interface Props {
   title: string;
   description: string;
   noindex?: boolean;
-  eyebrow?: string;
   h1: string;
   h1Sub?: string;
   appName?: string;
@@ -17,7 +16,7 @@ interface Props {
   crumbs?: { label: string; href?: string }[];
   content: string;
 }
-const { title, description, noindex = false, eyebrow, h1, h1Sub, appName, lead, crumbs, content } = Astro.props;
+const { title, description, noindex = false, h1, h1Sub, appName, lead, crumbs, content } = Astro.props;
 // 本文の文字は変えずに、読み方と見え方だけを整える（見える本文が変わらないことは scripts/check_legal_text.py が照合する）
 //   - 編集用のコメント（<!-- 日本語 --> など）は読者に届けない
 //   - 表は横スクロールの枠で包む（狭い画面で本文ごとはみ出さないように。DADS テーブル）
@@ -32,10 +31,9 @@ const body = content
 <Base title={title} description={description} noindex={noindex} jsonLd={crumbs ? [breadcrumbLd(crumbs, Astro.url.pathname)] : []}>
   {crumbs && <Breadcrumb items={crumbs} />}
   <div class="wrap narrow page-head">
-    {eyebrow && <p class="section__eyebrow">{eyebrow}</p>}
     <h1>
       {h1}
-      {h1Sub && <span class="h1-sub">{h1Sub}</span>}
+      {h1Sub && <span class="h1-sub" lang="en">{h1Sub}</span>}
     </h1>
     {appName && <p class="page-head__lead">{appName}</p>}
     {lead && <p class="page-head__lead">{lead}</p>}

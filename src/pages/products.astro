@@ -1,35 +1,75 @@
 ---
+import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Flow from '../components/Flow.astro';
+import kaiyakuPc from '../assets/shots/kaiyaku-top-pc.webp';
+import kaiyakuSp from '../assets/shots/kaiyaku-article-sp.webp';
 import { breadcrumbLd } from '../lib/breadcrumb.mjs';
-import { SITE } from '../site.mjs';
+import { jaDate } from '../lib/date.mjs';
+import { SITE, WORKS } from '../site.mjs';
 
 const crumbs = [{ label: 'つくったもの' }];
+const kaiyaku = WORKS.kaiyaku;
 ---
 
 <Base
-  title={`つくったもの｜${SITE.name}`}
-  description="エレノアが自分でつくって運営しているサイトと、その設計の考え方。間違いを公開前に機械で止める仕組み、1か所のデータから表示をつくる仕組みなど、お客様のサイトにも使っている考え方を紹介します。"
+  title={`つくったもの：解約手帳とこのサイトの設計｜${SITE.name}`}
+  description="エレノアが自分でつくって運営しているサイトと、その設計の考え方。間違いを公開前に機械で止める仕組み、1か所のデータから料金の表示をつくる仕組みなど、お客様のサイトにも使っている考え方を紹介します。"
   jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
 >
   <Breadcrumb items={crumbs} />
   <div class="wrap page-head">
     <h1>つくったもの</h1>
     <p class="page-head__lead">
-      自分たちのサービスも、自分で設計して運営しています。ここでは公開中のものだけを載せ、どう動いているかを書いています。お客様のサイトにも、同じ考え方を使います。
+      自分のサービスも、自分で設計して運営しています。公開中のものは画面と事実を、準備中のアプリはその旨を載せています。お客様のサイトにも、同じ考え方を使います。
     </p>
   </div>
 
   <div class="wrap page-body">
     <section class="section" id="kaiyaku" aria-labelledby="kaiyaku-title">
-      <p class="section__eyebrow">公開中</p>
-      <h2 id="kaiyaku-title">解約手帳</h2>
+      <h2 id="kaiyaku-title">{kaiyaku.name}</h2>
+      <div class="work">
+        <figure class="shot">
+          <div class="work__shots">
+            <Picture
+              src={kaiyakuPc}
+              alt="解約手帳のトップページ。確かめた日付つきのサブスク解約手順の一覧"
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 48rem) 30rem, 70vw"
+              formats={['avif', 'webp']}
+            />
+            <Picture
+              src={kaiyakuSp}
+              alt="解約手帳の記事をスマートフォンで開いた画面。冒頭に最終確認日と、確かめた公式ページの一覧がある"
+              widths={[200, 320, 480]}
+              sizes="(min-width: 48rem) 11rem, 27vw"
+              formats={['avif', 'webp']}
+            />
+          </div>
+          <figcaption>{kaiyaku.host} のトップページ（パソコン）と記事（スマートフォン）。{jaDate(kaiyaku.shotAt)}に撮影。</figcaption>
+        </figure>
+        <div class="work__body">
+          <p>
+            {kaiyaku.summary}です（<a href={kaiyaku.url}>{kaiyaku.host}</a>）。手順や金額は変わるので、「いつ確かめたか」が無い情報は載せない、と決めてつくりました。
+          </p>
+          <dl class="facts">
+            <div>
+              <dt>公開</dt>
+              <dd>{jaDate(kaiyaku.since)}から運用中</dd>
+            </div>
+            <div>
+              <dt>担当</dt>
+              <dd>企画・設計・制作・記事の検査の仕組み・運用</dd>
+            </div>
+            <div>
+              <dt>技術</dt>
+              <dd>Astro（サイトの生成）、Cloudflare Workers（配信）、Python（記事の検査）</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
       <div class="prose">
-        <p>
-          サブスクの解約手順を、公式ページで確かめた日付つきでまとめたサイトです（<a href="https://kaiyaku-techo.com/">kaiyaku-techo.com</a>）。
-          手順や金額は変わるので、「いつ確かめたか」が無い情報は載せない、と決めてつくりました。
-        </p>
         <h3>間違いを、公開の前に機械で止める</h3>
         <p>
           記事は書いただけでは公開されません。確認日と出典の数、誤解を招く言い方がないかを原稿の段階で調べ、サイトの形にしたあとで、リンク切れや読みにくい色の組み合わせがないかをもう一度調べます。どこかで引っかかると、公開の手前で止まります。
@@ -42,27 +82,20 @@ const crumbs = [{ label: 'つくったもの' }];
           { title: '原稿の検査', body: '確認日・出典の数・表現を確かめる' },
           { title: 'サイトの形に変換', body: 'Astro で HTML をつくる' },
           { title: '仕上がりの検査', body: 'リンク切れ・色の読みやすさ' },
-          { title: '配信', body: 'Cloudflare から世界中へ' },
+          { title: '配信', body: 'Cloudflare の配信網から' },
         ]}
       />
-      <ul class="tag-list" role="list" aria-label="使っている技術">
-        <li>Astro</li>
-        <li>Cloudflare Workers</li>
-        <li>Python（検査）</li>
-        <li>デジタル庁デザインシステム</li>
-      </ul>
     </section>
 
-    <section class="section" id="this-site" aria-labelledby="this-site-title">
-      <p class="section__eyebrow">公開中</p>
-      <h2 id="this-site-title">このサイト（eleanor-dev.com）</h2>
+    <section class="section section--minor" id="this-site" aria-labelledby="this-site-title">
+      <h2 class="section__title" id="this-site-title">このサイト（eleanor-dev.com）</h2>
       <div class="prose">
         <p>
-          読みやすさと、迷わずにたどり着ける導線を優先して作り直しました。文字の大きさ・行の間隔・色の組み合わせは、デジタル庁デザインシステムを参考にしています。
+          読みやすさと、迷わずにたどり着ける導線を優先してつくりました。文字の大きさ・行の間隔・色の組み合わせは、デジタル庁デザインシステムを参考にしています。
         </p>
         <h3>料金は1か所から、すべての表示へ</h3>
         <p>
-          料金表・特定商取引法に基づく表示・お支払いの画面が、別々に書かれていると、どこか1か所だけ古くなります。料金は1か所のデータにまとめ、そこから各ページの表示をつくり、食い違いがないかを機械で突き合わせています。
+          料金表・特定商取引法に基づく表示・お支払いの画面が別々に書かれていると、どこか1か所だけ古くなります。料金は1か所のデータにまとめ、そこから各ページの表示をつくり、食い違いがないかを機械で突き合わせています。
         </p>
       </div>
       <Flow
@@ -79,22 +112,35 @@ const crumbs = [{ label: 'つくったもの' }];
         <p>
           このサイトの URL は、お支払いの画面やアプリの設定から直接リンクされています。作り直しても URL が1つも変わらないことを、公開のたびに機械で確かめています。
         </p>
+        <p>使っている技術は Astro（サイトの生成）、Cloudflare Workers（配信）、Python（検査）です。</p>
       </div>
-      <ul class="tag-list" role="list" aria-label="使っている技術">
-        <li>Astro</li>
-        <li>Cloudflare Workers</li>
-        <li>Python（検査）</li>
-        <li>デジタル庁デザインシステム</li>
-      </ul>
     </section>
 
-    <aside class="cta-band" aria-labelledby="products-cta">
-      <h2 id="products-cta">同じ考え方で、お店のサイトもつくります</h2>
-      <p>予約や問い合わせまわりの仕組み、サイトの引っ越しのご相談も、フルオーダーでお受けします。</p>
+    <section class="section section--minor" id="apps-coming" aria-labelledby="apps-coming-title">
+      <h2 class="section__title" id="apps-coming-title">準備中のアプリ</h2>
+      <div class="prose">
+        <p>次の2つは、ストアでの公開を準備しています。サポートと規約のページは先に公開しています。</p>
+        <ul>
+          <li>SONO-HINO（スマートフォンアプリ）：<a href="/support.html">サポート</a>・<a href="/privacy.html">プライバシーポリシー</a></li>
+          <li>
+            ヒトモヨウ（人物相関図アプリ）：<a href="/support-hitomoyou.html">サポート</a>・<a href="/privacy-hitomoyou.html"
+              >プライバシーポリシー</a
+            >
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="page-end" aria-labelledby="products-end">
+      <h2 id="products-end">同じ考え方で、お店のサイトもつくります</h2>
+      <p>
+        予約や問い合わせまわりの仕組み、サイトの引っ越しのご相談も、フルオーダーでお受けします（<a href="/services.html#extend"
+          >付随する機能の開発</a
+        >）。
+      </p>
       <div class="button-row">
         <a class="button button--primary button--large" href="/#contact">相談する</a>
-        <a class="button button--secondary button--large" href="/services.html#extend">付随する機能の開発</a>
       </div>
-    </aside>
+    </section>
   </div>
 </Base>

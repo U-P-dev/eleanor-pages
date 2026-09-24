@@ -3,43 +3,61 @@
 <style>body{margin:0;background:#ccc;font-family:sans-serif}canvas{display:block;margin:8px;box-shadow:0 0 0 1px #000;max-width:95vw;height:auto}</style></head><body>
 <canvas id="og" width="1200" height="630"></canvas>
 <script>
-// SNS で共有されたときの画像（1200×630）。`await draw(); await save()` → tools/preview/out/og.jpg を public/ へ手で移す
-// グラデーションは PNG だと 800KB を超えるので JPEG（品質 0.9）で書き出す
-// 色は tokens.css と同じ（グラデーションは Magenta-900 → バイオレット → Blue-1000。どの点でも白い文字が 4.5:1 以上）
-const FONT = '"BIZ UDPGothic", "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", Meiryo, sans-serif';
+// SNS で共有されたときの画像（1200×630）。白地に墨の文字と、ロゴの印（赤と青が重なって紫）。面をグラデーションで塗らない（DESIGN.md §1）。
+// 先に npm run build（見出しの書体 dist/fonts/heading-*.woff2 を使う）→ python3 tools/preview/serve.py →
+// このページを ?auto=1 で開くと描いて tools/preview/out/og.jpg に保存する → public/og.jpg へ手で移す
+const HEADING = '"Eleanor Heading", "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif';
+const BODY = '"Noto Sans JP", "Hiragino Sans", "BIZ UDPGothic", "Yu Gothic UI", Meiryo, sans-serif';
+const INK = '#1a1a1a', MID = '#4d4d4d', RULE = '#949494';
+
+async function loadHeadingFont() {
+  // 書体のファイル名はビルドごとに変わるので、トップページの preload から拾う
+  const html = await (await fetch('/')).text();
+  const href = html.match(/<link rel="preload" href="([^"]+\.woff2)"/)?.[1];
+  if (!href) return 'no heading font';
+  const face = new FontFace('Eleanor Heading', `url(${href})`, { weight: '700' });
+  document.fonts.add(await face.load());
+  return href;
+}
 
 function mark(c, x, y, s) {
-  // ロゴ（favicon.svg と同じ形）: 角丸の白地に紫の3本線
-  const r = 8 * s;
-  c.fillStyle = '#fff';
-  c.beginPath(); c.roundRect(x, y, 32 * s, 32 * s, r); c.fill();
-  c.fillStyle = '#5109ad';
-  for (const [bx, by, bw] of [[9, 8, 14], [9, 14.4, 10], [9, 20.8, 14]]) {
-    c.beginPath(); c.roundRect(x + bx * s, y + by * s, bw * s, 3.2 * s, 1.6 * s); c.fill();
-  }
+  // src/components/LogoMark.astro と同じ形（32 の格子）
+  c.fillStyle = '#d7263d'; c.fillRect(x + 2 * s, y + 8 * s, 20 * s, 22 * s);
+  c.fillStyle = '#1f4fd1'; c.fillRect(x + 10 * s, y + 2 * s, 20 * s, 20 * s);
+  c.fillStyle = '#7c3aed'; c.fillRect(x + 10 * s, y + 8 * s, 12 * s, 14 * s);
 }
 
 async function draw() {
+  const font = await loadHeadingFont();
   await document.fonts.ready;
   const c = document.getElementById('og').getContext('2d');
-  const g = c.createLinearGradient(0, 0, 1200, 630);
-  g.addColorStop(0, '#8b008b'); g.addColorStop(0.52, '#7c3aed'); g.addColorStop(1, '#00118f');
-  c.fillStyle = g; c.fillRect(0, 0, 1200, 630);
-  mark(c, 96, 84, 2.5);
-  c.fillStyle = '#fff'; c.textBaseline = 'alphabetic';
-  c.font = `700 44px ${FONT}`; c.fillText('エレノア', 192, 140);
-  c.font = `700 104px ${FONT}`;
-  c.fillText('「つくって終わり」。', 84, 330);
-  c.fillText('に、しない。', 96, 450);
-  c.font = `400 34px ${FONT}`;
-  c.fillText('ホームページと LP の制作・運用｜東京・新宿', 100, 560);
-  c.font = `700 30px ${FONT}`; c.textAlign = 'right'; c.fillText('eleanor-dev.com', 1104, 560);
+  c.fillStyle = '#ffffff'; c.fillRect(0, 0, 1200, 630);
+  mark(c, 88, 72, 2.5);
+  c.fillStyle = INK; c.textBaseline = 'alphabetic';
+  c.font = `700 44px ${HEADING}`; c.fillText('エレノア', 184, 132);
+  c.fillStyle = MID; c.font = `400 26px ${BODY}`; c.fillText('Eleanor', 392, 130);
+  // 看板。行頭の始め括弧は二分ぶら下げ、「」。」は二分詰める（サイトの .kern-open / .kern-close と同じ）
+  c.fillStyle = INK; c.font = `700 100px ${HEADING}`;
+  const em = 100, x0 = 88;
+  let x = x0 - em / 2;
+  for (const [ch, adv] of [['「', 1], ['つくって終わり', null], ['」', 0.5], ['。', 1]]) {
+    c.fillText(ch, x, 330);
+    x += adv === null ? c.measureText(ch).width : adv * em;
+  }
+  c.fillText('に、しない。', x0, 450);
+  c.fillStyle = MID; c.font = `700 36px ${HEADING}`;
+  c.fillText('東京・新宿のホームページ・LP 制作と保守', x0, 540);
+  c.fillStyle = RULE; c.fillRect(x0, 568, 1024, 1);
+  c.fillStyle = INK; c.font = `700 28px ${BODY}`; c.textAlign = 'right'; c.fillText('eleanor-dev.com', 1112, 540);
   c.textAlign = 'left';
-  return 'drawn';
+  return 'drawn with ' + font;
 }
 async function save() {
   const blob = await new Promise((ok) => document.getElementById('og').toBlob(ok, 'image/jpeg', 0.9));
   const r = await fetch('/__save/og.jpg', { method: 'POST', body: blob });
   return 'og.jpg: ' + (await r.text());
+}
+if (new URLSearchParams(location.search).has('auto')) {
+  (async () => { const a = await draw(); const b = await save(); document.title = `done: ${a} / ${b}`; })();
 }
 </script></body></html>

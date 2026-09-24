@@ -20,7 +20,9 @@
  *   THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * キーカラーだけは DADS 既定の Blue ではなく、エレノアのブランド色（バイオレット #7c3aed）にしている。
- * 赤から青へ混ざる紫のグラデーション（Magenta-900 → バイオレット → Blue-1000）は、ファーストビューの帯と飾りにだけ使う。
+ * 使うのは「塗りのボタン」「メニューの今いるページの印」「ロゴの重なり」の 3 か所だけ。面を紫やグラデーションで塗らない
+ * （紫→青のグラデーションの面は、生成 AI が作ったページの目印として最もよく挙がる。DESIGN.md §1）。
+ * 「赤と青が混ざって紫」はロゴの印（赤と青の四角が重なり、重なりが紫）だけで表す。
  * 値を変えたら scripts/check_site.py のコントラスト検査が通るか確かめる（変数名で読んでいる）。
  */
 :root {
@@ -37,12 +39,14 @@
 
   /* キーカラー（ブランドのバイオレット）と、押したとき・ホバーの濃い紫（DADS Purple） */
   --color-brand-violet: #7c3aed;
-  --color-primitive-purple-50: #f1eafa;
-  --color-primitive-purple-800: #5c10be;
   --color-primitive-purple-900: #5109ad;
   --color-primitive-purple-1000: #41048e;
 
-  /* リンク（DADS 標準の組み合わせ）。Magenta-900 と Blue-1000 はグラデーションの両端にも使う */
+  /* ロゴの印だけに使う赤と青（重なりはバイオレット）。文字には使わない */
+  --color-logo-red: #d7263d;
+  --color-logo-blue: #1f4fd1;
+
+  /* リンク（DADS 標準の組み合わせ） */
   --color-primitive-blue-900: #0017c1;
   --color-primitive-blue-1000: #00118f;
   --color-primitive-magenta-900: #8b008b;
@@ -57,13 +61,15 @@
   /* エラー（Error-2）。フォームの「※必須」とエラーの表示 */
   --color-error-2: #ce0000;
 
+  /* 角丸は 3 段だけ: 0（節・表・画像・囲み）／4px（文中のコード・フォーカスの輪）／8px（ボタン・入力欄）。
+     「角が丸いものは押せる」。全部に同じ角丸を付けない（DESIGN.md §1） */
   --border-radius-4: 0.25rem;
   --border-radius-8: 0.5rem;
-  --border-radius-12: 0.75rem;
-  --border-radius-16: 1rem;
 
-  /* Web フォントは読み込まない。Noto Sans JP が入っている環境ではそれを、無ければ OS の和文フォントを使う
-     （Windows は標準搭載の UD フォント BIZ UDPGothic → メイリオ） */
+  /* 本文は OS の和文フォント（Noto Sans JP が入っていればそれ）。
+     見出しとロゴだけ Zen Kaku Gothic New 700（SIL OFL 1.1）を、使っている字だけ切り出してこのサイトから配る
+     （scripts/headings.mjs がビルドの後に作る。取れなければ本文と同じ書体で出る） */
+  --font-family-heading: 'Eleanor Heading', var(--font-family-sans);
   --font-family-sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
     'BIZ UDPGothic', Meiryo, sans-serif;
   --font-family-mono: 'Noto Sans Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'BIZ UDGothic', monospace;

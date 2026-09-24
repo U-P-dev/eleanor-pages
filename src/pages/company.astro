@@ -1,7 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import Person from '../components/Person.astro';
 import { breadcrumbLd } from '../lib/breadcrumb.mjs';
+import { ORG_ID, organization } from '../lib/jsonld.mjs';
+import { jaDate } from '../lib/date.mjs';
+import updated from '../data/updated.json';
 import { SITE } from '../site.mjs';
 
 const crumbs = [{ label: '会社概要' }];
@@ -9,9 +13,10 @@ const op = SITE.operator;
 ---
 
 <Base
-  title={`会社概要｜${SITE.name}`}
-  description="エレノア（Eleanor）の事業者情報と代表のプロフィール。東京都新宿区の個人事業で、お店と小さな会社のホームページ・LP の制作と、公開後の保守・運用を引き受けています。"
-  jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
+  title={`会社概要・代表プロフィール｜${SITE.name}（東京・新宿）`}
+  description="エレノア（Eleanor）の事業者情報と代表のプロフィール。東京都新宿区の個人事業で、お店と小さな会社のホームページ・LP の制作と、公開後の保守・運用を引き受けています。全国からメールとオンラインでご依頼をお受けします。"
+  pageType="AboutPage"
+  jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname), organization({ full: true }), { '@id': `${new URL(Astro.url.pathname, SITE.url).href}#webpage`, mainEntity: { '@id': ORG_ID } }]}
 >
   <Breadcrumb items={crumbs} />
   <div class="wrap page-head">
@@ -22,28 +27,19 @@ const op = SITE.operator;
   </div>
 
   <div class="wrap page-body">
-    <section class="section" aria-labelledby="policy-title">
-      <h2 id="policy-title">大切にしていること</h2>
-      <ul class="card-grid" role="list">
-        <li class="card">
-          <p class="card__label">Vision</p>
-          <h3 class="card__title">「つくって終わり」に、しない。</h3>
-          <p>
-            サイトは公開した日から働きはじめます。設計・制作・公開・運用まで、すべての工程にひとりの開発者が責任を持ちます。途中で担当が替わらないので、事情を一から説明し直す必要がありません。
-          </p>
-        </li>
-        <li class="card">
-          <p class="card__label">Mission</p>
-          <h3 class="card__title">好奇心をプロダクトへ</h3>
-          <p>
-            面白いと思った課題を、動くものに変え続けます。自分たちのサービスも自分でつくって運営し、そこで確かめた考え方をお客様のサイトに使います。
-          </p>
-        </li>
-      </ul>
+    <section class="section" aria-labelledby="message-title">
+      <Person headingId="message-title" heading="代表から">
+        <p>
+          サイトは、公開した日から働きはじめます。それなのに、つくった人が公開の日に手を離してしまうと、直したいところが出てきたときに頼める相手がいません。
+        </p>
+        <p>
+          エレノアは、つくった本人が公開後も保守を続けることを前提に、料金と進め方を組み立てています。途中で担当が替わらないので、事情を一から説明し直す必要がありません。自分のサービスも自分でつくって運営し、そこで確かめたやり方をお客様のサイトに使っています。
+        </p>
+      </Person>
     </section>
 
-    <section class="section" id="profile" aria-labelledby="profile-title">
-      <h2 id="profile-title">代表のプロフィール</h2>
+    <section class="section section--minor" id="profile" aria-labelledby="profile-title">
+      <h2 class="section__title" id="profile-title">代表のプロフィール</h2>
       <dl class="dl">
         <div>
           <dt>代表</dt>
@@ -64,8 +60,8 @@ const op = SITE.operator;
       </dl>
     </section>
 
-    <section class="section" id="info" aria-labelledby="info-title">
-      <h2 id="info-title">事業者情報</h2>
+    <section class="section section--minor" id="info" aria-labelledby="info-title">
+      <h2 class="section__title" id="info-title">事業者情報</h2>
       <dl class="dl">
         <div>
           <dt>屋号</dt>
@@ -94,6 +90,10 @@ const op = SITE.operator;
           <dd>〒{op.postalCode}<br />{op.address}</dd>
         </div>
         <div>
+          <dt>対応地域</dt>
+          <dd>{SITE.area}</dd>
+        </div>
+        <div>
           <dt>電話番号</dt>
           <dd>{op.phone}（留守番電話でお受けし、メールで折り返します）</dd>
         </div>
@@ -105,15 +105,19 @@ const op = SITE.operator;
           <dt>受付時間</dt>
           <dd>平日 10:00〜18:00。お問い合わせには、原則1営業日以内にメールでお返事します。</dd>
         </div>
+        <div>
+          <dt>最終更新</dt>
+          <dd><time datetime={updated['/company.html']}>{jaDate(updated['/company.html'])}</time></dd>
+        </div>
       </dl>
     </section>
 
-    <aside class="cta-band" aria-labelledby="company-cta">
-      <h2 id="company-cta">ご相談はお問い合わせから</h2>
+    <section class="page-end" aria-labelledby="company-end">
+      <h2 id="company-end">ご相談はお問い合わせから</h2>
       <p>ご相談・お見積もりは無料です。いまのお困りごとをお書きください。</p>
       <div class="button-row">
         <a class="button button--primary button--large" href="/#contact">相談する</a>
       </div>
-    </aside>
+    </section>
   </div>
 </Base>

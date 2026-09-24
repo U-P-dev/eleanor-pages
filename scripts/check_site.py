@@ -11,6 +11,11 @@
     （旧サイトから本文をそのまま移したページは、本文を変えない約束が優先するので <ol> と表の枠は見ない）
   - 外部から自動で読み込むものの送信先が、サイトポリシーの外部送信の表に載っているか（電気通信事業法 27条の12）
   - 色のコントラスト比（src/styles/tokens.css の値で、文字 4.5:1・枠やアイコン 3:1）
+  - 生成 AI が作ったページの目印として挙がる型を戻さない（DESIGN.md §1）: 面のグラデーション・見出しの上の英字・
+    同じ形のカード・一律の角丸・飾りの影・紫の飾り使い・本文のダッシュ
+  - SEO と AIO: 構造化データ（JSON として読めるか・@id のつながり・電話の国番号・日時の時差・FAQ と画面の一致）、
+    title と description の重複、画像の代替テキストと大きさ、llms.txt、robots.txt、サイトマップの最終更新日
+  - 公開リポジトリと出力に、サブドメインのホスト名や IP アドレスを持ち込まない
 
 このほかの言葉づかいの検査は、非公開の運用リポジトリから dist/ を調べる。
 
@@ -18,8 +23,12 @@
 """
 from __future__ import annotations
 
+import datetime
 import glob
+import json
 import os
+import struct
+import subprocess
 import posixpath
 import re
 import sys
@@ -65,47 +74,63 @@ SENDERS = {
 POLICY_PATH = "/site-policy.html"
 
 # 色の組み合わせ（前景, 背景, 最低比, どこで使っているか）。値は src/styles/tokens.css の変数名で引く
-WHITE, GRAY50, TINT = "color-neutral-white", "color-neutral-solid-gray-50", "color-primitive-purple-50"
+WHITE, GRAY50 = "color-neutral-white", "color-neutral-solid-gray-50"
 CONTRAST = [
     ("color-neutral-solid-gray-800", WHITE, 4.5, "本文"),
     ("color-neutral-solid-gray-800", GRAY50, 4.5, "灰の地の本文・フッター"),
-    ("color-neutral-solid-gray-800", TINT, 4.5, "紫の地の本文"),
-    ("color-neutral-solid-gray-900", WHITE, 4.5, "見出し"),
-    ("color-neutral-solid-gray-900", GRAY50, 4.5, "灰の地の見出し"),
-    ("color-neutral-solid-gray-900", TINT, 4.5, "紫の地の見出し"),
-    ("color-neutral-solid-gray-700", WHITE, 4.5, "リード文・表の注記"),
+    ("color-neutral-solid-gray-900", WHITE, 4.5, "見出し・アウトラインのボタン"),
+    ("color-neutral-solid-gray-900", GRAY50, 4.5, "灰の地の見出し・アウトラインのボタン（ホバー）"),
+    ("color-neutral-solid-gray-700", WHITE, 4.5, "リード文・表の注記・画面の説明"),
     ("color-neutral-solid-gray-700", GRAY50, 4.5, "灰の地の表の注記"),
     ("color-neutral-solid-gray-600", WHITE, 4.5, "日付・フォームの補足"),
     ("color-neutral-solid-gray-600", GRAY50, 4.5, "灰の地のフォームの補足・©"),
-    ("color-primitive-purple-900", WHITE, 4.5, "見出しの上の小見出し・アウトラインのボタン"),
-    ("color-primitive-purple-900", GRAY50, 4.5, "灰の地の小見出し"),
-    ("color-primitive-purple-900", TINT, 4.5, "紫の地の小見出し"),
-    ("color-primitive-purple-1000", TINT, 4.5, "アウトラインのボタン（ホバー）"),
     (WHITE, "color-brand-violet", 4.5, "塗りのボタン"),
-    (WHITE, "color-primitive-purple-900", 4.5, "塗りのボタン（ホバー）・手順の番号"),
+    (WHITE, "color-primitive-purple-900", 4.5, "塗りのボタン（ホバー）"),
     (WHITE, "color-primitive-purple-1000", 4.5, "塗りのボタン（押下）"),
-    (WHITE, "color-primitive-magenta-900", 4.5, "ファーストビューの文字（グラデーションの赤側）"),
-    (WHITE, "color-primitive-blue-1000", 4.5, "ファーストビューの文字（グラデーションの青側）"),
-    ("color-primitive-purple-900", WHITE, 4.5, "ファーストビューの白いボタンの文字"),
+    (WHITE, "color-neutral-solid-gray-900", 4.5, "手順の番号（移したページ）"),
+    ("color-brand-violet", WHITE, 3.0, "今いるページの下線・ロゴの重なり"),
+    ("color-logo-red", WHITE, 3.0, "ロゴの赤"),
+    ("color-logo-blue", WHITE, 3.0, "ロゴの青"),
     ("color-error-2", WHITE, 4.5, "「※必須」・エラー"),
     ("color-error-2", GRAY50, 4.5, "灰の地の「※必須」・エラー"),
     ("color-primitive-blue-1000", WHITE, 4.5, "リンク"),
     ("color-primitive-blue-1000", GRAY50, 4.5, "灰の地のリンク"),
-    ("color-primitive-blue-1000", TINT, 4.5, "紫の地のリンク"),
     ("color-primitive-magenta-900", WHITE, 4.5, "訪問済みのリンク"),
     ("color-primitive-magenta-900", GRAY50, 4.5, "灰の地の訪問済みリンク"),
-    ("color-primitive-magenta-900", TINT, 4.5, "紫の地の訪問済みリンク"),
     ("color-primitive-blue-900", WHITE, 4.5, "ホバー中のリンク"),
     ("color-primitive-orange-800", WHITE, 4.5, "押している間のリンク"),
     ("color-primitive-blue-1000", "color-primitive-yellow-300", 4.5, "フォーカス中のリンク（黄色の地）"),
     ("color-primitive-magenta-900", "color-primitive-yellow-300", 4.5, "フォーカス中の訪問済みリンク"),
-    ("color-neutral-solid-gray-420", WHITE, 3.0, "白の地の罫線・カードの枠"),
-    ("color-neutral-solid-gray-536", GRAY50, 3.0, "灰の地のカードの枠"),
-    ("color-neutral-solid-gray-536", TINT, 3.0, "紫の地のカードの枠"),
+    ("color-neutral-solid-gray-420", WHITE, 3.0, "白の地の罫線・画面の枠"),
+    ("color-neutral-solid-gray-536", GRAY50, 3.0, "灰の地の枠"),
     ("color-neutral-solid-gray-600", WHITE, 3.0, "入力欄の枠"),
     ("color-primitive-yellow-900", WHITE, 3.0, "注意の枠"),
     ("color-neutral-black", WHITE, 3.0, "フォーカスの黒線"),
 ]
+
+# ── 生成 AI が作ったページの目印として挙がる型（DESIGN.md §1。出典は同じ節）を戻さない ──
+# 見た目の型をやめたときに消したクラス。出力に残っていたら、どこかの部品が古い書き方のまま
+RETIRED_CLASSES = ["section__eyebrow", "hero__eyebrow", "card--accent", "section--tint", "cta-band", "on-dark", "tag-list"]
+# 角丸は 3 段だけ（0・4px・8px）。全部に同じ角丸を付けない・丸い札を作らない
+RADIUS_OK = {"0", "0px", "var(--border-radius-4)", "var(--border-radius-8)", ".25rem", "0.25rem", ".5rem", "0.5rem", "4px", "8px"}
+# ブランドの紫を使ってよいのは「塗りのボタン」「今いるページ」「ロゴ」だけ（ロゴは SVG なので CSS には出ない）
+VIOLET = ["var(--key)", "var(--key-strong)", "var(--key-press)", "var(--color-brand-violet)", "#7c3aed",
+          "var(--color-primitive-purple-900)", "var(--color-primitive-purple-1000)"]
+VIOLET_OK = ("button--primary", "aria-current", ":root")
+# グラデーションを使ってよいのは、表の横スクロールを知らせる端の影だけ（機能で、飾りではない）
+GRADIENT_OK = (".table-region",)
+LOGO_SVG = re.compile(r'<svg class="site-logo__mark"[\s\S]*?</svg>')
+EYEBROW = re.compile(r"<p[^>]*>\s*[A-Za-z][A-Za-z0-9 &'’.\-]{0,30}\s*</p>\s*<h[1-4]\b")
+DASHES = ("—", "―")
+# ホスト名と IP アドレス（公開リポジトリと出力に持ち込まない。www は本体への転送なので許す）
+SUBDOMAIN = re.compile(r"\b(?!www\.)[a-z0-9-]+(?:\.[a-z0-9-]+)*\.eleanor-dev\.com\b", re.I)
+IPV4 = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
+IP_OK = {"0.0.0.0", "127.0.0.1"}
+# 新しいページに無ければならないファイル（構造化データのロゴ・検索結果のアイコン・書体のライセンス・AI 向けの案内）
+REQUIRED = ["favicon.ico", "logo.png", "fonts/OFL.txt", "llms.txt"]
+JP_GAP = re.compile(r"[。、」）]\s+(?=[\u3040-\u30ff\u4e00-\u9fff「（])")
+JP_GAP_TAIL = re.compile(r"[。、」）]\s+$")
+INLINE = {"a", "strong", "em", "span", "time", "code", "small", "b", "i", "abbr"}
 VOID = {"meta", "link", "br", "img", "hr", "input", "source", "wbr", "area", "base", "col", "embed", "track"}
 
 
@@ -126,12 +151,21 @@ class Page(HTMLParser):
         self.tables: list[bool] = []
         self.regions: list[dict[str, str]] = []
         self.navs: list[dict[str, str]] = []
+        self.imgs: list[dict[str, str]] = []
+        self.jsonld: list[str] = []
+        self._ld = False
+        # 句読点のあとの空白（ソースの改行が HTML で空白になったもの）。同じ文字のまとまりの中か、文中の要素の直前だけを見る
+        self.jp_gaps: list[str] = []
+        self._gap_tail = ""
         self._stack: list[tuple[str, set[str]]] = []
 
     def _inside(self, cls: str) -> bool:
         return any(cls in classes for _, classes in self._stack)
 
     def handle_starttag(self, tag, attrs):
+        if self._gap_tail and tag in INLINE:
+            self.jp_gaps.append(repr(self._gap_tail[-20:]) + f" <{tag}>")
+        self._gap_tail = ""
         a = {k: v or "" for k, v in attrs}
         classes = set(a.get("class", "").split())
         if a.get("id"):
@@ -155,6 +189,11 @@ class Page(HTMLParser):
             self.loads.append(a["src"])
         if tag in ("img", "iframe", "audio", "video", "source", "embed") and a.get("src"):
             self.loads.append(a["src"])
+        if tag == "img":
+            self.imgs.append({**a, "_in_figure": "1" if any(t == "figure" for t, _ in self._stack) else ""})
+        if tag == "script" and a.get("type") == "application/ld+json":
+            self._ld = True
+            self.jsonld.append("")
         if tag == "table":
             self.tables.append(self._inside("table-region"))
         if "table-region" in classes:
@@ -165,11 +204,17 @@ class Page(HTMLParser):
             self._stack.append((tag, classes))
 
     def handle_endtag(self, tag):
+        self._gap_tail = ""
+        if tag == "script":
+            self._ld = False
         if any(t == tag for t, _ in self._stack):
             while self._stack and self._stack.pop()[0] != tag:
                 pass
 
     def handle_data(self, data):
+        if self._ld:
+            self.jsonld[-1] += data
+            return
         if not self._stack:
             return
         tags = [t for t, _ in self._stack]
@@ -177,6 +222,11 @@ class Page(HTMLParser):
             self.title += data
         elif "script" not in tags and "style" not in tags:
             self.text.append(data)
+            if "pre" not in tags and "code" not in tags:
+                m = JP_GAP.search(data)
+                if m:
+                    self.jp_gaps.append(repr(data[max(0, m.start() - 15):m.end() + 15]))
+                self._gap_tail = data if JP_GAP_TAIL.search(data) else ""
 
     def handle_comment(self, data):
         self.comments.append(data)
@@ -241,6 +291,105 @@ def banned_in(text: str) -> list[str]:
     return [w for w in BANNED if w in text]
 
 
+def css_rules(css: str):
+    """最小化された CSS から (セレクタ, 宣言) を取り出す（@media・@supports の中の規則も拾う）"""
+    for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", css):
+        yield m.group(1).strip(), m.group(2)
+
+
+def check_css(dist: str, inline_css: list[str]) -> list[str]:
+    """生成 AI が作ったページの目印として挙がる見た目の型を、出力の CSS から探す（DESIGN.md §1）"""
+    fails: list[str] = []
+    sources = [(os.path.relpath(p, dist), open(p, encoding="utf-8").read()) for p in sorted(glob.glob(os.path.join(dist, "_astro", "*.css")))]
+    sources += [("<style>", c) for c in inline_css]
+    for name, css in sources:
+        for sel, decl in css_rules(css):
+            if sel.startswith("@font-face"):
+                continue
+            low = decl.lower()
+            where = f"{name} の「{sel[:70]}」"
+            if re.search(r"(?:repeating-)?(?:linear|radial|conic)-gradient\(", low) and not any(ok in sel for ok in GRADIENT_OK):
+                fails.append(f"  ✗ CSS {where}: グラデーションを使っている（使ってよいのは表の横スクロールの影だけ）")
+            for v in re.findall(r"border-radius:([^;]+)", low):
+                v = v.replace("!important", "").strip()
+                if v not in RADIUS_OK:
+                    fails.append(f"  ✗ CSS {where}: 角丸 {v}（0・4px・8px の 3 段だけ）")
+            if re.search(r"(?:^|;)\s*(?:box-shadow|text-shadow|filter|backdrop-filter):", low) and ":focus-visible" not in sel:
+                fails.append(f"  ✗ CSS {where}: 影・ぼかしを飾りに使っている（使ってよいのはフォーカスの輪だけ）")
+            for v in re.findall(r"letter-spacing:\s*(-?[\d.]+)em", low):
+                if float(v) > 0.08:
+                    fails.append(f"  ✗ CSS {where}: 字間 {v}em（0.08em まで。字間を広げた英字の小見出しは型の目印）")
+            if "text-transform:uppercase" in low.replace(" ", ""):
+                fails.append(f"  ✗ CSS {where}: 大文字への変換を使っている")
+            for token in VIOLET:
+                if token in low and not any(ok in sel for ok in VIOLET_OK):
+                    fails.append(f"  ✗ CSS {where}: ブランドの紫（{token}）を飾りに使っている（塗りのボタン・今いるページ・ロゴだけ）")
+    return fails
+
+
+def refs_in(node, out: set[str]) -> set[str]:
+    """構造化データの中の参照（{"@id": …} だけの辞書）を集める"""
+    if isinstance(node, dict):
+        if set(node) == {"@id"}:
+            out.add(node["@id"])
+        for v in node.values():
+            refs_in(v, out)
+    elif isinstance(node, list):
+        for v in node:
+            refs_in(v, out)
+    return out
+
+
+def png_size(path: str) -> tuple[int, int]:
+    with open(path, "rb") as f:
+        head = f.read(24)
+    if head[:8] != b"\x89PNG\r\n\x1a\n":
+        return (0, 0)
+    return struct.unpack(">II", head[16:24])
+
+
+def draft_slugs(root: str) -> list[str]:
+    out = []
+    for p in glob.glob(os.path.join(root, "content", "blog", "*.md")):
+        fm = re.match(r"^---\n([\s\S]*?)\n---", open(p, encoding="utf-8").read())
+        if fm and re.search(r"^draft:\s*true\s*$", fm.group(1), re.M):
+            slug = re.search(r"^slug:\s*(\S+)", fm.group(1), re.M)
+            if slug:
+                out.append(slug.group(1))
+    return out
+
+
+def leak_findings(text: str) -> list[str]:
+    found = [m.group(0) for m in SUBDOMAIN.finditer(text)]
+    found += [ip for ip in IPV4.findall(text) if ip not in IP_OK and all(0 <= int(x) <= 255 for x in ip.split("."))]
+    return found
+
+
+def check_leaks(dist: str, root: str) -> tuple[list[str], list[str]]:
+    """公開リポジトリ（追跡中のファイル）と出力に、サブドメインのホスト名・IP アドレスが無いか"""
+    fails: list[str] = []
+    notes: list[str] = []
+    for p in glob.glob(os.path.join(dist, "**", "*"), recursive=True):
+        if os.path.isfile(p) and p.endswith((".html", ".css", ".js", ".txt", ".xml", ".json")):
+            for hit in leak_findings(open(p, encoding="utf-8", errors="ignore").read())[:1]:
+                fails.append(f"  ✗ 出力 {os.path.relpath(p, dist)} にホスト名か IP アドレス「{hit}」がある")
+    try:
+        tracked = subprocess.run(["git", "-C", root, "ls-files"], capture_output=True, text=True, check=True).stdout.split()
+    except (OSError, subprocess.CalledProcessError):
+        notes.append("  · git が使えないので、追跡中のファイルのホスト名の検査は省いた")
+        return fails, notes
+    for rel in tracked:
+        if rel in ("package-lock.json",) or rel.startswith("public/fonts/") or not rel.endswith(
+            (".astro", ".mjs", ".js", ".ts", ".css", ".md", ".py", ".json", ".jsonc", ".html", ".txt", ".xml", ".ps1", ".toml", ".yml")
+        ):
+            continue
+        path = os.path.join(root, rel)
+        if os.path.isfile(path):
+            for hit in leak_findings(open(path, encoding="utf-8", errors="ignore").read())[:1]:
+                fails.append(f"  ✗ 公開リポジトリの {rel} にホスト名か IP アドレス「{hit}」がある")
+    return fails, notes
+
+
 def check(dist: str, root: str) -> tuple[list[str], list[str]]:
     fails: list[str] = []
     notes: list[str] = []
@@ -252,12 +401,18 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
         return fails + [f"  ✗ {dist} に HTML が無い（ビルドされていない）"], notes
 
     parsed: dict[str, Page] = {}
+    raws: dict[str, str] = {}
     for html_path in pages:
         if url_path(dist, html_path) in NOT_PAGES:
             continue
+        raw = open(html_path, encoding="utf-8").read()
         page = Page()
-        page.feed(open(html_path, encoding="utf-8").read())
+        page.feed(raw)
         parsed[url_path(dist, html_path)] = page
+        raws[url_path(dist, html_path)] = raw
+    inline_css: list[str] = []
+    titles: dict[str, list[str]] = {}
+    descriptions: dict[str, list[str]] = {}
     policy = parsed.get(POLICY_PATH)
     policy_text = "".join(policy.text) if policy else ""
     want_beacon = 1 if beacon_token(root) else 0
@@ -295,6 +450,95 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
         for word in banned_in(visible):
             i = visible.find(word)
             fail(f"表記の約束に反する語「{word}」: …{visible[max(0, i - 25):i + 25]!r}…")
+
+        # --- 生成 AI が作ったページの目印として挙がる型（DESIGN.md §1） ---
+        raw = raws[path]
+        inline_css += re.findall(r"<style[^>]*>([\s\S]*?)</style>", raw)
+        for cls in RETIRED_CLASSES:
+            if re.search(r'class="[^"]*(?<![\w-])' + re.escape(cls) + r'(?![\w-])', raw):
+                fail(f"やめた型のクラス {cls} が残っている")
+        markup = LOGO_SVG.sub("", re.sub(r'<script type="application/ld\+json">[\s\S]*?</script>', "", raw))
+        # 本文で色の値を文字として書くのはよい（記事で説明するため）。属性（fill・style など）に書いたものを見る
+        if re.search(r'=\s*"[^"]*#7c3aed', markup, re.I):
+            fail("ブランドの紫を HTML の属性に直接書いている（使ってよいのはロゴの印だけ）")
+        if re.search(r"linear-?gradient|radial-?gradient|conic-gradient", markup, re.I):
+            fail("HTML にグラデーションがある")
+        if path not in MIGRATED:
+            m = EYEBROW.search(raw)
+            if m:
+                fail(f"見出しの直前に英字だけの小見出しがある: {m.group(0)[:60]!r}")
+            for d in DASHES:
+                if d in text:
+                    i = text.find(d)
+                    fail(f"本文にダッシュ「{d}」がある（文章の型の目印。句点や読点で書く）: …{text[max(0, i - 20):i + 20]!r}…")
+            for gap in page.jp_gaps[:1]:
+                fail(f"句読点のあとに空白がある（ソースの改行が空白になっている）: …{gap}…")
+            if "ではなく" in text:
+                i = text.find("ではなく")
+                notes.append(f"  ⚠ {path} 「〜ではなく」の対句（文章の型の目印になりやすい）: …{text[max(0, i - 20):i + 20]!r}…")
+            if re.search(r"[^。]*?も、[^。]*?も、[^。]*?も[、。]", text):
+                notes.append(f"  ⚠ {path} 「〜も、〜も、〜も」の三つ並べ（文章の型の目印になりやすい）")
+        for url in page.loads:
+            if host_matches(host_of(url), "googleapis.com") or host_matches(host_of(url), "gstatic.com"):
+                fail(f"閲覧者のブラウザが Google Fonts を直接読みにいく（書体はこのサイトから配る）: {url[:60]}")
+
+        # --- 画像: 代替テキスト・大きさ・ファイルの実在 ---
+        for img in page.imgs:
+            alt = img.get("alt")
+            src = img.get("src", "")
+            if alt is None:
+                fail(f"代替テキスト（alt）の無い画像: {src[:50]}")
+            elif not alt.strip() and img.get("_in_figure"):
+                fail(f"図の中の画像の代替テキストが空: {src[:50]}")
+            if not (img.get("width", "").isdigit() and img.get("height", "").isdigit()):
+                fail(f"画像に幅と高さ（数字）が無い（読み込み中に表示がずれる）: {src[:50]}")
+            sp = urlsplit(src)
+            if src and not sp.scheme and not src.startswith("data:") and not resolves(dist, path, sp.path):
+                fail(f"画像のファイルが無い: {src}")
+
+        # --- 構造化データ ---
+        graph_nodes: list[dict] = []
+        for raw_ld in page.jsonld:
+            try:
+                data = json.loads(raw_ld)
+            except ValueError as e:
+                fail(f"構造化データが JSON として読めない: {e}")
+                continue
+            nodes = [n for n in (data.get("@graph") or [data]) if isinstance(n, dict)]
+            graph_nodes += nodes
+            known = {n.get("@id") for n in nodes}
+            for ref in sorted(refs_in(data, set()) - known):
+                fail(f"構造化データの参照先 {ref} がページの中に無い")
+        flat = re.sub(r"\s+", "", text)
+        for n in graph_nodes:
+            kind = n.get("@type")
+            if kind == "ProfessionalService":
+                fail("構造化データに ProfessionalService がある（schema.org で非推奨。Organization にする）")
+            if kind == "Organization":
+                if not str(n.get("telephone", "")).startswith("+81"):
+                    fail("構造化データの電話番号に国番号（+81）が無い")
+                logo = (n.get("logo") or {}).get("url", "") if isinstance(n.get("logo"), dict) else str(n.get("logo", ""))
+                if not logo.endswith("/logo.png"):
+                    fail("構造化データのロゴが /logo.png でない")
+            for key in ("datePublished", "dateModified"):
+                if key in n and not str(n[key]).endswith("+09:00"):
+                    fail(f"構造化データの {key} に時差（+09:00）が無い: {n[key]}")
+            if kind == "FAQPage":
+                for q in n.get("mainEntity", []):
+                    for label, value in (("質問", q.get("name", "")), ("答え", (q.get("acceptedAnswer") or {}).get("text", ""))):
+                        if re.sub(r"\s+", "", value) not in flat:
+                            fail(f"構造化データの FAQ の{label}が画面の文字と一致しない: {value[:40]!r}")
+        if path == "/" and not any(n.get("@type") == "WebSite" for n in graph_nodes):
+            fail("トップの構造化データに WebSite が無い（検索結果のサイト名）")
+
+        # --- 題名と説明文 ---
+        if "エレノア" not in page.title:
+            fail(f"<title> に「エレノア」が無い: {page.title!r}")
+        if re.search(r"[|｜]\s*Eleanor|[—―–]", page.title):
+            fail(f"<title> に古い書き方（| Eleanor）かダッシュがある: {page.title!r}")
+        if not ("noindex" in page.meta.get("robots", "")):
+            titles.setdefault(page.title.strip(), []).append(path)
+            descriptions.setdefault(page.meta.get("description", "").strip(), []).append(path)
 
         if not page.title.strip():
             fail("<title> が空")
@@ -351,6 +595,52 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
     for p in ("/", "/services.html", "/company.html", "/products.html", "/blog.html", "/site-policy.html"):
         if f"<loc>{SITE_URL}{p}</loc>" not in sitemap:
             fails.append(f"  ✗ sitemap に {p} が無い")
+
+    for label, table in (("title", titles), ("description", descriptions)):
+        for value, where in table.items():
+            if len(where) > 1:
+                fails.append(f"  ✗ {label} が {len(where)} ページで同じ: {', '.join(where[:4])}（{value[:30]!r}）")
+
+    fails += check_css(dist, inline_css)
+
+    # --- 必要なファイル・ロゴ・llms.txt・robots.txt ---
+    for rel in REQUIRED:
+        if not os.path.isfile(os.path.join(dist, rel)):
+            fails.append(f"  ✗ /{rel} が dist/ に無い")
+    logo = os.path.join(dist, "logo.png")
+    if os.path.isfile(logo) and min(png_size(logo)) < 112:
+        fails.append(f"  ✗ /logo.png が {png_size(logo)}（構造化データのロゴは 112px 以上）")
+    ico = os.path.join(dist, "favicon.ico")
+    if os.path.isfile(ico) and open(ico, "rb").read(4) != b"\x00\x00\x01\x00":
+        fails.append("  ✗ /favicon.ico が ICO の形でない")
+    llms = os.path.join(dist, "llms.txt")
+    if os.path.isfile(llms):
+        body = open(llms, encoding="utf-8").read()
+        for slug in draft_slugs(root):
+            if f"/blog/{slug}.html" in body:
+                fails.append(f"  ✗ /llms.txt に下書きの記事（{slug}）が載っている")
+    robots = os.path.join(dist, "robots.txt")
+    if os.path.isfile(robots) and re.search(r"^\s*Disallow:\s*/\s*$", open(robots, encoding="utf-8").read(), re.M):
+        fails.append("  ✗ robots.txt が全体を拒んでいる（Disallow: /）")
+
+    # --- サイトマップの最終更新日（正しい日付だけ。未来の日付は書かない） ---
+    today = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9)).date().isoformat()
+    for lastmod in re.findall(r"<lastmod>([^<]+)</lastmod>", sitemap):
+        if not re.match(r"^\d{4}-\d{2}-\d{2}", lastmod) or lastmod[:10] > today:
+            fails.append(f"  ✗ sitemap の lastmod が正しくない: {lastmod}")
+
+    # --- ホスト名・IP アドレスの持ち込み ---
+    leak_fails, leak_notes = check_leaks(dist, root)
+    fails += leak_fails
+    notes += leak_notes
+
+    # --- 見出しの書体（取れなくても公開は止めない。本文と同じ書体で出る） ---
+    report_path = os.path.join(root, ".astro", "heading-font.json")
+    report = json.load(open(report_path, encoding="utf-8")) if os.path.isfile(report_path) else {}
+    if report.get("file"):
+        notes.append(f"  · 見出しの書体 {report['file']}（{report['bytes'] / 1024:.1f}KB・{report['glyphs']} 字）")
+    else:
+        notes.append(f"  ⚠ 見出しの書体を作れなかった（{report.get('error', 'scripts/headings.mjs が走っていない')}）。見出しは本文と同じ書体で出る")
 
     fails += check_colors(root)
     notes.append(f"  · HTML {len(pages)} ページ・守る URL {len(PROTECTED)} 件・色の組み合わせ {len(CONTRAST)} 通り")

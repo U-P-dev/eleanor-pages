@@ -4,7 +4,7 @@
 // 配布済みアプリが直接参照している）。その形で返せるのは html_handling: "none" だけで、none では「/」が
 // index.html に引けない。そこで「/」だけをここで index.html に向ける。
 const CANONICAL_HOST = 'eleanor-dev.com';
-// 本番以外のホスト（確認用の next.eleanor-dev.com など）は、自動生成のページも含めて検索に出さない
+// 本番以外のホスト（確認用のカスタムドメインなど）は、自動生成のページも含めて検索に出さない
 const PRODUCTION_HOSTS = new Set([CANONICAL_HOST]);
 
 export default {

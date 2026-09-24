@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { breadcrumbLd } from '../../lib/breadcrumb.mjs';
+import { blogPosting } from '../../lib/jsonld.mjs';
 import { publishedPosts, postUrl } from '../../lib/blog.mjs';
 import { ymd } from '../../lib/date.mjs';
 import { SITE } from '../../site.mjs';
@@ -18,33 +19,27 @@ const { Content, remarkPluginFrontmatter } = await render(post);
 // 本文の H1（remarkExtractH1 が取り出したもの）。無ければ frontmatter の title
 const h1: string = remarkPluginFrontmatter.h1 ?? data.title;
 const url = new URL(postUrl(post), SITE.url).href;
-const operator = { '@type': 'Organization', name: SITE.operator.name, url: `${SITE.url}/company.html` };
 const crumbs = [{ label: 'ブログ', href: '/blog.html' }, { label: h1 }];
 const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+  blogPosting({
+    url,
     headline: data.title,
     description: data.description,
-    datePublished: ymd(data.published_at),
-    dateModified: ymd(data.updated_at),
-    inLanguage: 'ja',
-    mainEntityOfPage: url,
-    author: { '@type': 'Person', name: SITE.operator.representative },
-    publisher: operator,
-  },
+    published: ymd(data.published_at),
+    modified: ymd(data.updated_at),
+  }),
   breadcrumbLd(crumbs, postUrl(post)),
 ];
 ---
 
-<Base title={`${data.title}｜${SITE.name}`} description={data.description} type="article" jsonLd={jsonLd} noindex={data.draft}>
+<Base title={`${data.title}｜${SITE.name}のブログ`} description={data.description} type="article" jsonLd={jsonLd} noindex={data.draft}>
   <Breadcrumb items={crumbs} />
-  <article class="wrap narrow page-body">
+  <article class="wrap narrow page-body article">
     <div class="page-head">
       <h1>{h1}</h1>
     </div>
     <p class="article-meta">
-      {data.category}・公開 <time datetime={ymd(data.published_at)}>{ymd(data.published_at)}</time>
+      書いた人 <a href="/company.html#profile">{SITE.operator.representative}</a>・{data.category}・公開 <time datetime={ymd(data.published_at)}>{ymd(data.published_at)}</time>
       {ymd(data.updated_at) !== ymd(data.published_at) && <>・更新 <time datetime={ymd(data.updated_at)}>{ymd(data.updated_at)}</time></>}
       {data.draft && '・下書き（確認用・検索には出ません）'}
     </p>

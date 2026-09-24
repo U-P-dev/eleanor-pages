@@ -11,7 +11,8 @@ const crumbs = [{ label: 'ブログ' }];
 ---
 
 <Base
-  title={`ブログ｜${SITE.name}`}
+  title={`ブログ：お店のサイト運用とつくったものの設計｜${SITE.name}`}
+  pageType="CollectionPage"
   description="お店と小さな会社のサイト運用に役立つことと、エレノアが自分でつくったサービスの設計の話を書いています。"
   jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
 >

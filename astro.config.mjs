@@ -26,7 +26,9 @@ function articleUpdatedAt() {
   }
   return dates;
 }
-const updatedAt = articleUpdatedAt();
+// 固定ページの最終更新日（src/data/updated.json。中身を変えたときだけ更新する）と記事の updated_at を合わせる
+const pageUpdated = JSON.parse(readFileSync(new URL('./src/data/updated.json', import.meta.url), 'utf8'));
+const updatedAt = new Map([...Object.entries(pageUpdated).filter(([k]) => k.startsWith('/')), ...articleUpdatedAt()]);
 
 // 本番の URL は「/company.html」の形（Stripe・アプリストア・アプリ内のリンクが依存しているので変えない）
 export default defineConfig({
@@ -37,8 +39,11 @@ export default defineConfig({
     sitemap({
       // LP 事業が自動生成して直下に置く3枚も載せる（このビルドでは作らないので自動では拾われない）
       customPages: ['tokusho.html', 'privacy-lp.html', 'terms-lp.html'].map((p) => `${SITE.url}/${p}`),
-      // 決済の完了・取消の画面と 404 は検索に出さない
-      filter: (page) => !/\/(404|thanks|cancel)(\.html)?$/.test(new URL(page).pathname),
+      // 決済の完了・取消の画面と 404 は検索に出さない。llms.txt などページでないものも載せない
+      filter: (page) => {
+        const p = new URL(page).pathname;
+        return !/\/(404|thanks|cancel)(\.html)?$/.test(p) && !/\.(txt|xml|json)$/.test(p);
+      },
       serialize(item) {
         // format: 'file' の URL は拡張子つき（/company.html）。sitemap は拡張子なしで出すので、実際の URL に揃える
         const url = new URL(item.url);

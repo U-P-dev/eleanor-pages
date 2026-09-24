@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/copy_generated.mjs && python3 scripts/check_site.py",
+    "build": "astro build && node scripts/copy_generated.mjs && node scripts/headings.mjs && python3 scripts/check_site.py",
     "check:legal": "python3 scripts/check_legal_text.py",
     "check:prices": "python3 scripts/check_prices.py"
   },

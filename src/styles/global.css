@@ -1,8 +1,9 @@
 /*
  * エレノアの見た目。デジタル庁デザインシステム（DADS）の値と部品の構造に沿って書いている（MIT 表示は tokens.css）。
- * どの値をどこに使ったか・DADS から意図して外した点は DESIGN.md。
+ * どの値をどこに使ったか・DADS から意図して外した点・使わないもの（グラデーションの面・見出しの上の英字など）は DESIGN.md。
  * 文字サイズと余白は rem（ブラウザの文字サイズ設定に追従させる。px で書くと設定が効かない）。
  * 段組みの切り替えは DADS と同じ 48rem（768px）。ヘッダーの水平メニューだけは項目が収まる 60rem から出す。
+ * 「AI が作ったように見える型」を戻さないための禁止事項は scripts/check_site.py が出力を調べて止める。
  */
 :root {
   color-scheme: light;
@@ -12,28 +13,25 @@
   --text-sub: var(--color-neutral-solid-gray-600);
   --bg: var(--color-neutral-white);
   --bg-sub: var(--color-neutral-solid-gray-50);
-  --bg-tint: var(--color-primitive-purple-50);
   --border: var(--color-neutral-solid-gray-420);
   --key: var(--color-brand-violet);
   --key-strong: var(--color-primitive-purple-900);
   --key-press: var(--color-primitive-purple-1000);
   --error: var(--color-error-2);
-  /* 赤から青へ混ざる紫。文字を載せる場所では、どの色の点でも白との比が 4.5 以上（check_site.py の CONTRAST） */
-  --gradient: linear-gradient(
-    120deg,
-    var(--color-primitive-magenta-900) 0%,
-    var(--color-brand-violet) 52%,
-    var(--color-primitive-blue-1000) 100%
-  );
   --gutter: 1rem;
   /* 本文の幅。17px の本文で1行約40字（DADS・JLREQ・WCAG 1.4.8 の目安） */
   --measure: 43rem;
-  /* ページの最大幅（カードや表を並べる幅） */
+  /* ページの最大幅 */
   --content: 72rem;
+  /* 節の余白は重要度で 2 段（主の節は広く、従の節は狭く）。全部の節を同じ余白で並べない */
+  --space-major: 4rem;
+  --space-minor: 2.5rem;
 }
 @media (min-width: 48rem) {
   :root {
     --gutter: 2rem;
+    --space-major: 6rem;
+    --space-minor: 3.5rem;
   }
 }
 
@@ -56,16 +54,21 @@ body {
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-family-sans);
-  /* Std-16N-170（768px 以上は Std-17N-170） */
+  /* Std-16N-170（768px 以上は Std-17N-170）。本文はベタ組み（JLREQ） */
   font-size: 1rem;
   line-height: 1.7;
   letter-spacing: 0.02em;
   overflow-wrap: break-word;
+  /* 行頭に小さい「ぁ」や長音を置かない（JLREQ の行頭禁則を厳しめに） */
+  line-break: strict;
 }
 @media (min-width: 48rem) {
   body {
     font-size: 1.0625rem;
   }
+}
+p {
+  text-wrap: pretty;
 }
 svg,
 img {
@@ -144,52 +147,63 @@ main {
   display: block;
 }
 
-/* ── 見出し ── */
+/* ── 見出し ──
+   書体は見出し用（Zen Kaku Gothic New 700）。この書体には字詰め（palt・halt）の情報が無いので、ベタ組みで揃える
+   （取得に失敗してシステムの書体で出たときも字幅が変わらない）。
+   改行は文節の区切り（scripts/headings.mjs が入れる <wbr>）と空白だけにする。iPhone の Safari は auto-phrase が効かないため */
 h1,
 h2,
 h3,
 h4 {
   color: var(--text-strong);
+  font-family: var(--font-family-heading);
   font-weight: 700;
-  font-feature-settings: 'palt';
-  /* 文節で折り返す（Chrome/Edge のみ効く。他は通常の折り返し） */
-  word-break: auto-phrase;
+  font-feature-settings: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
   text-wrap: balance;
+}
+@supports (word-break: auto-phrase) {
+  h1,
+  h2,
+  h3,
+  h4 {
+    word-break: auto-phrase;
+  }
 }
 h1 {
   margin: 0 0 1.5rem;
   font-size: 1.75rem;
-  line-height: 1.5;
+  line-height: 1.4;
   letter-spacing: 0.01em;
+}
+h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.625rem;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
 }
 @media (min-width: 48rem) {
   h1 {
     margin-bottom: 2rem;
     font-size: 2.25rem;
-    line-height: 1.4;
   }
-}
-h2 {
-  margin: 0 0 1.5rem;
-  font-size: 1.5rem;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-}
-h3 {
-  margin: 0 0 0.75rem;
-  font-size: 1.25rem;
-  line-height: 1.5;
-}
-@media (min-width: 48rem) {
   h2 {
-    font-size: 1.75rem;
+    font-size: 2rem;
   }
   h3 {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 }
 
-/* ── ボタン（DADS: 塗りは1画面に1つ・アウトラインは補助。高さ M 48px / L 56px・角丸 8px・押せる範囲 44px 以上） ── */
+/* ── ボタン（DADS: 塗りは1画面に1つ・アウトラインは補助。高さ M 48px / L 56px・角丸 8px・押せる範囲 44px 以上）
+   塗りだけがブランドの紫。アウトラインは墨（紫を飾りに増やさない） ── */
 .button {
   display: inline-flex;
   align-items: center;
@@ -239,46 +253,30 @@ a.button--primary:any-link:active {
 }
 .button--secondary,
 a.button--secondary:any-link {
-  border-color: var(--key-strong);
+  border-color: var(--text-strong);
   background-color: var(--bg);
-  color: var(--key-strong);
+  color: var(--text-strong);
 }
 @media (hover: hover) {
   .button--secondary:hover,
   a.button--secondary:any-link:hover {
-    background-color: var(--bg-tint);
-    color: var(--key-press);
+    background-color: var(--bg-sub);
+    color: var(--text-strong);
     text-decoration: underline;
-  }
-}
-/* 濃い地（ファーストビュー）の上のボタン */
-.on-dark .button--primary,
-.on-dark a.button--primary:any-link {
-  border-color: var(--color-neutral-white);
-  background-color: var(--color-neutral-white);
-  color: var(--key-strong);
-}
-.on-dark .button--secondary,
-.on-dark a.button--secondary:any-link {
-  border-color: var(--color-neutral-white);
-  background-color: transparent;
-  color: var(--color-neutral-white);
-}
-@media (hover: hover) {
-  .on-dark a.button--primary:any-link:hover {
-    background-color: var(--bg-tint);
-    color: var(--key-press);
-  }
-  .on-dark a.button--secondary:any-link:hover {
-    background-color: rgb(255 255 255 / 0.12);
-    color: var(--color-neutral-white);
   }
 }
 .button-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  align-items: center;
+  gap: 1rem 1.5rem;
   margin: 2rem 0 0;
+}
+/* ボタンの横に置く文中リンク（塗りのボタンを 1 画面 1 つに保つための「もう一つの行き先」） */
+.button-row__link {
+  display: inline-block;
+  padding-block: 0.625rem;
+  font-weight: 700;
 }
 
 /* ── ヘッダー（DADS ヘッダーコンテナ: ロゴ・水平メニュー・「メニュー」ボタン） ── */
@@ -286,12 +284,6 @@ a.button--secondary:any-link {
   position: relative;
   border-bottom: 1px solid var(--border);
   background-color: var(--bg);
-}
-.site-header::before {
-  content: '';
-  display: block;
-  height: 0.25rem;
-  background: var(--gradient);
 }
 .site-header__inner {
   display: flex;
@@ -307,10 +299,11 @@ a.button--secondary:any-link {
   gap: 0.625rem;
   padding-block: 0.25rem;
   color: var(--text-strong);
+  font-family: var(--font-family-heading);
   font-weight: 700;
   font-size: 1.25rem;
   line-height: 1.3;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-decoration: none;
 }
 .site-logo__mark {
@@ -321,9 +314,10 @@ a.button--secondary:any-link {
 .site-logo__en {
   display: block;
   color: var(--text-sub);
+  font-family: var(--font-family-sans);
   font-weight: 400;
   font-size: 0.875rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
 }
 .global-nav {
   display: none;
@@ -344,10 +338,10 @@ a.button--secondary:any-link {
   line-height: 1.5;
 }
 .global-nav__list a:not(.button):any-link:hover {
-  color: var(--key-strong);
   text-decoration: underline;
   text-decoration-thickness: 0.1875rem;
 }
+/* 今いるページ（紫を使う 3 か所の 1 つ） */
 .global-nav__list a[aria-current='page'] {
   text-decoration: underline;
   text-decoration-color: var(--key);
@@ -427,7 +421,7 @@ a.button--secondary:any-link {
   }
 }
 
-/* ── パンくず（DADS: 「現在位置」ラベル・16px・山形の区切り。H1 の上） ── */
+/* ── パンくず（DADS: 16px・山形の区切り。H1 の上） ── */
 .breadcrumb {
   padding-block: 1rem 0;
   font-size: 1rem;
@@ -451,7 +445,7 @@ a.button--secondary:any-link {
   color: var(--text-strong);
 }
 
-/* ── ページの見出し帯（下層ページ） ── */
+/* ── ページの見出し（下層ページ） ── */
 .page-head {
   padding-block: 1.5rem 0.5rem;
 }
@@ -473,80 +467,136 @@ a.button--secondary:any-link {
   }
 }
 
-/* ── ファーストビュー（トップ） ── */
+/* ── 看板（トップ）: 白地に墨の文字。右に実物の画面。紫とグラデーションで面を塗らない ── */
 .hero {
-  background: var(--gradient);
-  color: var(--color-neutral-white);
+  border-bottom: 1px solid var(--border);
 }
 .hero__inner {
-  padding-block: 3.5rem 4rem;
+  display: grid;
+  gap: 2.5rem;
+  padding-block: 2.5rem 3rem;
 }
-.hero__eyebrow {
-  margin: 0 0 1rem;
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
+@media (min-width: 48rem) {
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 3rem;
+    padding-block: 4.5rem 5rem;
+  }
 }
 .hero__title {
   margin: 0 0 1.5rem;
-  color: var(--color-neutral-white);
-  font-size: min(8.4vw, 2.5rem);
-  line-height: 1.35;
-  letter-spacing: 0.02em;
 }
-.hero__title span {
+.hero__copy {
+  display: block;
+  font-size: min(8.8vw, 2.5rem);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+@media (min-width: 48rem) {
+  .hero__copy {
+    font-size: clamp(2.25rem, 5.2vw, 3.75rem);
+  }
+}
+.hero__line {
   display: block;
   white-space: nowrap;
 }
+/* 看板の約物だけ手で詰める（JLREQ: 行頭の始め括弧は二分下げない・「」。」の連続は二分ずつ詰める）。
+   見出しの書体に字詰めの情報が無いため、ここだけ余白で合わせる */
+.kern-open {
+  margin-inline-start: -0.5em;
+}
+.kern-close {
+  margin-inline-end: -0.5em;
+}
+.hero__what {
+  display: block;
+  margin-top: 1rem;
+  color: var(--text-mid);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+@media (min-width: 48rem) {
+  .hero__what {
+    font-size: 1.375rem;
+  }
+}
 .hero__lead {
   max-width: 34rem;
-  margin: 0;
+  margin: 0 0 1rem;
+  color: var(--text-strong);
   font-size: 1.0625rem;
   line-height: 1.8;
 }
 @media (min-width: 48rem) {
-  .hero__inner {
-    padding-block: 5.5rem 6rem;
-  }
-  .hero__title {
-    font-size: 3.5rem;
-    line-height: 1.3;
-  }
   .hero__lead {
     font-size: 1.1875rem;
   }
 }
-.hero a:not(.button):any-link {
-  color: var(--color-neutral-white);
+.hero__facts {
+  max-width: 34rem;
+  margin: 0 0 0.75rem;
+}
+.hero__facts strong {
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+}
+.hero__media {
+  margin: 0;
+}
+.hero__shots {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1.15fr);
+  align-items: end;
+  gap: 0.75rem;
 }
 
-/* ── セクション ── */
-.section {
-  padding-block: 3.5rem;
+/* ── 実物の画面（スクリーンショット）: 1px の枠だけ。影・傾き・ブラウザ風の飾り枠は付けない ── */
+.shot {
+  margin: 0;
 }
+.shot img,
+.hero__shots img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+}
+.shot figcaption,
+.hero__media figcaption {
+  margin-top: 0.625rem;
+  color: var(--text-mid);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ── 節 ── */
+.section {
+  padding-block: var(--space-major);
+}
+/* 従の節: 余白を詰め、上の罫だけで区切る（節ごとに地の色を交互に変えない） */
+.section--minor {
+  padding-block: var(--space-minor);
+  border-top: 1px solid var(--border);
+}
+.section--minor .section__title {
+  font-size: 1.375rem;
+}
+@media (min-width: 48rem) {
+  .section--minor .section__title {
+    font-size: 1.5rem;
+  }
+}
+/* 灰の地はお問い合わせとフッターだけ */
 .section--sub {
   background-color: var(--bg-sub);
 }
-.section--tint {
-  background-color: var(--bg-tint);
-}
-/* 灰・紫の地の上では Gray-420 の枠が 3:1 に届かない（2.7）ので、枠の色を Gray-536 に上げる（DADS: 外枠は背景との比 3:1 以上） */
+/* 灰の地の上では Gray-420 の枠が 3:1 に届かない（2.7）ので、枠の色を Gray-536 に上げる（DADS: 外枠は背景との比 3:1 以上） */
 .section--sub,
-.section--tint,
 .site-footer {
   --border: var(--color-neutral-solid-gray-536);
-}
-@media (min-width: 48rem) {
-  .section {
-    padding-block: 5rem;
-  }
-}
-.section__eyebrow {
-  margin: 0 0 0.5rem;
-  color: var(--key-strong);
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
 }
 .section__title {
   margin-bottom: 1rem;
@@ -559,72 +609,56 @@ a.button--secondary:any-link {
 .section__more {
   margin: 2rem 0 0;
 }
-.lead-strong {
-  color: var(--text-strong);
-  font-weight: 700;
-}
 
-/* ── カード（DADS: 外枠は背景との比 3:1 以上の線。影だけで境界を作らない） ── */
-.card-grid {
+/* ── 頼めること（トップ）: 主力の LP を大きく、残りを右に小さく。同じ形のカードを並べない ── */
+.offer {
   display: grid;
-  gap: 1.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--text-strong);
 }
 @media (min-width: 48rem) {
-  .card-grid {
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  }
-  .card-grid--2 {
-    grid-template-columns: repeat(2, 1fr);
+  .offer {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 3.5rem;
   }
 }
-.card {
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--border-radius-12);
-  background-color: var(--bg);
+.offer__main .offer__title {
+  font-size: 1.5rem;
 }
-.card__label {
-  margin: 0 0 0.5rem;
-  color: var(--key-strong);
-  font-weight: 700;
-  font-size: 1rem;
+@media (min-width: 48rem) {
+  .offer__main .offer__title {
+    font-size: 1.75rem;
+  }
 }
-.card__title {
-  margin: 0 0 0.75rem;
-  font-size: 1.25rem;
+.offer__title {
+  margin-bottom: 0.5rem;
 }
-.card__body > :first-child {
-  margin-top: 0;
-}
-.card__body p {
-  margin: 0 0 0.75rem;
-}
-.card__foot {
-  margin-top: auto;
-  padding-top: 0.75rem;
-}
-.card__price {
+.offer__price {
   margin: 0 0 0.75rem;
   color: var(--text-strong);
-  font-weight: 700;
+}
+.offer__price strong {
   font-size: 1.5rem;
-  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
 }
-.card__price small {
-  color: var(--text-mid);
-  font-weight: 400;
-  font-size: 1rem;
+.offer__main .offer__price strong {
+  font-size: 1.75rem;
 }
-.card--accent {
-  border-top: 0.375rem solid var(--key);
+.offer__item + .offer__item {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.offer p {
+  margin-block: 0 0.75rem;
+}
+.offer__more {
+  max-width: var(--measure);
+  margin: 2.5rem 0 0;
 }
 
-/* ── チェックつきの箇条（含まれるもの） ── */
+/* ── チェックつきの箇条（含まれるもの）。印は墨 ── */
 .check-list {
   margin: 0 0 1rem;
   padding: 0;
@@ -647,59 +681,148 @@ a.button--secondary:any-link {
   left: 0.25rem;
   width: 0.5rem;
   height: 0.875rem;
-  border: solid var(--key-strong);
+  border: solid var(--text-strong);
   border-width: 0 0.1875rem 0.1875rem 0;
   transform: rotate(45deg);
 }
 
-/* ── 手順（DADS: 番号は文字で書く。<ol> を使わない） ── */
-.steps {
+/* ── 時系列（LP ができるまで）: 番号は文字で書く（DADS: <ol> を使わない）。印は墨の小さな四角 ── */
+.timeline {
   display: grid;
-  gap: 1rem;
+  gap: 2rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 @media (min-width: 48rem) {
-  .steps {
-    grid-template-columns: repeat(2, 1fr);
+  .timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
   }
 }
-@media (min-width: 64rem) {
-  .steps {
-    grid-template-columns: repeat(5, 1fr);
+.timeline__step {
+  position: relative;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--text-strong);
+}
+.timeline__step::before {
+  content: '';
+  position: absolute;
+  top: 0.4rem;
+  left: -0.3125rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--text-strong);
+}
+@media (min-width: 48rem) {
+  .timeline__step {
+    padding: 1.5rem 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--text-strong);
+  }
+  .timeline__step::before {
+    top: -0.3125rem;
+    left: 0;
   }
 }
-.steps > li {
-  padding: 1.25rem 1.25rem 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--border-radius-12);
-  background-color: var(--bg);
-}
-.steps__num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2.25rem;
-  height: 2.25rem;
-  margin-bottom: 0.75rem;
-  border-radius: 999px;
-  background-color: var(--key-strong);
-  color: var(--color-neutral-white);
+.timeline__when {
+  margin: 0 0 0.25rem;
+  color: var(--text-mid);
   font-weight: 700;
 }
-.steps__title {
-  display: block;
-  margin-bottom: 0.25rem;
+.timeline__num {
+  margin-right: 0.5rem;
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+}
+.timeline__title {
+  margin-bottom: 0.5rem;
+}
+.timeline p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── つくったもの（事例）: 画面・事実・設計へのリンク ── */
+.work {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+@media (min-width: 48rem) {
+  .work {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+    gap: 3rem;
+  }
+}
+.work + .work {
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.work__title {
+  font-size: 1.5rem;
+}
+.work--small .work__title {
+  font-size: 1.25rem;
+}
+.work__shots {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1.15fr);
+  align-items: end;
+  gap: 0.75rem;
+}
+.work__body p {
+  margin-block: 0 0.75rem;
+}
+.facts {
+  margin: 1rem 0;
+  border-top: 1px solid var(--border);
+}
+.facts > div {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 1rem;
+  padding-block: 0.625rem;
+  border-bottom: 1px solid var(--border);
+}
+.facts dt {
   color: var(--text-strong);
   font-weight: 700;
-  font-size: 1.125rem;
 }
-.steps p {
+.facts dd {
   margin: 0;
 }
 
-/* ── 表（DADS テーブル: 見出しセルは太字＋黒の下線。横にはみ出す分は枠の中でスクロールし、端の影で知らせる） ── */
+/* ── つくる人: 写真があれば左に、無ければ文章だけ（空の枠は置かない） ── */
+.person {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 60rem;
+}
+@media (min-width: 48rem) {
+  .person--photo {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    align-items: start;
+    gap: 2.5rem;
+  }
+}
+.person__photo {
+  margin: 0;
+}
+.person__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.person__body {
+  max-width: var(--measure);
+}
+.person__body p {
+  margin-block: 0 1rem;
+}
+
+/* ── 表（DADS テーブル: 見出しセルは太字＋黒の下線。横にはみ出す分は枠の中でスクロールし、端の影で知らせる）
+   端の影はスクロールできることを知らせる機能なので、グラデーションを使ってよい唯一の場所（check_site.py の許可） ── */
 .table-region {
   margin-block: 1rem 1.5rem;
   overflow-x: auto;
@@ -778,48 +901,24 @@ a.button--secondary:any-link {
   margin: 0;
 }
 
-/* ── よくある質問（DADS アコーディオン: <details>。質問は要約文で書く） ── */
-.faq {
+/* ── よくある質問: 答えを折りたたまずに並べる（折りたたみの中の答えは検索や AI の回答に拾われにくい） ── */
+.qa {
+  max-width: var(--measure);
   margin: 0;
   border-top: 1px solid var(--border);
 }
-.faq details {
+.qa__item {
+  padding-block: 1.25rem;
   border-bottom: 1px solid var(--border);
 }
-.faq summary {
-  position: relative;
-  display: block;
-  padding: 1rem 2.5rem 1rem 0;
-  color: var(--text-strong);
-  font-weight: 700;
-  cursor: pointer;
-  list-style: none;
+.qa__q {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
 }
-.faq summary::-webkit-details-marker {
-  display: none;
-}
-.faq summary::after {
-  content: '';
-  position: absolute;
-  top: 1.35rem;
-  right: 0.5rem;
-  width: 0.625rem;
-  height: 0.625rem;
-  border: solid var(--text-strong);
-  border-width: 0 0.1875rem 0.1875rem 0;
-  transform: rotate(45deg);
-}
-.faq details[open] summary::after {
-  top: 1.6rem;
-  transform: rotate(-135deg);
-}
-.faq .faq__a {
-  padding: 0 0 1.25rem;
-}
-.faq .faq__a > :first-child {
+.qa__a > :first-child {
   margin-top: 0;
 }
-.faq .faq__a > :last-child {
+.qa__a > :last-child {
   margin-bottom: 0;
 }
 
@@ -874,10 +973,9 @@ textarea.input {
 select.input {
   appearance: none;
   padding-right: 2.75rem;
-  background-image: linear-gradient(45deg, transparent 50%, var(--text-strong) 50%),
-    linear-gradient(135deg, var(--text-strong) 50%, transparent 50%);
-  background-position: right 1.25rem top 50%, right 0.875rem top 50%;
-  background-size: 0.4rem 0.4rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231a1a1a' stroke-width='2'/%3E%3C/svg%3E");
+  background-position: right 1rem top 50%;
+  background-size: 0.75rem 0.5rem;
   background-repeat: no-repeat;
 }
 @media (hover: hover) {
@@ -893,9 +991,12 @@ select.input {
   margin: 0;
   padding: 0.75rem 1rem;
   border: 2px solid var(--error);
-  border-radius: var(--border-radius-8);
   color: var(--error);
   font-weight: 700;
+}
+.contact-direct {
+  max-width: var(--measure);
+  margin: 2rem 0 0;
 }
 
 /* ── 注釈ブロック（DADS: 強調された補足情報） ── */
@@ -903,7 +1004,6 @@ select.input {
   margin-block: 1.5rem;
   padding: 1rem 1.25rem;
   border: 1px solid var(--border);
-  border-radius: var(--border-radius-12);
   background-color: var(--bg-sub);
 }
 .notice > :first-child {
@@ -917,37 +1017,33 @@ select.input {
   font-weight: 700;
 }
 
-/* ── 本文（ブログ・固定ページ） ── */
+/* ── 本文（ブログ・固定ページ）。見出しは大きさと余白だけで区切る（下線や左の帯の飾りは付けない） ── */
 .prose {
   max-width: var(--measure);
 }
 .prose h2 {
-  margin: 2.5rem 0 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--key);
+  margin: 3rem 0 1.25rem;
   font-size: 1.375rem;
   line-height: 1.5;
 }
 .prose h3 {
-  margin: 2rem 0 1rem;
-  padding-left: 0.75rem;
-  border-left: 0.3333em solid var(--key);
-  font-size: 1.25rem;
+  margin: 2.25rem 0 1rem;
+  font-size: 1.1875rem;
   line-height: 1.5;
 }
 .prose h4 {
   margin: 1.5rem 0 1rem;
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   line-height: 1.6;
 }
 @media (min-width: 48rem) {
   .prose h2 {
     margin-top: 4rem;
-    font-size: 1.625rem;
+    font-size: 1.5rem;
   }
   .prose h3 {
-    margin: 3rem 0 1.5rem;
-    font-size: 1.375rem;
+    margin: 3rem 0 1.25rem;
+    font-size: 1.25rem;
   }
 }
 .prose :is(h2, h3, h4) {
@@ -960,6 +1056,10 @@ select.input {
   .prose p {
     margin-block: 1.5rem;
   }
+}
+/* 記事の本文は行間を少し広げる（長く読むため） */
+.article .prose {
+  line-height: 1.8;
 }
 .prose ul {
   margin-block: 1rem;
@@ -1001,7 +1101,6 @@ select.input {
   overflow-x: auto;
   padding: 1rem;
   border: 1px solid var(--border);
-  border-radius: var(--border-radius-8);
   background-color: var(--bg-sub);
   font-size: 0.9375rem;
   line-height: 1.6;
@@ -1032,12 +1131,14 @@ select.input {
   padding-left: 2rem;
   color: var(--text-mid);
 }
+.prose figure {
+  margin: 2rem 0;
+}
 .banner {
   --_c: var(--color-neutral-solid-gray-536);
   margin-block: 1.5rem;
   padding: 0.5rem 1rem 1.5rem;
   border: 3px solid var(--_c);
-  border-radius: var(--border-radius-12);
   background-color: var(--bg);
 }
 .banner--warning {
@@ -1119,9 +1220,8 @@ select.input {
 .article-about {
   max-width: var(--measure);
   margin-top: 3rem;
-  padding: 1.25rem 1.25rem 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--border-radius-12);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--text-strong);
 }
 .article-about h2 {
   margin: 0 0 1rem;
@@ -1133,57 +1233,22 @@ select.input {
   padding-block: 1rem 4rem;
 }
 
-/* ── 行動を促す帯（ページの終わり） ── */
-.cta-band {
-  padding: 2rem 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: var(--border-radius-16);
-  background-color: var(--bg-tint);
+/* ── ページの終わりの一言とボタン（帯で塗らない。罫で区切るだけ） ── */
+.page-end {
+  max-width: var(--measure);
+  margin-top: var(--space-minor);
+  padding-top: var(--space-minor);
+  border-top: 1px solid var(--border);
 }
-.cta-band h2 {
+.page-end h2 {
   margin-bottom: 0.75rem;
   font-size: 1.375rem;
 }
-.cta-band p {
-  max-width: var(--measure);
+.page-end p {
   margin: 0;
 }
-.cta-band .button-row {
+.page-end .button-row {
   margin-top: 1.5rem;
-}
-@media (min-width: 48rem) {
-  .cta-band {
-    padding: 2.5rem 3rem;
-  }
-}
-
-/* ── 構成図（つくったもの） ── */
-.arch {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--border-radius-12);
-  background-color: var(--bg);
-}
-.arch figcaption {
-  margin-top: 0.75rem;
-  color: var(--text-mid);
-}
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0.5rem 0 1rem;
-  padding: 0;
-  list-style: none;
-}
-.tag-list > li {
-  padding: 0.125rem 0.75rem;
-  border: 1px solid var(--color-neutral-solid-gray-536);
-  border-radius: 999px;
-  color: var(--text-strong);
-  font-size: 1rem;
-  line-height: 1.6;
 }
 
 /* ── フッター ── */
@@ -1213,6 +1278,7 @@ select.input {
 }
 .site-footer__tagline {
   color: var(--text-strong);
+  font-family: var(--font-family-heading);
   font-weight: 700;
 }
 .site-footer__heading {
@@ -1249,16 +1315,16 @@ select.input {
   :focus-visible {
     outline-color: Highlight;
   }
-  .card,
   .flow__step,
-  .steps > li,
   .notice,
   .toc,
-  .cta-band,
   .banner,
-  .arch,
-  .article-about {
+  .shot img,
+  .hero__shots img {
     border-color: CanvasText;
+  }
+  .timeline__step::before {
+    background-color: CanvasText;
   }
   .button {
     border-color: ButtonText;
@@ -1293,8 +1359,6 @@ select.input {
   gap: 0.25rem;
   padding: 1rem;
   border: 1px solid var(--border);
-  border-top: 0.25rem solid var(--key);
-  border-radius: var(--border-radius-8);
   background-color: var(--bg);
 }
 .flow__title {
@@ -1336,7 +1400,7 @@ select.input {
   color: var(--text-mid);
   font-weight: 400;
   font-size: 1.125rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 .legal {
   max-width: var(--measure);
@@ -1347,8 +1411,6 @@ select.input {
 .legal h2,
 .legal .section-heading {
   margin: 2.5rem 0 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--key);
   font-size: 1.25rem;
   line-height: 1.5;
 }
@@ -1375,7 +1437,6 @@ select.input {
   margin: 1rem 0 0.25rem;
   padding: 0.125rem 0.75rem;
   border: 1px solid var(--color-neutral-solid-gray-536);
-  border-radius: 999px;
   color: var(--text-strong);
   font-weight: 700;
 }
@@ -1391,7 +1452,6 @@ select.input {
   margin-block: 1rem;
   padding: 1rem 1.25rem;
   border: 1px solid var(--border);
-  border-radius: var(--border-radius-12);
 }
 .legal .faq-q {
   color: var(--text-strong);
@@ -1416,8 +1476,7 @@ select.input {
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  border-radius: 999px;
-  background-color: var(--key-strong);
+  background-color: var(--text-strong);
   color: var(--color-neutral-white);
   font-weight: 700;
 }
@@ -1431,7 +1490,6 @@ select.input {
   margin-block: 1.5rem;
   padding: 1.25rem 1.5rem;
   border: 1px solid var(--border);
-  border-radius: var(--border-radius-12);
   background-color: var(--bg);
 }
 .legal .card h2 {
@@ -1452,7 +1510,6 @@ select.input {
   margin-block: 1.5rem;
   padding: 1rem 1.25rem;
   border: 1px solid var(--border);
-  border-radius: var(--border-radius-12);
   background-color: var(--bg-sub);
 }
 .legal .warning {
@@ -1484,7 +1541,15 @@ select.input {
   text-align: left;
   vertical-align: top;
 }
-/* 旧サイトの本文に残っているインラインの色指定（濃い地向けの薄い白・ブランドの紫）を、白地で読める色に置き換える */
+/* 旧サイトの本文に残っているインラインの色指定（ブランドの紫）は、墨の太字として読ませる（紫を飾りに使わない） */
 .legal [style*='color:var(--purple)'] {
-  color: var(--key-strong) !important;
+  color: var(--text-strong) !important;
+}
+
+/* <Picture> は <picture> で包まれるので、画像の並びの中ではブロックにする */
+.hero__shots picture,
+.work__shots picture,
+.shot picture,
+.person__photo picture {
+  display: block;
 }
