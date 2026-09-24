@@ -89,8 +89,9 @@ try {
 
   $params = @{ format = 'png' }
   if ($Full) {
-    # Scroll through the page so lazy-loaded images load, then wait for them and go back to the top.
-    $scroll = 'new Promise(async (ok) => { for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight / 2) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 120)); } await Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))); scrollTo(0, 0); setTimeout(() => ok(true), 300); })'
+    # Scroll through the page so lazy-loaded images load, then wait (max 5s) for the visible ones and go back to the top.
+    # Hidden images (display:none) never load, so waiting for every image would hang.
+    $scroll = 'new Promise(async (ok) => { for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight / 2) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 120)); } const shown = [...document.images].filter((i) => i.getClientRects().length && !i.complete); await Promise.race([Promise.all(shown.map((i) => new Promise((r) => { i.onload = i.onerror = r; }))), new Promise((r) => setTimeout(r, 5000))]); scrollTo(0, 0); setTimeout(() => ok(true), 300); })'
     [void](Send-Command 'Runtime.evaluate' @{ expression = $scroll; awaitPromise = $true })
     $metrics = Send-Command 'Page.getLayoutMetrics' @{}
     $h = [int][double]([regex]::Match($metrics, '"cssContentSize":\{[^}]*"height":([0-9.]+)').Groups[1].Value)

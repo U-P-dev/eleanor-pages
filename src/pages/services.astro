@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import PriceTables from '../components/PriceTables.astro';
 import prices from '../data/prices.json';
 import { faqs } from '../data/faq.mjs';
 import { breadcrumbLd } from '../lib/breadcrumb.mjs';
@@ -41,42 +42,44 @@ const url = new URL(Astro.url.pathname, SITE.url).href;
     <section class="section" id="lp-plans" aria-labelledby="lp-plans-title">
       <h2 id="lp-plans-title">LP の制作</h2>
       <p class="section__lead">
-        1ページで伝えるサイトを、制作者が1点ずつ確認したデザインから選んでつくります。やりとりはすべてメールで、お打ち合わせはありません。デザインの種類ごとの料金と納期は、<a href="/#lp">トップページの料金表</a>にあります。
+        1ページで伝えるサイトを、制作者が1点ずつ確認したデザインから選んでつくります。やりとりはすべてメールで、お打ち合わせはありません。
       </p>
-      <div class="table-region" role="region" tabindex="0" aria-labelledby="lp-plans-title">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col"><span class="visually-hidden">項目</span></th>
-              <th scope="col">{bundle.name}</th>
-              <th scope="col">{standalone.name}</th>
+      <PriceTables lpOnly />
+      <h3 class="table-caption" id="lp-compare-title">LP＋保守と LP単体のちがい</h3>
+      <div class="table-region table--stack" role="region" tabindex="0" aria-labelledby="lp-compare-title">
+        <table role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col"><span class="visually-hidden">項目</span></th>
+              <th role="columnheader" scope="col">{bundle.name}</th>
+              <th role="columnheader" scope="col">{standalone.name}</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <th scope="row">制作料金</th>
-              <td class="num">{yen(bundle.price)}から</td>
-              <td class="num">{yen(standalone.price)}から</td>
+          <tbody role="rowgroup">
+            <tr role="row">
+              <th role="rowheader" scope="row">制作料金</th>
+              <td role="cell" class="num" data-label={bundle.name}>{yen(bundle.price)}から</td>
+              <td role="cell" class="num" data-label={standalone.name}>{yen(standalone.price)}から</td>
             </tr>
-            <tr>
-              <th scope="row">公開</th>
-              <td class="desc">エレノアが公開し、そのまま保守を続けます</td>
-              <td class="desc">HTML 一式をお渡しします。公開はお客様の環境で行っていただきます</td>
+            <tr role="row">
+              <th role="rowheader" scope="row">公開</th>
+              <td role="cell" class="desc" data-label={bundle.name}>エレノアが公開し、そのまま保守を続けます</td>
+              <td role="cell" class="desc" data-label={standalone.name}>HTML 一式をお渡しします。公開はお客様の環境で行っていただきます</td>
             </tr>
-            <tr>
-              <th scope="row">保守メンテナンス</th>
-              <td class="desc">月額でお申し込み（月{yen(careFrom)}から）</td>
-              <td class="desc">含みません</td>
+            <tr role="row">
+              <th role="rowheader" scope="row">保守メンテナンス</th>
+              <td role="cell" class="desc" data-label={bundle.name}>月額でお申し込み（月{yen(careFrom)}から）</td>
+              <td role="cell" class="desc" data-label={standalone.name}>含みません</td>
             </tr>
-            <tr>
-              <th scope="row">含まれるもの</th>
-              <td class="desc"><ul class="check-list">{bundle.includes?.map((i) => <li>{i}</li>)}</ul></td>
-              <td class="desc"><ul class="check-list">{standalone.includes?.map((i) => <li>{i}</li>)}</ul></td>
+            <tr role="row">
+              <th role="rowheader" scope="row">含まれるもの</th>
+              <td role="cell" class="desc" data-label={bundle.name}><ul class="check-list">{bundle.includes?.map((i) => <li>{i}</li>)}</ul></td>
+              <td role="cell" class="desc" data-label={standalone.name}><ul class="check-list">{standalone.includes?.map((i) => <li>{i}</li>)}</ul></td>
             </tr>
-            <tr>
-              <th scope="row">保守をやめるとき</th>
-              <td class="desc" set:html={buyoutQa?.html} />
-              <td class="desc">保守を含まないプランです</td>
+            <tr role="row">
+              <th role="rowheader" scope="row">保守をやめるとき</th>
+              <td role="cell" class="desc" data-label={bundle.name} set:html={buyoutQa?.html} />
+              <td role="cell" class="desc" data-label={standalone.name}>保守を含まないプランです</td>
             </tr>
           </tbody>
         </table>
@@ -88,20 +91,20 @@ const url = new URL(Astro.url.pathname, SITE.url).href;
       <p class="section__lead">
         オンラインのお打ち合わせから、構成と原稿をつくります。テンプレートに収まらないもの、ページ数の多いホームページはこちらです。
       </p>
-      <div class="table-region" role="region" tabindex="0" aria-labelledby="fullorder-title">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col"><span class="visually-hidden">項目</span></th>
-              {Object.values(full).map((f) => <th scope="col">{f.name}</th>)}
+      <div class="table-region table--stack" role="region" tabindex="0" aria-labelledby="fullorder-title">
+        <table role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col"><span class="visually-hidden">項目</span></th>
+              {Object.values(full).map((f) => <th role="columnheader" scope="col">{f.name}</th>)}
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <th scope="row">料金</th>
+          <tbody role="rowgroup">
+            <tr role="row">
+              <th role="rowheader" scope="row">料金</th>
               {
                 Object.values(full).map((f) => (
-                  <td class="num">
+                  <td role="cell" class="num" data-label={f.name}>
                     {yen(f.price)}
                     {f.included_pages && f.extra_page_price && (
                       <>
@@ -115,15 +118,15 @@ const url = new URL(Astro.url.pathname, SITE.url).href;
                 ))
               }
             </tr>
-            <tr>
-              <th scope="row">納期</th>
-              {Object.values(full).map((f) => <td class="nowrap">{f.delivery_days}</td>)}
+            <tr role="row">
+              <th role="rowheader" scope="row">納期</th>
+              {Object.values(full).map((f) => <td role="cell" class="nowrap" data-label={f.name}>{f.delivery_days}</td>)}
             </tr>
-            <tr>
-              <th scope="row">含まれるもの</th>
+            <tr role="row">
+              <th role="rowheader" scope="row">含まれるもの</th>
               {
                 Object.values(full).map((f) => (
-                  <td class="desc">
+                  <td role="cell" class="desc" data-label={f.name}>
                     <ul class="check-list">{f.includes?.map((i) => <li>{i}</li>)}</ul>
                   </td>
                 ))
@@ -153,24 +156,24 @@ const url = new URL(Astro.url.pathname, SITE.url).href;
     <section class="section section--minor" id="care" aria-labelledby="care-title">
       <h2 class="section__title" id="care-title">保守と運用</h2>
       <p class="section__lead">公開したサイトを、決まった間隔で確かめ、掲載内容の差し替えにも応じます。</p>
-      <div class="table-region" role="region" tabindex="0" aria-labelledby="care-title">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">プラン</th>
-              <th scope="col">料金</th>
-              <th scope="col">内容</th>
+      <div class="table-region table--stack" role="region" tabindex="0" aria-labelledby="care-title">
+        <table role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">プラン</th>
+              <th role="columnheader" scope="col">料金</th>
+              <th role="columnheader" scope="col">内容</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody role="rowgroup">
             {
               subs.map((s) => (
-                <tr>
-                  <th scope="row">{s.name}</th>
-                  <td class="num">
+                <tr role="row">
+                  <th role="rowheader" scope="row">{s.name}</th>
+                  <td role="cell" class="num" data-label="料金">
                     {yen(s.price)}／{s.billing === '年額' ? '年' : '月'}
                   </td>
-                  <td class="desc">{s.description}</td>
+                  <td role="cell" class="desc" data-label="内容">{s.description}</td>
                 </tr>
               ))
             }
@@ -182,24 +185,24 @@ const url = new URL(Astro.url.pathname, SITE.url).href;
     <section class="section section--minor" id="options" aria-labelledby="options-title">
       <h2 class="section__title" id="options-title">追加サービス・スポット対応</h2>
       <h3 class="table-caption" id="addons-title">追加サービス（保守メンテナンスとあわせて）</h3>
-      <div class="table-region" role="region" tabindex="0" aria-labelledby="addons-title">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">サービス</th>
-              <th scope="col">料金</th>
-              <th scope="col">内容</th>
+      <div class="table-region table--stack" role="region" tabindex="0" aria-labelledby="addons-title">
+        <table role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">サービス</th>
+              <th role="columnheader" scope="col">料金</th>
+              <th role="columnheader" scope="col">内容</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody role="rowgroup">
             {
               addons.map((a) => (
-                <tr>
-                  <th scope="row">{a.name}</th>
-                  <td class="num">
+                <tr role="row">
+                  <th role="rowheader" scope="row">{a.name}</th>
+                  <td role="cell" class="num" data-label="料金">
                     {yen(a.price)}／{a.billing === '年額' ? '年' : '月'}
                   </td>
-                  <td class="desc">{a.description}</td>
+                  <td role="cell" class="desc" data-label="内容">{a.description}</td>
                 </tr>
               ))
             }

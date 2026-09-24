@@ -1,9 +1,16 @@
 ---
 // 料金表。値の正本は LP 事業の pricing.json で、公開してよい項目だけを src/data/prices.json に写している（scripts/check_prices.py）。
 // ここに金額を直書きしない（特定商取引法に基づく表示・Stripe の請求と食い違うため）。
+// 狭い画面では表をやめ、行ごとに縦に積む（.table--stack。列の見出しは各セルの data-label で出す）。
+// 表示を変えても表として読み上げられるように、role を明示している（CSS の display を変えると表の意味が落ちるブラウザがある）。
 import prices from '../data/prices.json';
 import { yen } from '../lib/format.mjs';
 
+interface Props {
+  /** LP のデザインごとの表だけを出す（サービスのページ用） */
+  lpOnly?: boolean;
+}
+const { lpOnly = false } = Astro.props;
 const plan = (key: string) => (prices.plans as Record<string, { name: string; price: number; delivery_days: string }>)[key];
 const tiers = [
   { label: 'スタンダード', note: 'テンプレートから選ぶ標準のデザイン', bundle: plan('bundle_standard'), standalone: plan('standalone_standard') },
@@ -13,38 +20,48 @@ const tiers = [
 const subs = Object.values(prices.subscriptions) as { name: string; price: number; billing: string; description: string }[];
 const full = prices.fullorder as Record<string, { name: string; price: number; delivery_days: string; included_pages?: number; extra_page_price?: number }>;
 const taxNote = prices.tax_included ? '税込' : '税抜';
+const per = (billing: string) => (billing === '年額' ? '年' : '月');
+const lpId = lpOnly ? 'price-lp-tiers' : 'price-lp';
 ---
 
-<p class="table-note">
-  表示はすべて{taxNote}です（別途消費税{Math.round(prices.tax_rate * 100)}%）。お支払いは{prices.payment_timing}（{prices.payment_methods.join('・')}）です。
-</p>
+{
+  !lpOnly && (
+    <p class="table-note">
+      表示はすべて{taxNote}です（別途消費税{Math.round(prices.tax_rate * 100)}%）。お支払いは{prices.payment_timing}（{prices.payment_methods.join('・')}）です。
+    </p>
+  )
+}
 
-<h3 class="table-caption" id="price-lp">LP（1ページのサイト）の制作</h3>
-<p class="table-note">
-  「LP＋保守」は公開と保守メンテナンス（月額）までまとめてお任せいただく形、「LP単体」は HTML 一式をお渡しする形です。
-</p>
-<div class="table-region" role="region" tabindex="0" aria-labelledby="price-lp">
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">デザイン</th>
-        <th scope="col">LP＋保守（制作料金）</th>
-        <th scope="col">LP単体</th>
-        <th scope="col">納期</th>
+<h3 class="table-caption" id={lpId}>LP（1ページのサイト）の制作</h3>
+<p class="table-note">「LP＋保守」は公開と保守メンテナンス（月額）までまとめてお任せいただく形、「LP単体」は HTML 一式をお渡しする形です。</p>
+<div class="table-region table--stack" role="region" tabindex="0" aria-labelledby={lpId}>
+  <table role="table">
+    <thead role="rowgroup">
+      <tr role="row">
+        <th role="columnheader" scope="col">デザイン</th>
+        <th role="columnheader" scope="col">LP＋保守（制作料金）</th>
+        <th role="columnheader" scope="col">LP単体</th>
+        <th role="columnheader" scope="col">納期</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody role="rowgroup">
       {
         tiers.map((t) => (
-          <tr>
-            <th scope="row">
+          <tr role="row">
+            <th role="rowheader" scope="row">
               {t.label}
               <br />
               <span class="table-note">{t.note}</span>
             </th>
-            <td class="num">{yen(t.bundle.price)}</td>
-            <td class="num">{yen(t.standalone.price)}</td>
-            <td class="nowrap">{t.bundle.delivery_days}</td>
+            <td role="cell" class="num" data-label="LP＋保守（制作料金）">
+              {yen(t.bundle.price)}
+            </td>
+            <td role="cell" class="num" data-label="LP単体">
+              {yen(t.standalone.price)}
+            </td>
+            <td role="cell" class="nowrap" data-label="納期">
+              {t.bundle.delivery_days}
+            </td>
           </tr>
         ))
       }
@@ -52,65 +69,91 @@ const taxNote = prices.tax_included ? '税込' : '税抜';
   </table>
 </div>
 
-<h3 class="table-caption" id="price-care">保守メンテナンス</h3>
-<div class="table-region" role="region" tabindex="0" aria-labelledby="price-care">
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">プラン</th>
-        <th scope="col">料金</th>
-        <th scope="col">内容</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        subs.map((s) => (
-          <tr>
-            <th scope="row">{s.name}</th>
-            <td class="num">
-              {yen(s.price)}／{s.billing === '年額' ? '年' : '月'}
-            </td>
-            <td class="desc">{s.description}</td>
-          </tr>
-        ))
-      }
-    </tbody>
-  </table>
-</div>
+{
+  !lpOnly && (
+    <>
+      <h3 class="table-caption" id="price-care">
+        保守メンテナンス
+      </h3>
+      <div class="table-region table--stack" role="region" tabindex="0" aria-labelledby="price-care">
+        <table role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">
+                プラン
+              </th>
+              <th role="columnheader" scope="col">
+                料金
+              </th>
+              <th role="columnheader" scope="col">
+                内容
+              </th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {subs.map((s) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">
+                  {s.name}
+                </th>
+                <td role="cell" class="num" data-label="料金">
+                  {yen(s.price)}／{per(s.billing)}
+                </td>
+                <td role="cell" class="desc" data-label="内容">
+                  {s.description}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-<h3 class="table-caption" id="price-full">フルオーダー（お打ち合わせから）</h3>
-<div class="table-region" role="region" tabindex="0" aria-labelledby="price-full">
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">内容</th>
-        <th scope="col">料金</th>
-        <th scope="col">納期</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        Object.values(full).map((f) => (
-          <tr>
-            <th scope="row">{f.name}</th>
-            <td class="num">
-              {yen(f.price)}
-              {f.included_pages && f.extra_page_price && (
-                <>
-                  <br />
-                  <span class="table-note">
-                    {f.included_pages}ページまで。以降1ページ{yen(f.extra_page_price)}
-                  </span>
-                </>
-              )}
-            </td>
-            <td class="nowrap">{f.delivery_days}</td>
-          </tr>
-        ))
-      }
-    </tbody>
-  </table>
-</div>
-<p class="table-note">
-  テンプレートから選ぶ LP は、公開前のお手直しが{prices.pre_delivery_revisions}回までです。お支払いから{prices.refund_window_hours}時間以内なら理由を問わず全額を返金し、それ以降の返金はありません。取引の条件の全文は<a href="/tokusho.html">特定商取引法に基づく表示</a>をご覧ください。
-</p>
+      <h3 class="table-caption" id="price-full">
+        フルオーダー（お打ち合わせから）
+      </h3>
+      <div class="table-region table--stack" role="region" tabindex="0" aria-labelledby="price-full">
+        <table role="table">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col">
+                内容
+              </th>
+              <th role="columnheader" scope="col">
+                料金
+              </th>
+              <th role="columnheader" scope="col">
+                納期
+              </th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {Object.values(full).map((f) => (
+              <tr role="row">
+                <th role="rowheader" scope="row">
+                  {f.name}
+                </th>
+                <td role="cell" class="num" data-label="料金">
+                  {yen(f.price)}
+                  {f.included_pages && f.extra_page_price && (
+                    <>
+                      <br />
+                      <span class="table-note">
+                        {f.included_pages}ページまで。以降1ページ{yen(f.extra_page_price)}
+                      </span>
+                    </>
+                  )}
+                </td>
+                <td role="cell" class="nowrap" data-label="納期">
+                  {f.delivery_days}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">
+        テンプレートから選ぶ LP は、公開前のお手直しが{prices.pre_delivery_revisions}回までです。お支払いから{prices.refund_window_hours}時間以内なら理由を問わず全額を返金し、それ以降の返金はありません。取引の条件の全文は<a href="/tokusho.html">特定商取引法に基づく表示</a>をご覧ください。
+      </p>
+    </>
+  )
+}

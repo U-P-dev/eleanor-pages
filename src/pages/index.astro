@@ -20,6 +20,8 @@ const hp = prices.fullorder.fullorder_hp;
 const bundleFrom = prices.plans.bundle_standard.price;
 const standaloneFrom = prices.plans.standalone_standard.price;
 const fastest = prices.plans.bundle_standard.delivery_days;
+// 含まれるものの短い項目（原稿・フォーム・解析）。料金データの文言をそのまま使う（ここで書き直すと約束の文言とずれる）
+const lpIncludes = prices.plans.bundle_standard.includes.filter((i) => i.length <= 20);
 const tax = prices.tax_included ? '税込' : '税抜';
 // トップのブログ欄は、記事が 3 本たまるまで出さない（1 本だけの欄は「更新が止まっている」に見える。2026-09-24 の目隠しの確認）
 const allPosts = await publishedPosts();
@@ -37,13 +39,12 @@ const op = SITE.operator;
             <span class="hero__line"><span class="kern-open">「</span>つくって終わり<span class="kern-close">」</span>。</span>
             <span class="hero__line">に、しない。</span>
           </span>
-          <span class="hero__what">お店と小さな会社のホームページ・LP 制作と保守（東京・新宿）</span>
+          <span class="hero__what">お店と小さな会社のホームページと LP（1ページのサイト）の制作・保守</span>
         </h1>
         <p class="hero__lead">公開した日から、仕組みは動きはじめる。そのあとの保守まで、つくった本人が見続けます。</p>
         <p class="hero__facts">
           LP の制作は、保守とあわせて<strong>{yen(bundleFrom)}</strong>から（保守は月<strong>{yen(careFrom)}</strong>から）、LP だけなら<strong>{yen(standaloneFrom)}</strong>からです（{tax}）。テンプレートから選んでつくるので、お支払いの確認から最短<strong>{fastest}</strong>でお届けします。
         </p>
-        <p class="hero__facts">{SITE.area}</p>
         <div class="button-row">
           <a class="button button--primary button--large" href="#lp">料金とプランを見る</a>
           <a class="button-row__link" href="#contact">無料で相談する</a>
@@ -56,7 +57,6 @@ const op = SITE.operator;
           widths={[288, 432, 576]}
           sizes="18rem"
           formats={['avif', 'webp']}
-          loading="eager"
         />
         <figcaption>
           エレノアがつくって運営しているサイト<a href="#apps">{kaiyaku.name}</a>の記事。確かめた日付と公式ページを冒頭に書く仕組みです（{jaDate(kaiyaku.shotAt)}に撮影）。
@@ -78,6 +78,7 @@ const op = SITE.operator;
           <p>
             1ページで伝えるサイトを、制作者が1点ずつ確認したデザインから選んでつくります。やりとりはすべてメールで、お打ち合わせはありません。公開の前に実物をご確認いただき、{prices.pre_delivery_revisions}回まで手直しします。
           </p>
+          <ul class="check-list">{lpIncludes.map((i) => <li>{i}</li>)}</ul>
           <p><a href="#lp">LP の料金とプランを見る</a></p>
         </div>
         <div class="offer__side">
@@ -144,15 +145,25 @@ const op = SITE.operator;
       <h2 class="section__title" id="products-title">つくったもの</h2>
       <p class="section__lead">自分のサービスも、自分で設計して運営しています。お客様のサイトにも、同じ考え方と仕組みを使います。</p>
       <div class="work">
-        <figure class="shot">
+        <figure class="shot shot--pc">
           <Picture
             src={kaiyakuPc}
             alt="解約手帳のトップページ。確かめた日付つきのサブスク解約手順の一覧"
             widths={[640, 960, 1280, 1600]}
-            sizes="(min-width: 72rem) 40rem, (min-width: 48rem) 55vw, 100vw"
+            sizes="(min-width: 72rem) 40rem, 55vw"
             formats={['avif', 'webp']}
           />
           <figcaption>{kaiyaku.host} のトップページ（パソコン）。{jaDate(kaiyaku.shotAt)}に撮影。</figcaption>
+        </figure>
+        <figure class="shot shot--sp">
+          <Picture
+            src={kaiyakuSp}
+            alt="解約手帳の記事をスマートフォンで開いた画面。冒頭に最終確認日と、確かめた公式ページの一覧がある"
+            widths={[288, 432, 576]}
+            sizes="18rem"
+            formats={['avif', 'webp']}
+          />
+          <figcaption>{kaiyaku.host} の記事（スマートフォン）。{jaDate(kaiyaku.shotAt)}に撮影。</figcaption>
         </figure>
         <div class="work__body">
           <h3 class="work__title">{kaiyaku.name}</h3>

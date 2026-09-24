@@ -183,7 +183,7 @@ h1 {
 }
 h2 {
   margin: 0 0 1.5rem;
-  font-size: 1.625rem;
+  font-size: 1.75rem;
   line-height: 1.45;
   letter-spacing: 0.01em;
 }
@@ -199,7 +199,7 @@ h3 {
     font-size: 2.25rem;
   }
   h2 {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
   h3 {
     font-size: 1.25rem;
@@ -545,6 +545,7 @@ a.button--secondary:any-link {
 }
 .hero__facts strong {
   color: var(--text-strong);
+  font-size: 1.25em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -552,6 +553,26 @@ a.button--secondary:any-link {
   width: min(100%, 18rem);
   margin: 0;
   justify-self: center;
+}
+/* 狭い画面では、看板の画面は出さない（最初の画面を看板と料金に絞る）。同じ画面は「つくったもの」に出る */
+@media (max-width: 47.99rem) {
+  .hero__media {
+    display: none;
+  }
+}
+/* つくったもの: 広い画面はパソコンの画面、狭い画面はスマートフォンの画面（パソコンの画面を縮めると読めない） */
+.shot--sp {
+  width: min(100%, 18rem);
+}
+@media (max-width: 47.99rem) {
+  .shot--pc {
+    display: none;
+  }
+}
+@media (min-width: 48rem) {
+  .shot--sp {
+    display: none;
+  }
 }
 
 /* ── 実物の画面（スクリーンショット）: 1px の枠だけ。影・傾き・ブラウザ風の飾り枠は付けない ── */
@@ -867,6 +888,10 @@ a.button--secondary:any-link {
 .table-region .desc {
   min-width: 18em;
 }
+/* 見出しのセルの下の注記（デザインの説明など）は太字にしない */
+.table-region th .table-note {
+  font-weight: 400;
+}
 .table-region .num {
   text-align: right;
   white-space: nowrap;
@@ -897,6 +922,51 @@ a.button--secondary:any-link {
   }
   .table-region .desc {
     min-width: 6.5em;
+  }
+  /* 料金の表は、狭い画面では行ごとに縦に積む（列を細くすると単語の途中で切れる。2026-09-24 の目隠しの確認）。
+     列の見出しは各セルの data-label で出す。表の意味は role で保つ（display を変えると落ちるブラウザがある） */
+  .table-region.table--stack {
+    overflow: visible;
+    background: none;
+  }
+  .table--stack :is(table, thead, tbody, tr, th, td) {
+    display: block;
+  }
+  .table--stack thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .table--stack tr {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+  }
+  .table--stack :is(th, td),
+  .table--stack tbody th {
+    min-width: 0;
+    padding: 0.125rem 0;
+    border: 0;
+  }
+  .table--stack tbody th {
+    margin-bottom: 0.375rem;
+    font-size: 1.0625rem;
+  }
+  .table--stack td[data-label]::before {
+    content: attr(data-label) '：';
+    color: var(--text-mid);
+    font-weight: 700;
+  }
+  .table--stack .num {
+    text-align: left;
+    white-space: normal;
+  }
+  .table--stack .desc {
+    min-width: 0;
   }
 }
 .table-caption {
@@ -1275,6 +1345,14 @@ select.input {
 /* ── 本文の下の余白（下層ページ） ── */
 .page-body {
   padding-block: 1rem 4rem;
+}
+/* ページの見出しのすぐ後の節は、上の余白を詰める（見出しと最初の節の間が間延びしないように） */
+.page-body > .section:first-child {
+  padding-top: 1.5rem;
+}
+/* 罫で区切らない従の節（直前の節が表や説明リストの罫で終わるとき、罫が二重にならないように） */
+.section--flush {
+  padding-block: var(--space-minor) 0;
 }
 
 /* ── ページの終わりの一言とボタン（帯で塗らない。罫で区切るだけ） ── */
