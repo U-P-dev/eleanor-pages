@@ -1,0 +1,19 @@
+---
+// 旧サイト（13413b1）の support-hitomoyou.html を新しい枠へ移したもの。本文（src/legal/support-hitomoyou.html）は一字も変えていない（scripts/check_legal_text.py）。
+// URL はアプリストア・アプリ内・決済画面から参照されているので変えない。
+import Legal from '../layouts/Legal.astro';
+import content from '../legal/support-hitomoyou.html?raw';
+---
+
+<Legal
+  title={"ヒトモヨウ サポート – ヒトモヨウ | Eleanor"}
+  description={"ヒトモヨウ のヒトモヨウ サポートのページです。ご不明な点は contact@eleanor-dev.com までお問い合わせください。"}
+  noindex={false}
+  eyebrow={"Support"}
+  h1={"ヒトモヨウ サポート"}
+  h1Sub={"Support"}
+  appName={"ヒトモヨウ by Eleanor"}
+  lead={""}
+  crumbs={[{ label: "ヒトモヨウ サポート" }]}
+  content={content}
+/>

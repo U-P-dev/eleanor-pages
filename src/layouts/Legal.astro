@@ -1,0 +1,39 @@
+---
+// アプリのサポート・規約と、決済の完了・取消の画面。本文は旧サイトの HTML をそのまま差し込む（src/legal/*.html）。
+// 本文の見た目は global.css の「移したページ」節。本文を直すときは、アプリストアの掲載情報と食い違わないか先に確かめる。
+import Base from './Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { breadcrumbLd } from '../lib/breadcrumb.mjs';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  eyebrow?: string;
+  h1: string;
+  h1Sub?: string;
+  appName?: string;
+  lead?: string;
+  crumbs?: { label: string; href?: string }[];
+  content: string;
+}
+const { title, description, noindex = false, eyebrow, h1, h1Sub, appName, lead, crumbs, content } = Astro.props;
+// 旧サイトの編集用コメント（<!-- 日本語 --> など）は読者に届けない。見える本文は変わらない
+const body = content.replace(/<!--[\s\S]*?-->/g, '');
+---
+
+<Base title={title} description={description} noindex={noindex} jsonLd={crumbs ? [breadcrumbLd(crumbs, Astro.url.pathname)] : []}>
+  {crumbs && <Breadcrumb items={crumbs} />}
+  <div class="wrap wrap--narrow page-head">
+    {eyebrow && <p class="section__eyebrow">{eyebrow}</p>}
+    <h1>
+      {h1}
+      {h1Sub && <span class="h1-sub">{h1Sub}</span>}
+    </h1>
+    {appName && <p class="page-head__lead">{appName}</p>}
+    {lead && <p class="page-head__lead">{lead}</p>}
+  </div>
+  <div class="wrap wrap--narrow page-body">
+    <div class="legal" set:html={body} />
+  </div>
+</Base>

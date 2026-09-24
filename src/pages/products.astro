@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Flow from '../components/Flow.astro';
+import { breadcrumbLd } from '../lib/breadcrumb.mjs';
+import { SITE } from '../site.mjs';
+
+const crumbs = [{ label: 'つくったもの' }];
+---
+
+<Base
+  title={`つくったもの｜${SITE.name}`}
+  description="エレノアが自分でつくって運営しているサイトと、その設計の考え方。間違いを公開前に機械で止める仕組み、1か所のデータから表示をつくる仕組みなど、お客様のサイトにも使っている考え方を紹介します。"
+  jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="wrap page-head">
+    <h1>つくったもの</h1>
+    <p class="page-head__lead">
+      自分たちのサービスも、自分で設計して運営しています。ここでは公開中のものだけを載せ、どう動いているかを書いています。お客様のサイトにも、同じ考え方を使います。
+    </p>
+  </div>
+
+  <div class="wrap page-body">
+    <section class="section" id="kaiyaku" aria-labelledby="kaiyaku-title">
+      <p class="section__eyebrow">公開中</p>
+      <h2 id="kaiyaku-title">解約手帳</h2>
+      <div class="prose">
+        <p>
+          サブスクの解約手順を、公式ページで確かめた日付つきでまとめたサイトです（<a href="https://kaiyaku-techo.com/">kaiyaku-techo.com</a>）。
+          手順や金額は変わるので、「いつ確かめたか」が無い情報は載せない、と決めてつくりました。
+        </p>
+        <h3>間違いを、公開の前に機械で止める</h3>
+        <p>
+          記事は書いただけでは公開されません。確認日と出典の数、誤解を招く言い方がないかを原稿の段階で調べ、サイトの形にしたあとで、リンク切れや読みにくい色の組み合わせがないかをもう一度調べます。どこかで引っかかると、公開の手前で止まります。
+        </p>
+      </div>
+      <Flow
+        label="解約手帳の記事が公開されるまで"
+        steps={[
+          { title: '原稿', body: '確認日と出典を書いた Markdown' },
+          { title: '原稿の検査', body: '確認日・出典の数・表現を確かめる' },
+          { title: 'サイトの形に変換', body: 'Astro で HTML をつくる' },
+          { title: '仕上がりの検査', body: 'リンク切れ・色の読みやすさ' },
+          { title: '配信', body: 'Cloudflare から世界中へ' },
+        ]}
+      />
+      <ul class="tag-list" role="list" aria-label="使っている技術">
+        <li>Astro</li>
+        <li>Cloudflare Workers</li>
+        <li>Python（検査）</li>
+        <li>デジタル庁デザインシステム</li>
+      </ul>
+    </section>
+
+    <section class="section" id="this-site" aria-labelledby="this-site-title">
+      <p class="section__eyebrow">公開中</p>
+      <h2 id="this-site-title">このサイト（eleanor-dev.com）</h2>
+      <div class="prose">
+        <p>
+          読みやすさと、迷わずにたどり着ける導線を優先して作り直しました。文字の大きさ・行の間隔・色の組み合わせは、デジタル庁デザインシステムを参考にしています。
+        </p>
+        <h3>料金は1か所から、すべての表示へ</h3>
+        <p>
+          料金表・特定商取引法に基づく表示・お支払いの画面が、別々に書かれていると、どこか1か所だけ古くなります。料金は1か所のデータにまとめ、そこから各ページの表示をつくり、食い違いがないかを機械で突き合わせています。
+        </p>
+      </div>
+      <Flow
+        label="料金の表示ができるまで"
+        steps={[
+          { title: '料金のデータ', body: '金額・納期・含まれるものを1か所に' },
+          { title: '公開してよい値だけ', body: '社内の値を取り除く' },
+          { title: '各ページの表示', body: '料金表と取引条件の表示' },
+          { title: '突き合わせ', body: '元のデータとずれていないか確かめる' },
+        ]}
+      />
+      <div class="prose">
+        <h3>URL を変えずに引っ越す</h3>
+        <p>
+          このサイトの URL は、お支払いの画面やアプリの設定から直接リンクされています。作り直しても URL が1つも変わらないことを、公開のたびに機械で確かめています。
+        </p>
+      </div>
+      <ul class="tag-list" role="list" aria-label="使っている技術">
+        <li>Astro</li>
+        <li>Cloudflare Workers</li>
+        <li>Python（検査）</li>
+        <li>デジタル庁デザインシステム</li>
+      </ul>
+    </section>
+
+    <aside class="cta-band" aria-labelledby="products-cta">
+      <h2 id="products-cta">同じ考え方で、お店のサイトもつくります</h2>
+      <p>予約や問い合わせまわりの仕組み、サイトの引っ越しのご相談も、フルオーダーでお受けします。</p>
+      <div class="button-row">
+        <a class="button button--primary button--large" href="/#contact">相談する</a>
+        <a class="button button--secondary button--large" href="/services.html#extend">付随する機能の開発</a>
+      </div>
+    </aside>
+  </div>
+</Base>

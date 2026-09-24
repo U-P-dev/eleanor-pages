@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { breadcrumbLd } from '../lib/breadcrumb.mjs';
+import { SITE } from '../site.mjs';
+
+const crumbs = [{ label: '会社概要' }];
+const op = SITE.operator;
+---
+
+<Base
+  title={`会社概要｜${SITE.name}`}
+  description="エレノア（Eleanor）の事業者情報と代表のプロフィール。東京都新宿区の個人事業で、お店と小さな会社のホームページ・LP の制作と、公開後の保守・運用を引き受けています。"
+  jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="wrap page-head">
+    <h1>会社概要</h1>
+    <p class="page-head__lead">
+      エレノアは、ひとりの開発者が営む個人事業です。窓口も制作も運用も、同じ人間が担当します。
+    </p>
+  </div>
+
+  <div class="wrap page-body">
+    <section class="section" aria-labelledby="policy-title">
+      <h2 id="policy-title">大切にしていること</h2>
+      <ul class="card-grid" role="list">
+        <li class="card">
+          <p class="card__label">Vision</p>
+          <h3 class="card__title">「つくって終わり」に、しない。</h3>
+          <p>
+            サイトは公開した日から働きはじめます。設計・制作・公開・運用まで、すべての工程にひとりの開発者が責任を持ちます。途中で担当が替わらないので、事情を一から説明し直す必要がありません。
+          </p>
+        </li>
+        <li class="card">
+          <p class="card__label">Mission</p>
+          <h3 class="card__title">好奇心をプロダクトへ</h3>
+          <p>
+            面白いと思った課題を、動くものに変え続けます。自分たちのサービスも自分でつくって運営し、そこで確かめた考え方をお客様のサイトに使います。
+          </p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section" id="profile" aria-labelledby="profile-title">
+      <h2 id="profile-title">代表のプロフィール</h2>
+      <dl class="dl">
+        <div>
+          <dt>代表</dt>
+          <dd>{op.representative}（とよしま ゆうすけ）</dd>
+        </div>
+        <div>
+          <dt>現在</dt>
+          <dd>外資系コンサルティングファームに勤務</dd>
+        </div>
+        <div>
+          <dt>以前</dt>
+          <dd>外資系企業のシステムエンジニア（SE）</dd>
+        </div>
+        <div>
+          <dt>得意なこと</dt>
+          <dd>クラウドを使ったサイトとシステムの設計、業務の流れに合わせた仕組みづくり、公開後も手のかからない運用の組み立て</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="section" id="info" aria-labelledby="info-title">
+      <h2 id="info-title">事業者情報</h2>
+      <dl class="dl">
+        <div>
+          <dt>屋号</dt>
+          <dd>{op.name}（{op.nameEn}）</dd>
+        </div>
+        <div>
+          <dt>代表者</dt>
+          <dd>{op.representative}</dd>
+        </div>
+        <div>
+          <dt>事業形態</dt>
+          <dd>個人事業</dd>
+        </div>
+        <div>
+          <dt>設立</dt>
+          <dd>2026年</dd>
+        </div>
+        <div>
+          <dt>事業内容</dt>
+          <dd>
+            ホームページ・LP の制作と保守・運用<br />LP・ホームページに付随する機能の開発<br />自社のウェブサービス・アプリの企画・開発・運営
+          </dd>
+        </div>
+        <div>
+          <dt>所在地</dt>
+          <dd>〒{op.postalCode}<br />{op.address}</dd>
+        </div>
+        <div>
+          <dt>電話番号</dt>
+          <dd>{op.phone}（留守番電話でお受けし、メールで折り返します）</dd>
+        </div>
+        <div>
+          <dt>メール</dt>
+          <dd><a href={`mailto:${op.email}`}>{op.email}</a></dd>
+        </div>
+        <div>
+          <dt>受付時間</dt>
+          <dd>平日 10:00〜18:00。お問い合わせには、原則1営業日以内にメールでお返事します。</dd>
+        </div>
+      </dl>
+    </section>
+
+    <aside class="cta-band" aria-labelledby="company-cta">
+      <h2 id="company-cta">ご相談はお問い合わせから</h2>
+      <p>ご相談・お見積もりは無料です。いまのお困りごとをお書きください。</p>
+      <div class="button-row">
+        <a class="button button--primary button--large" href="/#contact">相談する</a>
+      </div>
+    </aside>
+  </div>
+</Base>

@@ -1,0 +1,70 @@
+/*
+ * エレノアのデザイントークン。
+ *
+ * 色・角丸・書体の値は「デジタル庁デザインシステム」のデザイントークンから、このサイトで使う分だけを写したもの
+ * （npm @digital-go-jp/design-tokens 2.0.1・2026-05-28）。部品の CSS（global.css）は同システムの
+ * HTML コードスニペット（v20260909）を参考に書き直した。どちらも MIT License。
+ *   https://github.com/digital-go-jp/design-tokens                       Copyright (c) 2023 デジタル庁
+ *   https://github.com/digital-go-jp/design-system-example-components-html  Copyright (c) 2025 デジタル庁
+ *
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ *   associated documentation files (the "Software"), to deal in the Software without restriction, including
+ *   without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ *   following conditions: The above copyright notice and this permission notice shall be included in all
+ *   copies or substantial portions of the Software.
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ *   LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ *   EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ *   IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ *   THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * キーカラーだけは DADS 既定の Blue ではなく、エレノアのブランド色（バイオレット #7c3aed）にしている。
+ * 赤から青へ混ざる紫のグラデーション（Magenta-900 → バイオレット → Blue-1000）は、ファーストビューの帯と飾りにだけ使う。
+ * 値を変えたら scripts/check_site.py のコントラスト検査が通るか確かめる（変数名で読んでいる）。
+ */
+:root {
+  --color-neutral-white: #ffffff;
+  --color-neutral-black: #000000;
+  --color-neutral-solid-gray-50: #f2f2f2;
+  --color-neutral-solid-gray-100: #e6e6e6;
+  --color-neutral-solid-gray-420: #949494;
+  --color-neutral-solid-gray-536: #767676;
+  --color-neutral-solid-gray-600: #666666;
+  --color-neutral-solid-gray-700: #4d4d4d;
+  --color-neutral-solid-gray-800: #333333;
+  --color-neutral-solid-gray-900: #1a1a1a;
+
+  /* キーカラー（ブランドのバイオレット）と、押したとき・ホバーの濃い紫（DADS Purple） */
+  --color-brand-violet: #7c3aed;
+  --color-primitive-purple-50: #f1eafa;
+  --color-primitive-purple-800: #5c10be;
+  --color-primitive-purple-900: #5109ad;
+  --color-primitive-purple-1000: #41048e;
+
+  /* リンク（DADS 標準の組み合わせ）。Magenta-900 と Blue-1000 はグラデーションの両端にも使う */
+  --color-primitive-blue-900: #0017c1;
+  --color-primitive-blue-1000: #00118f;
+  --color-primitive-magenta-900: #8b008b;
+  --color-primitive-orange-800: #c74700;
+
+  /* フォーカス（Yellow-300 と黒の二重。DADS は変更を禁止） */
+  --color-primitive-yellow-300: #ffd43d;
+
+  /* 警告（Warning Yellow-2） */
+  --color-primitive-yellow-900: #927200;
+
+  /* エラー（Error-2）。フォームの「※必須」とエラーの表示 */
+  --color-error-2: #ce0000;
+
+  --border-radius-4: 0.25rem;
+  --border-radius-8: 0.5rem;
+  --border-radius-12: 0.75rem;
+  --border-radius-16: 1rem;
+
+  /* Web フォントは読み込まない。Noto Sans JP が入っている環境ではそれを、無ければ OS の和文フォントを使う
+     （Windows は標準搭載の UD フォント BIZ UDPGothic → メイリオ） */
+  --font-family-sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
+    'BIZ UDPGothic', Meiryo, sans-serif;
+  --font-family-mono: 'Noto Sans Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'BIZ UDGothic', monospace;
+}

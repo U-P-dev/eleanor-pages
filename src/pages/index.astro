@@ -1,0 +1,270 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import PriceTables from '../components/PriceTables.astro';
+import prices from '../data/prices.json';
+import { publishedPosts, postUrl } from '../lib/blog.mjs';
+import { ymd } from '../lib/date.mjs';
+import { yen } from '../lib/format.mjs';
+import { SITE } from '../site.mjs';
+
+const minOf = (rows: Record<string, { price: number; billing?: string }>, monthlyOnly = false) =>
+  Math.min(...Object.values(rows).filter((r) => !monthlyOnly || r.billing === '月額').map((r) => r.price));
+const lpFrom = minOf(prices.plans);
+const careFrom = minOf(prices.subscriptions, true);
+const hpFrom = prices.fullorder.fullorder_hp.price;
+const posts = (await publishedPosts()).slice(0, 3);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: SITE.operator.name,
+    alternateName: SITE.operator.nameEn,
+    url: `${SITE.url}/`,
+    email: SITE.operator.email,
+    telephone: SITE.operator.phone,
+    founder: { '@type': 'Person', name: SITE.operator.representative },
+    address: {
+      '@type': 'PostalAddress',
+      postalCode: SITE.operator.postalCode,
+      addressRegion: '東京都',
+      addressLocality: '新宿区',
+      streetAddress: '新宿2丁目8番15号 パークフロント新宿 202号室',
+      addressCountry: 'JP',
+    },
+    areaServed: 'JP',
+  },
+];
+---
+
+<Base title={`ホームページと LP の制作・運用｜${SITE.name}`} description={SITE.description} jsonLd={jsonLd}>
+  <section class="hero on-dark" aria-labelledby="hero-title">
+    <div class="wrap hero__inner">
+      <p class="hero__eyebrow">東京・新宿のホームページ制作と運用</p>
+      <h1 class="hero__title" id="hero-title">
+        <span>「つくって終わり」。</span>
+        <span>に、しない。</span>
+      </h1>
+      <p class="hero__lead">
+        公開した日から、仕組みは動きはじめる。更新も、移行も、その先の運用も、同じ開発者が見続けます。
+      </p>
+      <div class="button-row">
+        <a class="button button--primary button--large" href="#lp">料金とプランを見る</a>
+        <a class="button button--secondary button--large" href="#contact">相談する</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="services-title">
+    <div class="wrap">
+      <p class="section__eyebrow">Services</p>
+      <h2 class="section__title" id="services-title">できること</h2>
+      <p class="section__lead">
+        お店と小さな会社のサイトを、つくるところから公開したあとまで引き受けます。窓口も制作も、最初から最後まで同じ開発者です。
+      </p>
+      <ul class="card-grid" role="list">
+        <li class="card card--accent">
+          <p class="card__label">最短 {prices.plans.bundle_standard.delivery_days}</p>
+          <h3 class="card__title">LP の制作</h3>
+          <div class="card__body">
+            <p>1ページで伝えるサイトを、確認済みのデザインから選んでつくります。やりとりはすべてメールです。</p>
+            <p class="card__price">{yen(lpFrom)}<small>〜（税抜）</small></p>
+          </div>
+          <p class="card__foot"><a href="#lp">LP 制作の料金</a></p>
+        </li>
+        <li class="card card--accent">
+          <p class="card__label">お打ち合わせから</p>
+          <h3 class="card__title">ホームページの制作</h3>
+          <div class="card__body">
+            <p>複数ページのホームページを、構成と原稿からつくります。お知らせ欄の更新もできる形でお渡しします。</p>
+            <p class="card__price">{yen(hpFrom)}<small>〜（税抜）</small></p>
+          </div>
+          <p class="card__foot"><a href="/services.html#fullorder">ホームページ制作の詳細</a></p>
+        </li>
+        <li class="card card--accent">
+          <p class="card__label">公開したあと</p>
+          <h3 class="card__title">保守と運用</h3>
+          <div class="card__body">
+            <p>リンク切れ・表示崩れ・セキュリティの確認と、掲載内容の差し替えを月額でお引き受けします。</p>
+            <p class="card__price">{yen(careFrom)}<small>／月〜（税抜）</small></p>
+          </div>
+          <p class="card__foot"><a href="/services.html#care">保守と運用の詳細</a></p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--sub" id="lp" aria-labelledby="lp-title">
+    <div class="wrap">
+      <p class="section__eyebrow">Price</p>
+      <h2 class="section__title" id="lp-title">料金とプラン</h2>
+      <p class="section__lead">
+        お店の LP は、確認済みのデザインから選ぶ形でお安くしています。ページ数の多いホームページや、つくり込みが要るものはフルオーダーです。
+      </p>
+      <PriceTables />
+      <p class="section__more">
+        <a href="/services.html">各プランに含まれるもの・追加サービスの料金</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="flow-title">
+    <div class="wrap">
+      <p class="section__eyebrow">Flow</p>
+      <h2 class="section__title" id="flow-title">LP ができるまで</h2>
+      <p class="section__lead">お電話やお打ち合わせは要りません。すべてメールで進みます。</p>
+      <ul class="steps" role="list">
+        <li>
+          <span class="steps__num" aria-hidden="true">1</span>
+          <span class="steps__title"><span class="visually-hidden">手順1 </span>プランを選ぶ</span>
+          <p>料金表からプランを選び、お問い合わせからお知らせください。</p>
+        </li>
+        <li>
+          <span class="steps__num" aria-hidden="true">2</span>
+          <span class="steps__title"><span class="visually-hidden">手順2 </span>お支払い</span>
+          <p>{prices.payment_timing}です。お支払いを確認してから制作に入ります。</p>
+        </li>
+        <li>
+          <span class="steps__num" aria-hidden="true">3</span>
+          <span class="steps__title"><span class="visually-hidden">手順3 </span>いくつかの質問に回答</span>
+          <p>お店のこと・載せたいことを、メールでうかがいます。</p>
+        </li>
+        <li>
+          <span class="steps__num" aria-hidden="true">4</span>
+          <span class="steps__title"><span class="visually-hidden">手順4 </span>実物を見て手直し</span>
+          <p>公開の前に実物をご確認いただき、手直ししてから公開します。</p>
+        </li>
+        <li>
+          <span class="steps__num" aria-hidden="true">5</span>
+          <span class="steps__title"><span class="visually-hidden">手順5 </span>公開・保守の開始</span>
+          <p>公開したあとは、保守メンテナンスで見続けます。</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tint" id="consult" aria-labelledby="consult-title">
+    <div class="wrap">
+      <p class="section__eyebrow">Full order</p>
+      <h2 class="section__title" id="consult-title">テンプレートに収まらないご相談</h2>
+      <div class="card-grid card-grid--2">
+        <div>
+          <p class="lead-strong">フルオーダーでお受けします。</p>
+          <p>
+            ページ数の多いホームページ、予約やフォームのつくり込み、いまお使いのサイトやドメイン・サーバーの移行など、テンプレートでは足りないものはフルオーダーです。お打ち合わせはオンラインで行います。
+          </p>
+          <p>
+            LP やホームページに付随する機能の開発（予約・問い合わせ・LINE との連携、サイトの引っ越しなど）は、内容をうかがってからお見積もりします。お問い合わせの種類で「フルオーダー・その他相談」を選んでください。
+          </p>
+        </div>
+        <div class="card">
+          <h3 class="card__title">ご相談の例</h3>
+          <ul class="check-list">
+            <li>予約サイトとホームページをつなぎたい</li>
+            <li>問い合わせの受け付けと返信の手間を減らしたい</li>
+            <li>いまのサイトを新しいサーバーに移したい</li>
+            <li>更新を自分たちでできるようにしたい</li>
+          </ul>
+          <p class="card__foot"><a href="/services.html#fullorder">フルオーダーの詳細</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="apps" aria-labelledby="products-title">
+    <div class="wrap">
+      <p class="section__eyebrow">Products</p>
+      <h2 class="section__title" id="products-title">つくったもの</h2>
+      <p class="section__lead">
+        エレノアは、自分たちのサービスも自分でつくって運営しています。設計と運用の考え方を公開しています。
+      </p>
+      <ul class="card-grid card-grid--2" role="list">
+        <li class="card">
+          <p class="card__label">公開中</p>
+          <h3 class="card__title">解約手帳</h3>
+          <div class="card__body">
+            <p>サブスクの解約手順を、公式ページで確かめた日付つきでまとめたサイトです。確認日のない記事は公開できない仕組みにしています。</p>
+          </div>
+          <p class="card__foot"><a href="/products.html#kaiyaku">解約手帳の設計</a></p>
+        </li>
+        <li class="card">
+          <p class="card__label">公開中</p>
+          <h3 class="card__title">このサイト</h3>
+          <div class="card__body">
+            <p>読みやすさと迷わない導線を優先して、デジタル庁デザインシステムを参考に作り直しました。</p>
+          </div>
+          <p class="card__foot"><a href="/products.html#this-site">このサイトの設計</a></p>
+        </li>
+      </ul>
+      <p class="section__more"><a href="/products.html">つくったものの一覧</a></p>
+    </div>
+  </section>
+
+  {
+    posts.length > 0 && (
+      <section class="section section--sub" aria-labelledby="blog-title">
+        <div class="wrap">
+          <p class="section__eyebrow">Blog</p>
+          <h2 class="section__title" id="blog-title">ブログ</h2>
+          <ul class="article-list">
+            {posts.map((p) => (
+              <li class="article-list__item">
+                <a class="article-list__link" href={postUrl(p)}>
+                  {p.data.title}
+                </a>
+                <p class="article-list__meta">
+                  {p.data.category}・<time datetime={ymd(p.data.published_at)}>{ymd(p.data.published_at)}</time>
+                </p>
+              </li>
+            ))}
+          </ul>
+          <p class="section__more">
+            <a href="/blog.html">ブログの記事一覧</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section" aria-labelledby="about-title">
+    <div class="wrap">
+      <p class="section__eyebrow">About</p>
+      <h2 class="section__title" id="about-title">つくる人</h2>
+      <div class="card-grid card-grid--2">
+        <div>
+          <p class="lead-strong">代表 {SITE.operator.representative}</p>
+          <p>
+            現在は外資系コンサルティングファームに勤めています。以前は外資系企業のシステムエンジニアでした。エレノアでは、お店と小さな会社のサイトを、設計から公開後の運用まで一人で引き受けています。
+          </p>
+          <p><a href="/company.html">会社概要と代表のプロフィール</a></p>
+        </div>
+        <dl class="dl">
+          <div>
+            <dt>窓口と制作</dt>
+            <dd>最初のご相談から公開後まで、同じ開発者が担当します（0 handoffs）。</dd>
+          </div>
+          <div>
+            <dt>やりとり</dt>
+            <dd>メールで進めます。フルオーダーはオンラインのお打ち合わせがあります。</dd>
+          </div>
+          <div>
+            <dt>所在地</dt>
+            <dd>東京都新宿区</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sub" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <p class="section__eyebrow">Contact</p>
+      <h2 class="section__title" id="contact-title">お問い合わせ</h2>
+      <p class="section__lead">
+        ご相談・お見積もりは無料です。原則1営業日以内に、メールでお返事します。
+      </p>
+      <ContactForm />
+    </div>
+  </section>
+</Base>

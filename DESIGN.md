@@ -1,224 +1,93 @@
-# Eleanor デザイン & 開発ガイドライン
+# デザインの正本 — eleanor-dev.com
 
-> **対象**: eleanor-pages（コーポレートサイト）の開発・保守担当者
-> **最終更新**: 2026-03-21
-
----
-
-## 1. ブランド概要
-
-| 項目 | 内容 |
-|------|------|
-| 屋号 | エレノア（Eleanor） |
-| コンセプト | プロダクトスタジオ & AI アジャイル開発 |
-| ターゲット | 小規模企業・スタートアップ |
-| ポジショニング | 圧倒的な低価格・高速開発（≠ SI の上位互換） |
+> **最終更新**: 2026-09-24（HP 型へ作り直し、デジタル庁デザインシステムを手本にした日）
+> 見た目・部品を変えるときは、ここを先に読む。変えたらここを直す。
+> 値の正本は `src/styles/tokens.css`、見た目は `src/styles/global.css`、部品は `src/components/`。
 
 ---
 
-## 2. コーポレートカラー
+## 1. 方針（3つ）
 
-### プライマリ（トライカラー）
+1. **デジタル庁デザインシステム（DADS）の値と部品の作り方に沿う。**
+   参照した版: デザイントークン npm 2.0.1（2026-05-28）／HTML コードスニペット v20260909／ドキュメント v2.18.0（2026-09-09）。
+   トークンとコードは MIT。流用部分の著作権表示を `tokens.css` の先頭に残している。
+   土台の CSS は、同じ方針で先に作った解約手帳（kaiyaku-techo.com）から写した。
+2. **ただし行政のサイトに見せない。** キーカラーはエレノアのバイオレット `#7c3aed`。
+   赤から青へ混ざる紫のグラデーション（Magenta-900 → `#7c3aed` → Blue-1000）はファーストビューの帯・ヘッダーの細い線・ロゴにだけ使う。
+   サイト上の表記は「デジタル庁デザインシステムを参考に作成」まで（「準拠」「公式」とは書かない）。デジタル庁のロゴは使わない。
+3. **JIS X 8341-3:2016 の適合レベル AA を目標にする。** 方針と試験結果は `/site-policy.html`。
 
-| 変数 | HEX | 用途 |
-|------|-----|------|
-| `--blue` | `#2563EB` | プライマリアクション、リンク |
-| `--purple` | `#7C3AED` | ブランドコア、グロー |
-| `--red` | `#E11D48` | アクセント、CTA |
+## 2. 色（正本は `src/styles/tokens.css`・組み合わせは `scripts/check_site.py` の `CONTRAST` が毎回計算）
 
-### ライト（テキスト・グラデーション用）
+| 用途 | 値 | 備考 |
+|---|---|---|
+| 本文／見出し | Gray-800 `#333` ／ Gray-900 `#1a1a1a` | |
+| リード文・注記／日付・補足 | Gray-700 `#4d4d4d` ／ Gray-600 `#666` | |
+| ブランド（塗りボタン・飾り罫・カードの上の帯） | Violet `#7c3aed` | 白地との比 5.70 |
+| 小見出し・アウトラインのボタン・手順の番号 | Purple-900 `#5109ad` | 押下は Purple-1000 `#41048e` |
+| 薄い紫の地（「テンプレートに収まらないご相談」・行動を促す帯） | Purple-50 `#f1eafa` | |
+| 灰の地（料金・問い合わせ・フッター） | Gray-50 `#f2f2f2` | |
+| 罫線・枠（白の地） | Gray-420 `#949494` | 3.03 |
+| 罫線・枠（灰・紫の地） | Gray-536 `#767676` | Gray-420 では 3:1 に届かない（2.7）ので地ごとに変数を上書き |
+| リンク／ホバー／訪問済み／押下 | Blue-1000 ／ Blue-900 ／ Magenta-900 ／ Orange-800 | DADS 標準 |
+| 「※必須」・エラー | Error-2 `#ce0000` | |
+| フォーカス | Yellow-300 `#ffd43d` と黒の二重 | DADS は変更を禁止 |
 
-| 変数 | HEX | 用途 |
-|------|------|------|
-| `--blue-l` | `#93C5FD` | グラデーションテキスト |
-| `--purple-l` | `#C4B5FD` | グラデーションテキスト |
-| `--red-l` | `#FDA4AF` | グラデーションテキスト |
+- **文字は大きさに関係なく 4.5:1 以上**（DADS は大きい文字の 3:1 の例外を使わない）。
+- **グラデーションの上の文字は白だけ。** どの色の点でも白との比が 4.5 以上になる3色を選んでいる（最小は Violet の 5.70）。
+- **ダークモードは作らない**（DADS に定義が無く、フォーカス表示もライト前提）。`color-scheme: light`。
 
-### バックグラウンド
+## 3. 文字と配置
 
-| 変数 | HEX | 用途 |
-|------|------|------|
-| `--bg` | `#04040E` | ページ背景（最暗） |
-| `--bg2` | `#07071A` | セクション背景 |
-| `--bg3` | `#0A0A22` | カード背景 |
+- **書体**: Web フォントは読み込まない。`'Noto Sans JP'` → OS の和文フォント（Windows は BIZ UDPGothic → メイリオ）。
+- **大きさ**: 本文 16px（768px 以上は 17px）・行の高さ 1.7・字間 0.02em。H1 28/36px、H2 24/28px、H3 20/22px（768px 未満／以上）。
+  ファーストビューの看板は 2 行（「「つくって終わり」。」／「に、しない。」）で、1 行が途中で折れないよう `white-space: nowrap` と画面幅に比例する大きさ。
+- **幅**: ページの最大幅 72rem、文章の幅 43rem（17px で約 40 字）。
+- **段組みの切り替え**: 48rem（768px）の 1 本。ヘッダーの水平メニューだけは 5 項目＋問い合わせが収まる 60rem から出す。
 
-### テキスト（コントラスト設計）
+## 4. 部品
 
-| 変数 | 値 | 用途 | 目標コントラスト |
-|------|----|------|----------------|
-| `--text` | `#FFFFFF` | 見出し | AA/AAA |
-| `--body` | `rgba(255,255,255,0.84)` | 本文 | AA |
-| `--muted` | `rgba(255,255,255,0.60)` | 補助テキスト | 最低限 |
-| `--muted2` | `rgba(255,255,255,0.38)` | プレースホルダ等 | 装飾用のみ |
+| 部品 | 置き場 | DADS の部品 | 約束 |
+|---|---|---|---|
+| ヘッダー | `layouts/Base.astro` | ヘッダーコンテナ・水平メニュー・ハンバーガーメニューボタン | メニューはページ名そのままの 5 つ。狭い画面は「メニュー」と書いたボタン（アイコンだけにしない）。階層は 1 段 |
+| パンくず | `components/Breadcrumb.astro` | パンくずナビゲーション | H1 の上。「現在位置」の名前・山形の区切り・`aria-current` |
+| ボタン | `global.css` `.button` | ボタン | **塗り（primary）は 1 画面に 1 つ**。ヘッダーの「お問い合わせ」はアウトライン。高さ 48／56px |
+| カード | `.card` | カード | 外枠は地との比 3:1 以上。カードの中のリンクは 1 つ（カード全体をリンクにしない） |
+| 料金表 | `components/PriceTables.astro` | テーブル | 横スクロールの枠に名前（`aria-labelledby`）と `tabindex="0"`。金額は右寄せ |
+| 手順 | `.steps` | —（番号付きリスト） | `<ol>` を使わず番号を文字で書く |
+| よくある質問 | `.faq` | アコーディオン | `<details>`。質問は要約文。よくある質問以外には使わない |
+| 問い合わせ | `components/ContactForm.astro` | インプットテキスト・ラベル | ラベルは上・「※必須」「※任意」・プレースホルダーは使わない・エラーは送信時にまとめて「＊」から |
+| 仕組みの図 | `components/Flow.astro` | — | 画像にせず HTML のリストで描く（読み上げ・拡大・翻訳が効く） |
+| 移したページ | `layouts/Legal.astro` | — | 旧サイトの本文（`src/legal/*.html`）を一字も変えずに差し込む |
 
-### ボーダー
+使わないと決めたもの: カルーセル、ページトップへ戻るボタン、文字サイズ変更ボタン、Web フォント、ダークモード、装飾だけのアニメーション。
 
-| 変数 | 値 | 用途 |
-|------|----|------|
-| `--border` | `rgba(255,255,255,0.09)` | 通常の区切り |
-| `--border2` | `rgba(255,255,255,0.15)` | ホバー時・強調 |
+## 5. DADS から意図して外した点
 
----
+| 点 | DADS | このサイト | 理由 |
+|---|---|---|---|
+| キーカラー | Blue | Violet | §1-2 |
+| ヘッダーのメニューの出し方 | 768px で切り替え | 60rem（960px）で切り替え | 5 項目＋問い合わせが 768px では収まらない |
+| ロゴのリンク | リンクは下線 | 下線なし | 位置と慣習で分かる。文中のリンクではない |
+| 移したページの `<ol>`・表 | 番号は文字で／表は名前つきの枠 | 旧サイトのまま | 本文を変えない約束が優先（アプリストア・決済画面から参照） |
 
-## 3. シグネチャグラデーション
+## 6. 機械で止まるもの（`npm run build`）
 
-```css
-/* ボタン・バー・アイコン等に使うメイングラデーション */
---grad: linear-gradient(135deg, #2563EB 0%, #7C3AED 50%, #E11D48 100%);
+- `scripts/copy_generated.mjs`: LP 事業が直下に書き込む 3 枚（`tokusho.html`・`privacy-lp.html`・`terms-lp.html`）が無い
+- `scripts/check_site.py`: 守る URL の欠け・`#lp` `#contact` `#apps` の欠け・リンク切れ・H1 の数・title/description・
+  名前の無い `<nav>`・表の枠・`<ol>`・外部送信の表に無い送信先・色のコントラスト比・古い看板の言葉
+- ビルドの外で回すもの: `scripts/check_legal_text.py`（移したページの本文の照合）・`scripts/check_prices.py`（料金の元データとの照合）
 
-/* テキストに使うパステルグラデーション（視認性確保） */
---grad-text: linear-gradient(125deg, #93C5FD 0%, #C4B5FD 48%, #FDA4AF 100%);
+## 7. 変えるとき
 
-/* カード背景・ホバー等の微細なグラデーション */
---grad-subtle: linear-gradient(135deg,
-  rgba(37,99,235,.18) 0%,
-  rgba(124,58,237,.14) 50%,
-  rgba(225,29,72,.12) 100%);
-```
+- **色を変える** → `tokens.css` → `npm run build`（`CONTRAST` が落ちたら値を戻す）→ この §2
+- **部品を足す** → `src/components/` → `global.css` → この §4
+- **ページを足す** → `src/pages/<名前>.astro`（URL は `/<名前>.html`）→ `NAV`（`src/site.mjs`）に載せるかを決める → フッター
+- **料金が変わった** → `python3 scripts/check_prices.py --write` → 差分を見てコミット（金額を `.astro` に直書きしない）
+- **見た目を変えた** → アクセシビリティの再試験（`/site-policy.html` の試験結果を更新）
 
-### グラデーションテキストの適用方法
+## 8. 出典
 
-```css
-.gradient-text {
-  background: var(--grad-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-```
-
----
-
-## 4. タイポグラフィ
-
-| 用途 | フォント | ウェイト |
-|------|---------|---------|
-| 全文 | Inter（Google Fonts） | 300〜900 |
-| フォールバック | -apple-system, BlinkMacSystemFont, Hiragino Sans, Yu Gothic, sans-serif |
-| 見出し H1 | 56–64px | 900 |
-| 見出し H2 | 38–42px | 800 |
-| 見出し H3 | 20–24px | 700 |
-| 本文 | 16–17px | 400–500 |
-| 小テキスト | 13–14px | 400–500 |
-| letter-spacing | 見出し: -0.03〜-0.05em、本文: 0 |
-
----
-
-## 5. コンポーネント設計
-
-### トップアクセントバー
-
-```html
-<div class="top-bar"></div>
-```
-- 高さ: 3px、幅: 100%
-- 背景: `var(--grad)`
-- position: fixed, z-index: 300
-
-### ナビゲーション
-
-- height: 60px、top: 3px（アクセントバー分）
-- 背景: `rgba(4,4,14,0.82)` + backdrop-filter: blur(28px) saturate(160%)
-- ロゴ: 白テキスト + 「Eleanor」部分に `--grad-text`
-- CTA ボタン: `--grad` 背景、shadow: `0 0 24px rgba(124,58,237,.45)`
-
-### カード
-
-- 背景: `var(--bg3)` または `var(--grad-subtle)`
-- border: `1px solid var(--border)`
-- border-radius: 14–16px（コーポレート感のある丸み）
-- hover: border-color → `var(--border2)` + translateY(-4px)
-
-### ボタン（プライマリ）
-
-```css
-background: var(--grad);
-color: #fff;
-border-radius: 8px;
-font-weight: 700;
-box-shadow: 0 0 24px rgba(124,58,237,.45);
-```
-
----
-
-## 6. アニメーション
-
-### スクロールアニメーション
-
-- `[data-a]` 属性を持つ要素が Intersection Observer で `.visible` クラスを受け取る
-- デフォルト: `opacity: 0; transform: translateY(28px)`
-- `.visible`: `opacity: 1; transform: none; transition: 0.6s cubic-bezier(.22,1,.36,1)`
-- 遅延: `[data-d="1"]` → `transition-delay: 0.1s`（数字 × 0.1s）
-
-### ホバー
-
-- ボタン: `translateY(-1px)` + shadow 強調
-- カード: `translateY(-4px)` + border-color 変化
-- transition: 0.15〜0.25s ease
-
----
-
-## 7. レスポンシブ
-
-| ブレークポイント | 対象 |
-|----------------|------|
-| `max-width: 960px` | ナビ折りたたみ（ハンバーガー） |
-| `max-width: 768px` | カードグリッド 1列化、パディング縮小 |
-| `max-width: 480px` | H1 フォントサイズ縮小 |
-
----
-
-## 8. 開発方針
-
-### 技術スタック
-
-- **静的HTML + CSS + Vanilla JS**（ビルドツール不使用）
-- **ホスティング**: GitHub Pages（`U-P-dev/eleanor-pages`）
-- **ドメイン**: `eleanor-dev.com`（Cloudflare DNS → GitHub Pages）
-- **フォント**: Google Fonts CDN（Inter）
-
-### コーディングルール
-
-1. CSSカスタムプロパティ（変数）を必ず使用し、ハードコードの色値を避ける
-2. テキストコントラストは WCAG AA 基準（4.5:1 以上）を維持すること
-3. `rgba(255,255,255,0.42)` 以下のテキストは本文に使用しない
-4. JavaScript は最小限。アニメーションは CSS + Intersection Observer のみ
-5. 外部依存はフォントのみ（CDN 1本）
-
-### デザイン原則
-
-- **Accenture Song スタイル**: 鮮烈なトライカラーグラデーション、モノクロ暗背景
-- **情報の誠実さ**: 誇大表現を避け、強み・弱みを正直に提示する
-- **コントラスト優先**: 見た目の美しさよりも可読性を優先する
-
-### デプロイフロー
-
-```bash
-# 変更後
-git add <files>
-git commit -m "description"
-git push origin main
-
-# デプロイ確認（SHA が一致すれば完了）
-gh api repos/U-P-dev/eleanor-pages/deployments --jq '.[0] | {sha, created_at}'
-```
-
----
-
-## 9. ページ構成
-
-| ファイル | URL | 内容 |
-|---------|-----|------|
-| `index.html` | `/` | トップ（事業者HP） |
-| `company.html` | `/company.html` | 会社情報 |
-| `privacy.html` | `/privacy.html` | プライバシーポリシー |
-| `support.html` | `/support.html` | サポート |
-| `account-deletion.html` | `/account-deletion.html` | アカウント削除 |
-
----
-
-## 10. 注意事項
-
-- Cloudflare の Proxy（オレンジ雲）は **OFF** にすること（HTTPS証明書が競合する）
-- `CNAME` ファイルは削除しないこと（GitHub Pages のカスタムドメイン設定）
-- `PROGRESS.md` は事業進捗の記録。コミット対象だが公開ページではない
+- デジタル庁デザインシステム: https://design.digital.go.jp/dads/
+- 利用上の注意（ライセンス）: https://design.digital.go.jp/dads/introduction/notices/
+- デジタル庁「ウェブアクセシビリティ導入ガイドブック」: https://www.digital.go.jp/resources/introduction-to-web-accessibility-guidebook

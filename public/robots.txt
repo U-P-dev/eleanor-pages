@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://eleanor-dev.com/sitemap-index.xml

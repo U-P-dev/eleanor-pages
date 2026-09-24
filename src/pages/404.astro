@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site.mjs';
+---
+
+<Base title={`ページが見つかりません｜${SITE.name}`} description="お探しのページは見つかりませんでした。URL が変わったか、ページが削除された可能性があります。" noindex>
+  <div class="wrap wrap--narrow page-head page-body">
+    <h1>ページが見つかりません</h1>
+    <p>お探しのページは見つかりませんでした。URL が変わったか、ページが削除された可能性があります。</p>
+    <ul class="check-list">
+      <li><a href="/">ホーム</a></li>
+      <li><a href="/services.html">サービス</a></li>
+      <li><a href="/#lp">料金</a></li>
+      <li><a href="/#contact">お問い合わせ</a></li>
+    </ul>
+  </div>
+</Base>

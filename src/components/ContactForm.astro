@@ -1,0 +1,80 @@
+---
+// 問い合わせ。送信の受け口（サーバー）はまだ無いので、入力を件名と本文に組み立ててメールソフトを開く（mailto）。
+// DADS のフォームの作法: ラベルは入力欄の上／「※必須」「※任意」／入力例は補足文に書き、プレースホルダーは使わない。
+import { SITE } from '../site.mjs';
+
+const kinds = ['LP 制作', 'HP 制作', '保守・運用', 'フルオーダー・その他相談', 'アプリについて', 'その他'];
+---
+
+<form class="form" id="contact-form" action={`mailto:${SITE.operator.email}`} method="post" enctype="text/plain" novalidate>
+  <div class="form-field">
+    <label class="form-label" for="cf-kind">ご相談の種類<span class="form-req">※必須</span></label>
+    <select class="input" id="cf-kind" name="kind" required>
+      <option value="">選んでください</option>
+      {kinds.map((k) => <option value={k}>{k}</option>)}
+    </select>
+  </div>
+  <div class="form-field">
+    <label class="form-label" for="cf-name">お名前<span class="form-req">※必須</span></label>
+    <input class="input" id="cf-name" name="name" type="text" autocomplete="name" required />
+  </div>
+  <div class="form-field">
+    <label class="form-label" for="cf-org">会社名・店名<span class="form-opt">※任意</span></label>
+    <input class="input" id="cf-org" name="org" type="text" autocomplete="organization" />
+  </div>
+  <div class="form-field">
+    <label class="form-label" for="cf-email">メールアドレス<span class="form-req">※必須</span></label>
+    <p class="form-support" id="cf-email-support">返信はこのアドレスにお送りします。</p>
+    <input class="input" id="cf-email" name="email" type="email" autocomplete="email" required aria-describedby="cf-email-support" />
+  </div>
+  <div class="form-field">
+    <label class="form-label" for="cf-body">ご相談の内容<span class="form-req">※必須</span></label>
+    <p class="form-support" id="cf-body-support">
+      いまのお困りごと・ご予算・ご希望の時期がわかると、1回目の返信で具体的にお答えできます。
+    </p>
+    <textarea class="input" id="cf-body" name="body" required aria-describedby="cf-body-support"></textarea>
+  </div>
+  <p class="form-error" id="cf-error" tabindex="-1" hidden></p>
+  <div>
+    <button class="button button--primary button--large" type="submit">メールソフトで送信内容を開く</button>
+  </div>
+  <p class="form-note">
+    ボタンを押すと、お使いのメールソフトに入力内容が入った状態で開きます。そのまま送信してください。
+    メールソフトが開かないときは、<a href={`mailto:${SITE.operator.email}`}>{SITE.operator.email}</a> へ直接お送りください。
+  </p>
+</form>
+
+<script is:inline>
+  // 入力を件名と本文にまとめて mailto を開く。足りない欄は送信時にまとめて知らせる（DADS: エラーは送信時・具体的に）
+  (() => {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+    const error = document.getElementById('cf-error');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const v = (id) => document.getElementById(id).value.trim();
+      const missing = [];
+      if (!v('cf-kind')) missing.push('ご相談の種類');
+      if (!v('cf-name')) missing.push('お名前');
+      if (!v('cf-email') || !document.getElementById('cf-email').checkValidity()) missing.push('メールアドレス（例: name@example.com の形）');
+      if (!v('cf-body')) missing.push('ご相談の内容');
+      if (missing.length) {
+        error.textContent = '＊入力されていない、または形が正しくない欄があります: ' + missing.join('、');
+        error.hidden = false;
+        error.focus();
+        return;
+      }
+      error.hidden = true;
+      const subject = `【${v('cf-kind')}】${v('cf-name')}様からのご相談`;
+      const body = [
+        `ご相談の種類: ${v('cf-kind')}`,
+        `お名前: ${v('cf-name')}`,
+        `会社名・店名: ${v('cf-org') || '（未記入）'}`,
+        `メールアドレス: ${v('cf-email')}`,
+        '',
+        v('cf-body'),
+      ].join('\n');
+      location.href = `${form.getAttribute('action')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  })();
+</script>

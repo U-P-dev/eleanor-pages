@@ -1,0 +1,229 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import prices from '../data/prices.json';
+import { breadcrumbLd } from '../lib/breadcrumb.mjs';
+import { yen } from '../lib/format.mjs';
+import { SITE } from '../site.mjs';
+
+type Plan = { name: string; price: number; delivery_days?: string; includes?: string[] };
+type Row = { name: string; price: number; billing?: string; description?: string; delivery_days?: string };
+const plans = prices.plans as Record<string, Plan>;
+const full = prices.fullorder as Record<string, Plan>;
+const subs = Object.values(prices.subscriptions) as Row[];
+const addons = Object.values(prices.addons) as Row[];
+const spots = Object.values(prices.spot) as Row[];
+const tax = prices.tax_included ? '税込' : '税抜';
+const crumbs = [{ label: 'サービス' }];
+---
+
+<Base
+  title={`サービス｜${SITE.name}`}
+  description="LP の制作、ホームページのフルオーダー制作、公開後の保守と運用、LP やホームページに付随する機能の開発。各プランに含まれるものと、追加サービス・スポット対応の料金をまとめています。"
+  jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="wrap page-head">
+    <h1>サービス</h1>
+    <p class="page-head__lead">
+      エレノアは、お店と小さな会社のサイトを「つくる」「公開する」「見続ける」まで引き受けます。料金はすべて{tax}で表示しています。
+    </p>
+  </div>
+
+  <div class="wrap page-body">
+    <section class="section" id="lp-plans" aria-labelledby="lp-plans-title">
+      <h2 id="lp-plans-title">LP の制作</h2>
+      <p class="section__lead">
+        1ページで伝えるサイトを、確認済みのデザインから選んでつくります。やりとりはすべてメールで、お打ち合わせはありません。
+      </p>
+      <ul class="card-grid card-grid--2" role="list">
+        <li class="card card--accent">
+          <h3 class="card__title">LP＋保守プラン</h3>
+          <div class="card__body">
+            <p>公開と保守メンテナンス（月額）までまとめてお任せいただく形です。</p>
+            <p class="card__price">{yen(plans.bundle_standard.price)}<small>〜（制作料金）</small></p>
+            <ul class="check-list">{plans.bundle_standard.includes?.map((i) => <li>{i}</li>)}</ul>
+          </div>
+        </li>
+        <li class="card card--accent">
+          <h3 class="card__title">LP単体プラン</h3>
+          <div class="card__body">
+            <p>HTML 一式をお渡しし、お客様の環境で公開していただく形です。</p>
+            <p class="card__price">{yen(plans.standalone_standard.price)}<small>〜</small></p>
+            <ul class="check-list">{plans.standalone_standard.includes?.map((i) => <li>{i}</li>)}</ul>
+          </div>
+        </li>
+      </ul>
+      <p class="section__more"><a href="/#lp">デザインごとの料金と納期</a></p>
+    </section>
+
+    <section class="section" id="fullorder" aria-labelledby="fullorder-title">
+      <h2 id="fullorder-title">フルオーダー（ホームページ・つくり込みの LP）</h2>
+      <p class="section__lead">
+        お打ち合わせから構成と原稿をつくります。テンプレートに収まらないもの、ページ数の多いホームページはこちらです。
+      </p>
+      <ul class="card-grid card-grid--2" role="list">
+        {
+          Object.values(full).map((f) => (
+            <li class="card card--accent">
+              <h3 class="card__title">{f.name}</h3>
+              <div class="card__body">
+                <p class="card__price">
+                  {yen(f.price)}
+                  <small>（納期 {f.delivery_days}）</small>
+                </p>
+                <ul class="check-list">{f.includes?.map((i) => <li>{i}</li>)}</ul>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section" id="extend" aria-labelledby="extend-title">
+      <h2 id="extend-title">LP・ホームページに付随する機能の開発</h2>
+      <div class="prose">
+        <p>
+          つくったサイトを、お店や会社の仕事とつなぐ開発もお引き受けします。フルオーダーのお打ち合わせの中でご相談ください。金額は内容をうかがってからお見積もりします。
+        </p>
+        <ul class="check-list">
+          <li>予約サービス・問い合わせフォーム・LINE 公式アカウントとの連携</li>
+          <li>問い合わせの受け付けや返信まわりの手間を減らす仕組み</li>
+          <li>いまお使いのサイト・ドメイン・サーバーの移行</li>
+          <li>公開後に自分たちで更新できる形への作り替え</li>
+        </ul>
+        <p>
+          お問い合わせの種類で「フルオーダー・その他相談」を選び、いまの状況とお困りごとをお書きください。
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="care" aria-labelledby="care-title">
+      <h2 id="care-title">保守と運用</h2>
+      <p class="section__lead">公開したサイトを、決まった間隔で確かめ、掲載内容の差し替えにも応じます。</p>
+      <div class="table-region" role="region" tabindex="0" aria-labelledby="care-title">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">プラン</th>
+              <th scope="col">料金</th>
+              <th scope="col">内容</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              subs.map((s) => (
+                <tr>
+                  <th scope="row">{s.name}</th>
+                  <td class="num">
+                    {yen(s.price)}／{s.billing === '年額' ? '年' : '月'}
+                  </td>
+                  <td>{s.description}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="options" aria-labelledby="options-title">
+      <h2 id="options-title">追加サービス・スポット対応</h2>
+      <h3 class="table-caption" id="addons-title">追加サービス（保守メンテナンスとあわせて）</h3>
+      <div class="table-region" role="region" tabindex="0" aria-labelledby="addons-title">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">サービス</th>
+              <th scope="col">料金</th>
+              <th scope="col">内容</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              addons.map((a) => (
+                <tr>
+                  <th scope="row">{a.name}</th>
+                  <td class="num">
+                    {yen(a.price)}／{a.billing === '年額' ? '年' : '月'}
+                  </td>
+                  <td>{a.description}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <h3 class="table-caption" id="spot-title">スポット対応（1回ごと）</h3>
+      <div class="table-region" role="region" tabindex="0" aria-labelledby="spot-title">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">内容</th>
+              <th scope="col">料金</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              spots.map((s) => (
+                <tr>
+                  <th scope="row">{s.name}</th>
+                  <td class="num">{yen(s.price)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">
+        料金は{tax}です（別途消費税{Math.round(prices.tax_rate * 100)}%）。取引の条件の全文は<a href="/tokusho.html">特定商取引法に基づく表示</a>をご覧ください。
+      </p>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">よくある質問</h2>
+      <div class="faq">
+        <details>
+          <summary>お打ち合わせや電話は必要ですか？</summary>
+          <div class="faq__a">
+            <p>LP の制作と保守はメールだけで進みます。フルオーダーはオンラインのお打ち合わせがあります。お電話は留守番電話でお受けし、メールで折り返します。</p>
+          </div>
+        </details>
+        <details>
+          <summary>支払いはいつ、どの方法でできますか？</summary>
+          <div class="faq__a">
+            <p>{prices.payment_timing}で、{prices.payment_methods.join('・')}です。お支払いを確認してから制作に入ります。</p>
+          </div>
+        </details>
+        <details>
+          <summary>申し込んだあとで取り消せますか？</summary>
+          <div class="faq__a">
+            <p>お支払いから{prices.refund_window_hours}時間以内なら、理由を問わず全額を返金します。それ以降の返金はありません。</p>
+          </div>
+        </details>
+        <details>
+          <summary>公開する前に内容を確かめられますか？</summary>
+          <div class="faq__a">
+            <p>
+              はい。公開の前に実物をご確認いただき、手直ししてから公開します。テンプレートから選ぶ LP の手直しは{prices.pre_delivery_revisions}回まで、ご返信から{prices.revision_turnaround}で手直し版をお送りします。
+            </p>
+          </div>
+        </details>
+        <details>
+          <summary>いま使っているサイトの引っ越しだけを頼めますか？</summary>
+          <div class="faq__a">
+            <p>内容によってお受けできます。お問い合わせの種類で「フルオーダー・その他相談」を選び、いまの状況をお書きください。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <aside class="cta-band" aria-labelledby="services-cta">
+      <h2 id="services-cta">どのプランが合うか迷ったら</h2>
+      <p>いまのお困りごとをお書きいただければ、合うプランと費用の目安をメールでお返事します。ご相談は無料です。</p>
+      <div class="button-row">
+        <a class="button button--primary button--large" href="/#contact">相談する</a>
+      </div>
+    </aside>
+  </div>
+</Base>

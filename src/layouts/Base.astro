@@ -1,0 +1,199 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+import { NAV, SITE } from '../site.mjs';
+
+interface Props {
+  /** <title> に入れる完全な文字列（DADS: 「ページの主題｜サイト名」） */
+  title: string;
+  description: string;
+  type?: 'website' | 'article';
+  jsonLd?: object[];
+  noindex?: boolean;
+}
+
+const { title, description, type = 'website', jsonLd = [], noindex = false } = Astro.props;
+const path = Astro.url.pathname;
+const canonical = new URL(path === '/index.html' ? '/' : path, SITE.url).href;
+const isHome = path === '/' || path === '/index.html';
+// 確認用のビルド（next.eleanor-dev.com）は全ページを検索に出さない
+const staging = process.env.STAGING === '1';
+const ogImage = new URL('/og.png', SITE.url).href;
+// JSON-LD を <script> に埋めるので、</script> で閉じられないよう < を逃がす
+const ld = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c');
+const current = (href: string) => (href === path || (href === '/blog.html' && path.startsWith('/blog/')) ? 'page' : undefined);
+const beacon = SITE.analytics.cloudflareBeaconToken;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex || staging ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="google-adsense-account" content="ca-pub-6133561595210589" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE.name} — ${SITE.tagline}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#7c3aed" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={ld(data)} />)}
+    {
+      import.meta.env.PROD && beacon && !staging && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: beacon })}
+        />
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">本文へ移動</a>
+    <header class="site-header">
+      <div class="wrap site-header__inner">
+        <a class="site-logo" href="/" aria-current={isHome ? 'page' : undefined}>
+          <svg class="site-logo__mark" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#8b008b"></stop>
+                <stop offset="0.52" stop-color="#7c3aed"></stop>
+                <stop offset="1" stop-color="#00118f"></stop>
+              </linearGradient>
+            </defs>
+            <rect width="32" height="32" rx="8" fill="url(#logo-grad)"></rect>
+            <rect x="9" y="8" width="14" height="3.2" rx="1.6" fill="#fff"></rect>
+            <rect x="9" y="14.4" width="10" height="3.2" rx="1.6" fill="#fff"></rect>
+            <rect x="9" y="20.8" width="14" height="3.2" rx="1.6" fill="#fff"></rect>
+          </svg>
+          <span>{SITE.name}<span class="site-logo__en">{SITE.nameEn}</span></span>
+        </a>
+        <nav class="global-nav" aria-labelledby="global-nav-label">
+          <span id="global-nav-label" class="visually-hidden">メインメニュー</span>
+          <ul class="global-nav__list">
+            {
+              NAV.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={current(item.href)}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li class="global-nav__cta"><a class="button button--secondary" href="/#contact">お問い合わせ</a></li>
+          </ul>
+        </nav>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu">
+          <svg class="menu-button__open" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+          <svg class="menu-button__close" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+          <span class="menu-button__label">メニュー</span>
+        </button>
+      </div>
+      <nav id="mobile-menu" class="mobile-menu" aria-labelledby="mobile-menu-label" hidden>
+        <div class="wrap">
+          <span id="mobile-menu-label" class="visually-hidden">メインメニュー</span>
+          <ul class="mobile-menu__list">
+            <li><a href="/">ホーム</a></li>
+            {
+              NAV.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={current(item.href)}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li class="mobile-menu__cta"><a class="button button--primary button--large" href="/#contact">お問い合わせ</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <div class="site-footer__about">
+          <p class="site-footer__tagline">「つくって終わり」。<br />に、しない。</p>
+          <p>
+            {SITE.operator.name}（{SITE.operator.nameEn}）<br />代表 {SITE.operator.representative}<br />東京都新宿区
+          </p>
+        </div>
+        <nav aria-labelledby="footer-nav-site">
+          <h2 id="footer-nav-site" class="site-footer__heading">サイト</h2>
+          <ul class="utility-links">
+            <li><a href="/services.html">サービス</a></li>
+            <li><a href="/#lp">料金</a></li>
+            <li><a href="/products.html">つくったもの</a></li>
+            <li><a href="/blog.html">ブログ</a></li>
+            <li><a href="/company.html">会社概要</a></li>
+            <li><a href="/#contact">お問い合わせ</a></li>
+          </ul>
+        </nav>
+        <nav aria-labelledby="footer-nav-terms">
+          <h2 id="footer-nav-terms" class="site-footer__heading">ご利用にあたって</h2>
+          <ul class="utility-links">
+            <li><a href="/tokusho.html">特定商取引法に基づく表示</a></li>
+            <li><a href="/terms-lp.html">LP 制作・保守の利用規約</a></li>
+            <li><a href="/privacy-lp.html">LP 制作・保守のプライバシーポリシー</a></li>
+            <li><a href="/site-policy.html">サイトポリシー・アクセシビリティ</a></li>
+          </ul>
+        </nav>
+        <nav aria-labelledby="footer-nav-apps">
+          <h2 id="footer-nav-apps" class="site-footer__heading">アプリのサポート</h2>
+          <ul class="utility-links">
+            <li><a href="/support.html">SONO-HINO サポート</a></li>
+            <li><a href="/privacy.html">SONO-HINO プライバシーポリシー</a></li>
+            <li><a href="/account-deletion.html">SONO-HINO アカウント削除</a></li>
+            <li><a href="/support-hitomoyou.html">ヒトモヨウ サポート</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="wrap site-footer__bottom">
+        <p class="site-footer__copy">© 2026 {SITE.operator.name}（{SITE.operator.nameEn}）</p>
+      </div>
+    </footer>
+
+    <script is:inline>
+      // 「メニュー」ボタン: 開閉と aria-expanded の同期。Esc で閉じてボタンに戻る
+      (() => {
+        const button = document.querySelector('.menu-button');
+        const menu = document.getElementById('mobile-menu');
+        if (!button || !menu) return;
+        const set = (open) => {
+          button.setAttribute('aria-expanded', String(open));
+          menu.hidden = !open;
+        };
+        button.addEventListener('click', () => set(button.getAttribute('aria-expanded') !== 'true'));
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') {
+            set(false);
+            button.focus();
+          }
+        });
+        menu.addEventListener('click', (e) => {
+          if (e.target.closest('a')) set(false);
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,92 +1,49 @@
-# CLAUDE.md
+# CLAUDE.md — eleanor-dev.com（エレノアのホームページ）
 
-> **制約：このファイルは常に100行未満を維持すること。追記時は既存の記述を圧縮・docs/に移動して行数を守る。**
+> **制約：このファイルは常に100行未満を維持すること。**
+> 🔴 **このリポジトリは公開**（`U-P-dev/eleanor-pages`）。運用情報・秘密・事業の方針の理由は書かない。
 
-## Project Overview
+## 運用・インフラ・設定情報の在処
 
-Eleanor (エレノア) is a static corporate website for a sole proprietorship (個人事業主) run by Yusuke Toyoshima. The site promotes the business and its flagship app, SONO-HINO (Flutter task management app).
+- 配信先・DNS・切り戻し手順・HP の方針: 非公開の `eleanor-ops/docs/infra/eleanor-website.md`
+- 公開前に回す非公開の検査: `python3 /mnt/c/Projects/eleanor-ops/bin/check_eleanor_site.py`
+- 見た目の正本: `DESIGN.md`（色・文字・部品・DADS から外した点）
 
-- **Live site**: https://eleanor-dev.com/
-- **Repo**: `U-P-dev/eleanor-pages` on GitHub
-- **Hosting**: GitHub Pages with custom domain via Cloudflare DNS
+## 触る前に
 
-## Deployment
+- **Astro 7 の静的サイト**（Node 22・npm）。`src/` と `public/` から `dist/` をつくる。直下の `.html` は下の 3 枚だけ
+- 🔴 **直下の `tokusho.html`・`privacy-lp.html`・`terms-lp.html` は LP 事業（jido-lp-sales）が GitHub API で書き込む自動生成物**。
+  手で編集・移動・削除しない。ビルドが `dist/` へ写す（`scripts/copy_generated.mjs`）。見た目を変えるなら向こうのスクリプトを直す
+- 🔴 **URL の形を変えない**（`/company.html` の形）。決済の遷移先・アプリストア・配布済みアプリ・Search Console が直接参照している。
+  守る一覧は `scripts/check_site.py` の `PROTECTED`
+- 料金を `.astro` に直書きしない。`src/data/prices.json`（`scripts/check_prices.py --write` で正本から抜き出す）を読む
 
-No build step — this is pure static HTML/CSS/JS.
+## コマンド
 
 ```bash
-# Deploy
-git add <files>
-git commit -m "feat|fix|chore: description"
-git push origin main
-
-# Verify deployment (SHA should match latest commit)
-gh api repos/U-P-dev/eleanor-pages/deployments --jq '.[0] | {sha, created_at}'
+npm run build                        # astro build → 自動生成 3 枚を写す → 出力の検査（FAIL があれば exit 1）
+SHOW_DRAFTS=1 STAGING=1 npm run build  # 確認用（下書き記事を含め、全ページを検索に出さない）
+python3 scripts/check_legal_text.py  # 移したページ 9 枚の本文が旧サイトと一字も違わないか
+python3 scripts/check_prices.py      # 料金の元データが正本とずれていないか（正本が隣に無ければ省略）
+python3 tools/preview/serve.py       # dist/ を http://localhost:4321/ で配る（/mnt/c では astro preview が起動しない）
 ```
 
-## Pages
+## どこに何があるか
 
-| File | URL | Purpose |
-|------|-----|---------|
-| `index.html` | `/` | Homepage (main showcase) |
-| `company.html` | `/company.html` | Company information |
-| `privacy.html` | `/privacy.html` | Privacy policy |
-| `support.html` | `/support.html` | Support |
-| `account-deletion.html` | `/account-deletion.html` | GDPR account deletion |
+| 場所 | 中身 |
+|---|---|
+| `src/pages/*.astro` | 1 ファイル＝1 ページ（`index`・`services`・`products`・`company`・`blog`・`site-policy`・`404`） |
+| `src/pages/<アプリ用>.astro` ＋ `src/legal/*.html` | 旧サイトから移したアプリのサポート・規約と決済の完了・取消。本文は `src/legal/` をそのまま差し込む |
+| `content/blog/*.md` | ブログ記事（書き方は `content/blog/README.md`）。公開前は `draft: true` |
+| `src/components/` | 料金表・問い合わせフォーム・パンくず・仕組みの図 |
+| `src/styles/` | `tokens.css`（値・MIT 表示）と `global.css`（見た目） |
+| `src/site.mjs` | サイトの定数とヘッダーのメニュー |
+| `public/` | そのまま配るもの（`ads.txt`・Search Console の確認ファイル・`.well-known/security.txt`・アイコン） |
+| `scripts/` | 検査とビルドの補助 |
 
-## Architecture
+## するとき
 
-**No frameworks, no build tools.** Each HTML file is self-contained with inline `<style>` and `<script>` tags. All CSS uses custom properties defined in `:root`.
-
-Shared structure across all pages:
-1. Fixed 3px gradient accent bar (`.top-bar`)
-2. Fixed nav (60px, `top: 3px`) with frosted glass effect
-3. Hamburger menu for mobile (toggles `.open` class via `document.getElementById('m')`)
-4. Page content sections
-5. Footer
-
-Scroll animations work via Intersection Observer: add `data-a` to any element to make it fade-in on scroll. Use `data-d="N"` (number) for stagger delay (N × 0.1s).
-
-## Design System
-
-All design decisions are documented in `DESIGN.md`. Key points:
-
-**Color variables** (always use these, never hardcode hex values):
-```css
---blue: #2563EB    /* primary actions */
---purple: #7C3AED  /* brand core */
---red: #E11D48     /* accent, CTA */
---bg: #04040E      /* page background */
---bg2: #07071A     /* section background */
---bg3: #0A0A22     /* card background */
---text: #FFFFFF
---body: rgba(255,255,255,0.84)
---muted: rgba(255,255,255,0.60)
---grad: linear-gradient(135deg, #2563EB 0%, #7C3AED 50%, #E11D48 100%)
---grad-text: linear-gradient(125deg, #93C5FD 0%, #C4B5FD 48%, #FDA4AF 100%)
-```
-
-**Responsive breakpoints**: 960px (nav collapse), 768px (grid), 480px (font sizes)
-
-**Text contrast**: Never use `rgba(255,255,255,0.42)` or lower for body text (WCAG AA minimum).
-
-## Coding Rules
-
-1. Use CSS custom properties — never hardcode color hex values
-2. Keep JS minimal; only Intersection Observer animations and mobile menu toggle are acceptable
-3. No external dependencies beyond Google Fonts CDN
-4. Maintain WCAG AA contrast (4.5:1+) for all body text
-
-## 運用ドキュメントは別リポジトリ（非公開）へ移設済み
-
-インフラ構成・開発環境・事業タスク等の**非公開の運用ドキュメントは、このリポジトリには置かない**。
-これらは公開サイト（`eleanor-dev.com`）として配信されてしまうため、非公開リポジトリ `eleanor-ops`
-（ローカル: `/home/dev/projects/eleanor-ops/`）へ分離した。インフラ情報はそちらの `docs/infra/README.md` を参照。
-
-このリポジトリには**サイトのHTML/CSS/JSのみ**を置くこと。`CLAUDE.md` / `DESIGN.md` は開発用のため
-`_config.yml` の `exclude` で Pages 配信対象から除外している。
-
-## Infrastructure Notes
-
-- **Cloudflare Proxy must be OFF** (DNS only mode) — HTTPS certificate conflicts with GitHub Pages
-- **Do not delete `CNAME`** — required for the custom domain
+- **ページを足す** → `src/pages/<名前>.astro` → メニューに載せるなら `src/site.mjs` の `NAV` → フッター（`layouts/Base.astro`）
+- **記事を公開する** → 代表の OK を取ってから `draft` を外す（完全自動化はしない）
+- **公開する（push）前** → `npm run build` と上の非公開の検査が両方とも合格
+- **移したページの本文を直す** → アプリストアの掲載情報と食い違わないか先に確かめる。直したら `check_legal_text.py` の基準も更新する

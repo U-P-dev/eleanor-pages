@@ -1,0 +1,18 @@
+---
+// 旧サイト（13413b1）の thanks.html を新しい枠へ移したもの。本文（src/legal/thanks.html）は一字も変えていない（scripts/check_legal_text.py）。
+// URL はアプリストア・アプリ内・決済画面から参照されているので変えない。
+import Legal from '../layouts/Legal.astro';
+import content from '../legal/thanks.html?raw';
+---
+
+<Legal
+  title={"お支払いが完了しました | エレノア"}
+  description={"お支払いが完了しました。ご入金の確認後、1〜3営業日で納品いたします。"}
+  noindex={true}
+  eyebrow={""}
+  h1={"お支払いが完了しました"}
+  h1Sub={""}
+  appName={""}
+  lead={"ご依頼いただき、ありがとうございます。"}
+  content={content}
+/>

@@ -1,0 +1,24 @@
+---
+// 仕組みの流れ図。画像ではなく HTML のリストで描く（読み上げ・拡大・翻訳が効くように）。
+// 狭い画面では縦、768px 以上では横に並ぶ。矢印は飾りなので読み上げない。
+interface Props {
+  label: string;
+  steps: { title: string; body: string }[];
+}
+const { label, steps } = Astro.props;
+---
+
+<figure class="flow">
+  <ul class="flow__list" role="list" aria-label={label}>
+    {
+      steps.map((s, i) => (
+        <li class="flow__step">
+          <span class="flow__title">{s.title}</span>
+          <span class="flow__body">{s.body}</span>
+          {i < steps.length - 1 && <span class="flow__arrow" aria-hidden="true" />}
+        </li>
+      ))
+    }
+  </ul>
+  <figcaption class="flow__caption">{label}</figcaption>
+</figure>

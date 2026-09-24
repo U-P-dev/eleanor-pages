@@ -1,0 +1,33 @@
+---
+// DADS パンくずナビゲーション: 「現在位置」ラベル・山形の区切り・現在のページは aria-current。H1 の上に置く
+interface Props {
+  /** ホームから現在のページまで。最後の要素が現在のページ（href は付けない） */
+  items: { label: string; href?: string }[];
+}
+const { items } = Astro.props;
+const trail = [{ label: 'ホーム', href: '/' }, ...items];
+---
+
+<nav class="breadcrumb wrap" aria-labelledby="breadcrumb-label">
+  <span id="breadcrumb-label" class="visually-hidden">現在位置</span>
+  <p class="breadcrumb__list">
+    {
+      trail.map((item, i) =>
+        i < trail.length - 1 ? (
+          <span class="breadcrumb__item">
+            <a href={item.href}>{item.label}</a>
+            <span class="breadcrumb__sep">
+              <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
+                <path d="M4.5 11L4 10.5L8 6.5L4 2.5L4.5 2L9 6.5L4.5 11Z" fill="currentColor" />
+              </svg>
+            </span>
+          </span>
+        ) : (
+          <span class="breadcrumb__item" aria-current="page">
+            {item.label}
+          </span>
+        ),
+      )
+    }
+  </p>
+</nav>

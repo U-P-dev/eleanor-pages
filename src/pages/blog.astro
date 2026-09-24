@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { breadcrumbLd } from '../lib/breadcrumb.mjs';
+import { publishedPosts, postUrl } from '../lib/blog.mjs';
+import { ymd } from '../lib/date.mjs';
+import { SITE } from '../site.mjs';
+
+const posts = await publishedPosts();
+const crumbs = [{ label: 'ブログ' }];
+---
+
+<Base
+  title={`ブログ｜${SITE.name}`}
+  description="お店と小さな会社のサイト運用に役立つことと、エレノアが自分でつくったサービスの設計の話を書いています。"
+  jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="wrap page-head">
+    <h1>ブログ</h1>
+    <p class="page-head__lead">
+      お店と小さな会社のサイト運用に役立つことと、エレノアが自分でつくったサービスの設計の話を書いています。
+    </p>
+  </div>
+  <div class="wrap wrap--narrow page-body">
+    {
+      posts.length === 0 ? (
+        <p>記事を準備しています。</p>
+      ) : (
+        <ul class="article-list">
+          {posts.map((p) => (
+            <li class="article-list__item">
+              <a class="article-list__link" href={postUrl(p)}>
+                {p.data.title}
+              </a>
+              <p class="article-list__desc">{p.data.description}</p>
+              <p class="article-list__meta">
+                {p.data.category}・<time datetime={ymd(p.data.published_at)}>{ymd(p.data.published_at)}</time>
+                {p.data.draft && '・下書き（確認用）'}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</Base>

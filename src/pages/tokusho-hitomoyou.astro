@@ -1,0 +1,19 @@
+---
+// 旧サイト（13413b1）の tokusho-hitomoyou.html を新しい枠へ移したもの。本文（src/legal/tokusho-hitomoyou.html）は一字も変えていない（scripts/check_legal_text.py）。
+// URL はアプリストア・アプリ内・決済画面から参照されているので変えない。
+import Legal from '../layouts/Legal.astro';
+import content from '../legal/tokusho-hitomoyou.html?raw';
+---
+
+<Legal
+  title={"特定商取引法に基づく表記 – ヒトモヨウ | Eleanor"}
+  description={"ヒトモヨウ の特定商取引法に基づく表記のページです。ご不明な点は contact@eleanor-dev.com までお問い合わせください。"}
+  noindex={false}
+  eyebrow={"Legal"}
+  h1={"特定商取引法に基づく表記"}
+  h1Sub={"Legal Notice"}
+  appName={"ヒトモヨウ by Eleanor"}
+  lead={""}
+  crumbs={[{ label: "特定商取引法に基づく表記 ヒトモヨウ" }]}
+  content={content}
+/>

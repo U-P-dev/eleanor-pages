@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>one</title>
+<style>body{margin:0;background:#888}#f{border:0;background:#fff;transform-origin:0 0;display:block}</style></head><body>
+<iframe id="f"></iframe>
+<script>
+const p = new URLSearchParams(location.search);
+const w = +(p.get('w') || 375), s = +(p.get('s') || 1), h = +(p.get('h') || 1400);
+const f = document.getElementById('f');
+f.width = w; f.height = h; f.style.transform = `scale(${s})`;
+f.src = (p.get('p') || '/');
+</script></body></html>

@@ -1,0 +1,18 @@
+---
+// 旧サイト（13413b1）の cancel.html を新しい枠へ移したもの。本文（src/legal/cancel.html）は一字も変えていない（scripts/check_legal_text.py）。
+// URL はアプリストア・アプリ内・決済画面から参照されているので変えない。
+import Legal from '../layouts/Legal.astro';
+import content from '../legal/cancel.html?raw';
+---
+
+<Legal
+  title={"お支払いは完了していません | エレノア"}
+  description={"お支払いは完了していません。料金は請求されていません。"}
+  noindex={true}
+  eyebrow={""}
+  h1={"お支払いは完了していません"}
+  h1Sub={""}
+  appName={""}
+  lead={"料金は請求されていません。"}
+  content={content}
+/>

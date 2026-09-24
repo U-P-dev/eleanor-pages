@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { breadcrumbLd } from '../lib/breadcrumb.mjs';
+import { SITE } from '../site.mjs';
+
+const crumbs = [{ label: 'サイトポリシー・アクセシビリティ' }];
+const analytics = Boolean(SITE.analytics.cloudflareBeaconToken);
+const updated = '2026-09-24';
+---
+
+<Base
+  title={`サイトポリシー・アクセシビリティ｜${SITE.name}`}
+  description="エレノアのウェブサイト（eleanor-dev.com）の利用について。外部の事業者への情報の送信、アクセシビリティの方針、デザインの出典、免責をまとめています。"
+  jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="wrap wrap--narrow page-head">
+    <h1>サイトポリシー・アクセシビリティ</h1>
+  </div>
+  <div class="wrap wrap--narrow page-body">
+    <div class="prose">
+      <p>
+        このページは、{SITE.operator.name}（以下「当方」）が運営するウェブサイト eleanor-dev.com（以下「このサイト」）の利用についてまとめたものです。
+        LP 制作・保守のお客様の情報の扱いは<a href="/privacy-lp.html">LP 制作・保守のプライバシーポリシー</a>、アプリの情報の扱いは各アプリのプライバシーポリシーをご覧ください。
+      </p>
+
+      <h2 id="external">外部の事業者への情報の送信</h2>
+      {
+        analytics ? (
+          <p>このサイトは、利用状況を知るために次の仕組みを使っています。ページを開くと、下の情報が各事業者に送られます。</p>
+        ) : (
+          <p>このサイトの大部分のページは、外部の事業者に利用者の情報を送る仕組み（アクセス解析・広告など）を使っていません。一部のページだけ、次の仕組みを使っています。</p>
+        )
+      }
+      <div class="table-region" role="region" tabindex="0" aria-labelledby="external">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">送信先</th>
+              <th scope="col">目的</th>
+              <th scope="col">送られる情報</th>
+              <th scope="col">使っているページ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              analytics && (
+                <tr>
+                  <th scope="row">Cloudflare, Inc.（Cloudflare Web Analytics）</th>
+                  <td>ページの閲覧数と表示の速さを知るため</td>
+                  <td>閲覧したページの URL、参照元、ブラウザの種類、画面の大きさ、表示にかかった時間。Cookie は使いません</td>
+                  <td>このサイトの全ページ</td>
+                </tr>
+              )
+            }
+            <tr>
+              <th scope="row">Google LLC（Google Fonts）</th>
+              <td>文字を表示するため</td>
+              <td>IP アドレス、ブラウザの種類など、文字のデータを受け取るために必要な情報</td>
+              <td>特定商取引法に基づく表示、LP 制作・保守の利用規約とプライバシーポリシー</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="accessibility">アクセシビリティ方針</h2>
+      <p>
+        年齢や障害の有無、使う機器にかかわらず、誰もが情報を得て、迷わずにお問い合わせまでたどり着けるサイトを目指しています。
+      </p>
+      <ul>
+        <li>目標: 日本産業規格 JIS X 8341-3:2016 の適合レベル AA に準拠すること</li>
+        <li>対象: このサイトの全ページ（LP 事業の仕組みが自動でつくる、特定商取引法に基づく表示・LP 制作・保守の利用規約とプライバシーポリシーの3ページを除きます）</li>
+        <li>文字は大きさにかかわらず、背景との明るさの比を 4.5 対 1 以上にしています</li>
+        <li>キーボードだけで操作でき、いま操作している場所を黄色と黒の枠で示します</li>
+        <li>ブラウザの文字の大きさの設定に合わせて、文字が大きくなります</li>
+      </ul>
+      <p>
+        試験の結果は、公開前の試験を終えたらこのページに載せます。読みにくい箇所や使いにくい箇所があれば、<a href="/#contact">お問い合わせ</a>からお知らせください。
+      </p>
+
+      <h2 id="design">デザインについて</h2>
+      <p>
+        文字の大きさ・行の間隔・色・部品の形は、デジタル庁デザインシステムを参考に作成しました。このサイトは当方が作成したもので、デジタル庁が作成・確認したものではありません。
+        デザイントークンとコードの一部は MIT ライセンスのもとで使っています（Copyright (c) 2023–2025 デジタル庁）。
+      </p>
+
+      <h2 id="disclaimer">免責</h2>
+      <p>
+        このサイトの情報は、できるだけ正確に保つよう努めていますが、内容を保証するものではありません。料金と取引の条件は、<a href="/tokusho.html">特定商取引法に基づく表示</a>とお申し込み時のご案内が優先します。
+        このサイトからリンクしている外部のサイトの内容については、責任を負いかねます。
+      </p>
+
+      <h2 id="copyright">著作権</h2>
+      <p>このサイトの文章・画像の著作権は、特に記載のない限り当方に帰属します。</p>
+
+      <h2 id="contact">お問い合わせ</h2>
+      <p>
+        このページについてのお問い合わせは、<a href={`mailto:${SITE.operator.email}`}>{SITE.operator.email}</a> までお送りください。
+      </p>
+    </div>
+    <p class="table-note">制定・最終更新: <time datetime={updated}>{updated}</time></p>
+  </div>
+</Base>

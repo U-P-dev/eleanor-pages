@@ -1,2 +1,7 @@
 .claude/
 tasks/secrets/
+node_modules/
+dist/
+.astro/
+.wrangler/
+tools/preview/out/

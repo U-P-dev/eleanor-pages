@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>a11y</title>
+<style>body{margin:0}iframe{border:0;display:block}</style></head><body>
+<iframe id="f" width="375" height="800"></iframe>
+<script>
+// 試験するページ = sitemap に載っている全ページ＋404。記事を足しても書き換え不要
+async function pages() {
+  const xml = await (await fetch('/sitemap-0.xml')).text();
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname).concat('/404.html');
+}
+const f = document.getElementById('f');
+const load = (path, w) => new Promise((ok) => { f.width = w; f.onload = () => setTimeout(ok, 150); f.src = path; });
+
+function lum(c) {
+  const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+  const [r, g, b, a = 1] = m[1].split(',').map(Number);
+  return { l: [r, g, b].map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }).reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i], 0), a, rgb: [r, g, b] };
+}
+function bgOf(el, win) {
+  for (let e = el; e; e = e.parentElement) {
+    const cs = win.getComputedStyle(e);
+    const c = lum(cs.backgroundColor);
+    if (cs.backgroundImage !== 'none' && !e.classList.contains('table-region')) return { unknown: true };
+    if (c && c.a > 0) return c;
+  }
+  return lum('rgb(255,255,255)');
+}
+function ratio(a, b) { const [h, l] = [a.l, b.l].sort((x, y) => y - x); return (h + 0.05) / (l + 0.05); }
+
+function checkPage(doc, win) {
+  const out = {};
+  // 1. 見出しの階層（飛ばしていないか）
+  const hs = [...doc.querySelectorAll('h1,h2,h3,h4,h5,h6')].map((h) => +h.tagName[1]);
+  out.headingSkips = hs.filter((l, i) => i > 0 && l > hs[i - 1] + 1).length;
+  out.h1 = hs.filter((l) => l === 1).length;
+  // 2. ランドマーク
+  out.main = doc.querySelectorAll('main').length;
+  out.navUnnamed = [...doc.querySelectorAll('nav')].filter((n) => !n.getAttribute('aria-labelledby') && !n.getAttribute('aria-label')).length;
+  // 3. 名前の無いリンク・画像
+  out.linksNoName = [...doc.querySelectorAll('a')].filter((a) => !a.textContent.trim() && !a.getAttribute('aria-label')).length;
+  out.imgNoAlt = [...doc.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt')).length;
+  out.svgUnlabeled = [...doc.querySelectorAll('svg')].filter((s) => s.getAttribute('aria-hidden') !== 'true' && !(s.getAttribute('role') === 'img' && s.getAttribute('aria-label'))).length;
+  // 4. 文字のコントラスト（実際の色で）
+  let worst = 99, worstText = '', unknownBg = 0, n = 0;
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  for (let t; (t = walker.nextNode());) {
+    if (!t.nodeValue.trim()) continue;
+    const el = t.parentElement; const cs = win.getComputedStyle(el);
+    if (cs.visibility === 'hidden' || el.closest('.visually-hidden, script, style, title')) continue;
+    const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue;
+    const fg = lum(cs.color); const bg = bgOf(el, win);
+    if (bg.unknown) { unknownBg++; continue; }
+    const c = ratio(fg, bg); n++;
+    if (c < worst) { worst = c; worstText = t.nodeValue.trim().slice(0, 20) + ' / ' + cs.color + ' on ' + bg.rgb; }
+  }
+  out.contrastMin = +worst.toFixed(2); out.contrastWorst = worstText; out.textNodes = n; out.unknownBg = unknownBg;
+  // 5. 押せる範囲（文中のリンクは除外: 親がリスト項目・ナビ・パンくずで、単独で置かれているもの）
+  const small = [];
+  for (const a of doc.querySelectorAll('a')) {
+    const standalone = a.closest('.utility-links, .toc, .article-list, .breadcrumb, .site-header') || (a.parentElement.tagName === 'LI' && a.parentElement.textContent.trim() === a.textContent.trim());
+    if (!standalone) continue;
+    const r = a.getBoundingClientRect();
+    if (r.height < 24 || r.width < 24) small.push(a.textContent.trim().slice(0, 12) + ` ${Math.round(r.width)}x${Math.round(r.height)}`);
+  }
+  out.smallTargets = small;
+  // 6. フォーカス表示（黄＋黒の二重が付くか）
+  const focusables = [...doc.querySelectorAll('a[href], [tabindex="0"], summary')];
+  let noRing = [];
+  for (const el of focusables) {
+    el.focus({ focusVisible: true });
+    const cs = win.getComputedStyle(el);
+    const ok = cs.outlineStyle === 'solid' && parseFloat(cs.outlineWidth) >= 3 && cs.boxShadow.includes('rgb(255, 212, 61)');
+    if (!ok) noRing.push(el.textContent.trim().slice(0, 12) || el.className);
+  }
+  doc.activeElement?.blur();
+  out.focusables = focusables.length; out.noFocusRing = noRing.slice(0, 5);
+  // 7. 横はみ出し（ページ全体。表は枠の中でスクロールするので対象外）
+  out.hOverflow = doc.documentElement.scrollWidth - doc.documentElement.clientWidth;
+  // 8. <html lang>
+  out.lang = doc.documentElement.lang;
+  return out;
+}
+
+function spacingOverride(doc) {
+  const s = doc.createElement('style');
+  s.textContent = '* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }';
+  doc.head.appendChild(s);
+  const clipped = [...doc.querySelectorAll('body *')].filter((e) => { const cs = e.ownerDocument.defaultView.getComputedStyle(e); return (cs.overflow === 'hidden' || cs.overflowY === 'hidden') && e.scrollHeight > e.clientHeight + 1 && !e.classList.contains('visually-hidden'); }).length;
+  return { clipped, hOverflow: doc.documentElement.scrollWidth - doc.documentElement.clientWidth };
+}
+
+window.runAll = async () => {
+  const res = {};
+  for (const p of await pages()) {
+    await load(p, 375);
+    const r = checkPage(f.contentDocument, f.contentWindow);
+    await load(p, 320);
+    r.hOverflow320 = f.contentDocument.documentElement.scrollWidth - f.contentDocument.documentElement.clientWidth;
+    r.spacing = spacingOverride(f.contentDocument);
+    await load(p, 1280);
+    r.hOverflow1280 = f.contentDocument.documentElement.scrollWidth - f.contentDocument.documentElement.clientWidth;
+    res[p] = r;
+  }
+  return res;
+};
+</script></body></html>

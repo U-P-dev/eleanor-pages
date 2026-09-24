@@ -1,0 +1,69 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { breadcrumbLd } from '../../lib/breadcrumb.mjs';
+import { publishedPosts, postUrl } from '../../lib/blog.mjs';
+import { ymd } from '../../lib/date.mjs';
+import { SITE } from '../../site.mjs';
+
+export async function getStaticPaths() {
+  const posts = await publishedPosts();
+  return posts.map((post) => ({ params: { slug: post.data.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { data } = post;
+const { Content, remarkPluginFrontmatter } = await render(post);
+// 本文の H1（remarkExtractH1 が取り出したもの）。無ければ frontmatter の title
+const h1: string = remarkPluginFrontmatter.h1 ?? data.title;
+const url = new URL(postUrl(post), SITE.url).href;
+const operator = { '@type': 'Organization', name: SITE.operator.name, url: `${SITE.url}/company.html` };
+const crumbs = [{ label: 'ブログ', href: '/blog.html' }, { label: h1 }];
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: data.title,
+    description: data.description,
+    datePublished: ymd(data.published_at),
+    dateModified: ymd(data.updated_at),
+    inLanguage: 'ja',
+    mainEntityOfPage: url,
+    author: { '@type': 'Person', name: SITE.operator.representative },
+    publisher: operator,
+  },
+  breadcrumbLd(crumbs, postUrl(post)),
+];
+---
+
+<Base title={`${data.title}｜${SITE.name}`} description={data.description} type="article" jsonLd={jsonLd} noindex={data.draft}>
+  <Breadcrumb items={crumbs} />
+  <article class="wrap wrap--narrow page-body">
+    <div class="page-head">
+      <h1>{h1}</h1>
+    </div>
+    <p class="article-meta">
+      {data.category}・公開 <time datetime={ymd(data.published_at)}>{ymd(data.published_at)}</time>
+      {ymd(data.updated_at) !== ymd(data.published_at) && <>・更新 <time datetime={ymd(data.updated_at)}>{ymd(data.updated_at)}</time></>}
+      {data.draft && '・下書き（確認用・検索には出ません）'}
+    </p>
+    <div class="prose">
+      <Content />
+    </div>
+    <section class="article-about" aria-labelledby="article-about-heading">
+      <h2 id="article-about-heading">この記事について</h2>
+      <dl class="dl">
+        <div>
+          <dt>書いた人</dt>
+          <dd>{SITE.operator.representative}（{SITE.operator.name} 代表）。<a href="/company.html#profile">プロフィール</a></dd>
+        </div>
+        <div>
+          <dt>ご相談</dt>
+          <dd>記事の内容について、ご自分のお店や会社の場合を知りたいときは<a href="/#contact">お問い合わせ</a>からどうぞ。</dd>
+        </div>
+      </dl>
+    </section>
+    <p class="section__more"><a href="/blog.html">ブログの記事一覧</a></p>
+  </article>
+</Base>
