@@ -16,6 +16,12 @@ from html.parser import HTMLParser
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = "13413b1"  # 作り直す直前の旧サイト
+# 基準から意図して直した箇所（旧サイトの文字 → 今の文字）。ここに無い違いは失敗にする
+INTENDED = {
+    # 2026-09-24 👤 承認: どのプランにも無い「1〜3営業日」を、特定商取引法に基づく表示と料金データに合わせた
+    # （日数が料金データの最短・最長と合っているかは scripts/check_prices.py が見る）
+    "thanks.html": [("1〜3営業日で制作したページ", "1〜2営業日（フルオーダーは10〜20営業日）で制作したページ")],
+}
 PAGES = ["privacy.html", "support.html", "account-deletion.html", "privacy-hitomoyou.html", "terms-hitomoyou.html",
          "tokusho-hitomoyou.html", "support-hitomoyou.html", "thanks.html", "cancel.html"]
 
@@ -60,6 +66,10 @@ def main() -> int:
             fails.append(f"  ✗ {name}: dist に無い（ビルドしていないか、ページが消えた）")
             continue
         a = text_of(old, "container")
+        for before, after in INTENDED.get(name, []):
+            if a.count(before) != 1:
+                fails.append(f"  ✗ {name}: 意図して直した箇所が旧サイトの本文に1つだけ無い（{before!r}）")
+            a = a.replace(before, after)
         b = text_of(open(new_path, encoding="utf-8").read(), "legal")
         if not a:
             fails.append(f"  ✗ {name}: 旧サイトの本文が取れない")

@@ -76,7 +76,7 @@
       "price": 100000,
       "delivery_days": "10営業日",
       "includes": [
-        "お打ち合わせ（オンライン・2回まで）",
+        "お打ち合わせ（オンライン・1回30分・5回まで。事前のアンケートへのご回答が条件）",
         "構成と原稿の作成",
         "ご提供いただいた写真の掲載・加工",
         "公開前のお手直しは回数無制限",
@@ -92,7 +92,7 @@
       "included_pages": 5,
       "extra_page_price": 40000,
       "includes": [
-        "お打ち合わせ（オンライン・回数の制限なし）",
+        "お打ち合わせ（オンライン・1回30分・5回まで。事前のアンケートへのご回答が条件）",
         "5ページまでの構成と原稿の作成（6ページ目以降は1ページにつき40,000円）",
         "お知らせ（News）欄の実装",
         "ご提供いただいた写真の掲載・加工",
@@ -204,5 +204,7 @@
   "payment_timing": "全額前払い",
   "pre_delivery_revisions": 5,
   "revision_turnaround": "1営業日",
-  "refund_window_hours": 24
+  "refund_window_hours": 24,
+  "subscription_cancellation": "次回更新日の前日までにご連絡いただければ解約できます（日割りでの返金はありません）",
+  "buyout_includes_domain": true
 }

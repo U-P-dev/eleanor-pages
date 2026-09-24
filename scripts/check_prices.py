@@ -47,6 +47,9 @@ def extract(pricing: dict) -> dict:
     out["pre_delivery_revisions"] = pricing["revision_policy"]["pre_delivery"]
     out["revision_turnaround"] = pricing["revision_policy"]["turnaround"]
     out["refund_window_hours"] = pricing["terms"]["refund_window_hours"]
+    # 保守の解約の条件と、解約後に LP と独自ドメインを引き渡すか（差額の金額は plans から計算する。ここに金額を持たない）
+    out["subscription_cancellation"] = pricing["terms"]["subscription_cancellation"]
+    out["buyout_includes_domain"] = bool(pricing["buyout"].get("includes_domain"))
     return out
 
 
