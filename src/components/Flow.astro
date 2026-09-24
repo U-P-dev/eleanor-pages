@@ -1,6 +1,6 @@
 ---
 // 仕組みの流れ図。画像ではなく HTML のリストで描く（読み上げ・拡大・翻訳が効くように）。
-// 狭い画面では縦、768px 以上では横に並ぶ。矢印は飾りなので読み上げない。
+// 狭い画面では縦、768px 以上では横に並ぶ。番号は文字で書く（DADS: <ol> を使わない）。箱や矢印では囲まず、上の罫と墨の印だけにする。
 interface Props {
   label: string;
   steps: { title: string; body: string }[];
@@ -13,9 +13,9 @@ const { label, steps } = Astro.props;
     {
       steps.map((s, i) => (
         <li class="flow__step">
+          <span class="flow__num">{i + 1}</span>
           <span class="flow__title">{s.title}</span>
           <span class="flow__body">{s.body}</span>
-          {i < steps.length - 1 && <span class="flow__arrow" aria-hidden="true" />}
         </li>
       ))
     }

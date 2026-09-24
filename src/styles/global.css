@@ -78,19 +78,20 @@ img {
   height: auto;
 }
 
-/* ── リンク（DADS: 下線は常に付ける。訪問済みは紫、ホバーは下線を太く） ── */
+/* ── リンク（DADS: 下線は常に付ける・ホバーは下線を太く）。色は墨にする: DADS 標準の青い下線リンクが並ぶと
+   行政のサイトに見える（2026-09-24 の目隠しの確認）。リンクであることは下線で示す（WCAG 1.4.1）。訪問済みは少し淡い墨 ── */
 a:any-link {
-  color: var(--color-primitive-blue-1000);
+  color: var(--text-strong);
   text-decoration-line: underline;
   text-decoration-thickness: 0.0625rem;
   text-underline-offset: 0.1875rem;
 }
 a:visited {
-  color: var(--color-primitive-magenta-900);
+  color: var(--text-mid);
 }
 @media (hover: hover) {
   a:any-link:hover {
-    color: var(--color-primitive-blue-900);
+    color: var(--text-strong);
     text-decoration-thickness: 0.1875rem;
   }
 }
@@ -167,7 +168,10 @@ h4 {
   h1,
   h2,
   h3,
-  h4 {
+  h4,
+  .table-region th,
+  .flow__title,
+  .flow__body {
     word-break: auto-phrase;
   }
 }
@@ -542,15 +546,12 @@ a.button--secondary:any-link {
 .hero__facts strong {
   color: var(--text-strong);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .hero__media {
+  width: min(100%, 18rem);
   margin: 0;
-}
-.hero__shots {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 1.15fr);
-  align-items: end;
-  gap: 0.75rem;
+  justify-self: center;
 }
 
 /* ── 実物の画面（スクリーンショット）: 1px の枠だけ。影・傾き・ブラウザ風の飾り枠は付けない ── */
@@ -558,7 +559,7 @@ a.button--secondary:any-link {
   margin: 0;
 }
 .shot img,
-.hero__shots img {
+.hero__media img {
   display: block;
   width: 100%;
   height: auto;
@@ -686,24 +687,23 @@ a.button--secondary:any-link {
   transform: rotate(45deg);
 }
 
-/* ── 時系列（LP ができるまで）: 番号は文字で書く（DADS: <ol> を使わない）。印は墨の小さな四角 ── */
+/* ── 時系列（LP ができるまで）: 予定表のように縦に並べる（同じ幅の箱を横に 3 つ並べない）。
+   番号は文字で書く（DADS: <ol> を使わない）。印は墨の小さな四角 ── */
 .timeline {
   display: grid;
-  gap: 2rem;
+  max-width: 60rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-@media (min-width: 48rem) {
-  .timeline {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2.5rem;
-  }
-}
 .timeline__step {
   position: relative;
-  padding-left: 1.5rem;
+  padding: 0 0 2rem 1.5rem;
   border-left: 1px solid var(--text-strong);
+}
+.timeline__step:last-child {
+  padding-bottom: 0;
+  border-left-color: transparent;
 }
 .timeline__step::before {
   content: '';
@@ -716,13 +716,17 @@ a.button--secondary:any-link {
 }
 @media (min-width: 48rem) {
   .timeline__step {
-    padding: 1.5rem 0 0;
-    border-left: 0;
-    border-top: 1px solid var(--text-strong);
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    column-gap: 2rem;
+    align-content: start;
   }
-  .timeline__step::before {
-    top: -0.3125rem;
-    left: 0;
+  .timeline__when {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .timeline__step > :not(.timeline__when) {
+    grid-column: 2;
   }
 }
 .timeline__when {
@@ -770,6 +774,10 @@ a.button--secondary:any-link {
   grid-template-columns: minmax(0, 3fr) minmax(0, 1.15fr);
   align-items: end;
   gap: 0.75rem;
+}
+.work--small {
+  display: block;
+  max-width: var(--measure);
 }
 .work__body p {
   margin-block: 0 0.75rem;
@@ -863,6 +871,33 @@ a.button--secondary:any-link {
   text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+/* 見出しのセルは文節の途中で折り返さない（scripts/headings.mjs が <wbr> を入れる） */
+.table-region th {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+/* 金額の下の注記（「5ページまで。以降…」）は折り返してよい（金額の nowrap を受け継ぐと表が横に広がる） */
+.table-region .num .table-note {
+  white-space: normal;
+}
+/* 短い値（納期など）は途中で折り返さない */
+.table-region .nowrap {
+  white-space: nowrap;
+}
+/* 狭い画面では、料金表が枠の中に収まるように最小幅と余白を詰める（横スクロールで金額が隠れないように）。
+   行の見出しは「スタンダード」（6 字）が 1 行に入る幅を残す（押し潰すと 1 字ずつ縦に折り返す） */
+@media (max-width: 47.99rem) {
+  .table-region :is(th, td) {
+    min-width: 0;
+    padding: 0.5rem 0.375rem;
+  }
+  .table-region tbody th {
+    min-width: 6em;
+  }
+  .table-region .desc {
+    min-width: 6.5em;
+  }
 }
 .table-caption {
   margin: 2rem 0 0.25rem;
@@ -994,9 +1029,18 @@ select.input {
   color: var(--error);
   font-weight: 700;
 }
-.contact-direct {
-  max-width: var(--measure);
-  margin: 2rem 0 0;
+.contact {
+  display: grid;
+  gap: 2.5rem;
+}
+@media (min-width: 48rem) {
+  .contact {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: 3.5rem;
+  }
+}
+.contact__aside h3 {
+  margin-bottom: 0.5rem;
 }
 
 /* ── 注釈ブロック（DADS: 強調された補足情報） ── */
@@ -1237,8 +1281,6 @@ select.input {
 .page-end {
   max-width: var(--measure);
   margin-top: var(--space-minor);
-  padding-top: var(--space-minor);
-  border-top: 1px solid var(--border);
 }
 .page-end h2 {
   margin-bottom: 0.75rem;
@@ -1320,10 +1362,11 @@ select.input {
   .toc,
   .banner,
   .shot img,
-  .hero__shots img {
+  .hero__media img {
     border-color: CanvasText;
   }
-  .timeline__step::before {
+  .timeline__step::before,
+  .flow__step::before {
     background-color: CanvasText;
   }
   .button {
@@ -1357,9 +1400,27 @@ select.input {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  background-color: var(--bg);
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--text-strong);
+}
+.flow__step::before {
+  content: '';
+  position: absolute;
+  top: -0.3125rem;
+  left: 0;
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--text-strong);
+}
+.flow__num {
+  color: var(--text-mid);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.flow__title,
+.flow__body {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 .flow__title {
   color: var(--text-strong);
@@ -1368,25 +1429,6 @@ select.input {
 .flow__body {
   font-size: 1rem;
   line-height: 1.6;
-}
-.flow__arrow {
-  position: absolute;
-  left: 50%;
-  bottom: -1.625rem;
-  width: 0.875rem;
-  height: 0.875rem;
-  border: solid var(--text-strong);
-  border-width: 0 0.1875rem 0.1875rem 0;
-  transform: translateX(-50%) rotate(45deg);
-}
-@media (min-width: 48rem) {
-  .flow__arrow {
-    top: 50%;
-    left: auto;
-    right: -1.625rem;
-    bottom: auto;
-    transform: translateY(-50%) rotate(-45deg);
-  }
 }
 .flow__caption {
   margin-top: 0.75rem;
@@ -1547,7 +1589,7 @@ select.input {
 }
 
 /* <Picture> は <picture> で包まれるので、画像の並びの中ではブロックにする */
-.hero__shots picture,
+.hero__media picture,
 .work__shots picture,
 .shot picture,
 .person__photo picture {

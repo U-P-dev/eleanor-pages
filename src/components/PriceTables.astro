@@ -44,7 +44,7 @@ const taxNote = prices.tax_included ? '税込' : '税抜';
             </th>
             <td class="num">{yen(t.bundle.price)}</td>
             <td class="num">{yen(t.standalone.price)}</td>
-            <td>{t.bundle.delivery_days}</td>
+            <td class="nowrap">{t.bundle.delivery_days}</td>
           </tr>
         ))
       }
@@ -104,7 +104,7 @@ const taxNote = prices.tax_included ? '税込' : '税抜';
                 </>
               )}
             </td>
-            <td>{f.delivery_days}</td>
+            <td class="nowrap">{f.delivery_days}</td>
           </tr>
         ))
       }

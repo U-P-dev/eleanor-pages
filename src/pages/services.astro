@@ -117,7 +117,7 @@ const url = new URL(Astro.url.pathname, SITE.url).href;
             </tr>
             <tr>
               <th scope="row">納期</th>
-              {Object.values(full).map((f) => <td>{f.delivery_days}</td>)}
+              {Object.values(full).map((f) => <td class="nowrap">{f.delivery_days}</td>)}
             </tr>
             <tr>
               <th scope="row">含まれるもの</th>

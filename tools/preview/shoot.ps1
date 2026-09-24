@@ -3,7 +3,8 @@
 # Emulation.setDeviceMetricsOverride. WSL (NAT) cannot reach Windows localhost, so this runs on the Windows side.
 #
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\preview\shoot.ps1 `
-#     -Url https://example.com/ -Out C:\path\shot.png -Width 390 -Height 844 -Mobile [-Full]
+#     -Url https://example.com/ -Out C:\path\shot.png -Width 390 -Height 844 -Mobile [-Full] [-Tabs 3]
+# -Tabs N presses the Tab key N times as real key input before the shot (to see the focus ring; scripted focus() does not show it).
 #
 # ASCII only on purpose: Windows PowerShell 5.1 reads BOM-less UTF-8 scripts as the ANSI code page.
 param(
@@ -15,6 +16,7 @@ param(
   [switch]$Mobile,
   [switch]$Full,
   [int]$Port = 9333,
+  [int]$Tabs = 0,
   [int]$WaitMs = 1500
 )
 $ErrorActionPreference = 'Stop'
@@ -78,9 +80,18 @@ try {
   # Let web fonts and late layout settle.
   [void](Send-Command 'Runtime.evaluate' @{ expression = 'document.fonts.ready.then(() => true)'; awaitPromise = $true })
   Start-Sleep -Milliseconds $WaitMs
+  for ($i = 0; $i -lt $Tabs; $i++) {
+    foreach ($type in @('keyDown', 'keyUp')) {
+      [void](Send-Command 'Input.dispatchKeyEvent' @{ type = $type; key = 'Tab'; code = 'Tab'; windowsVirtualKeyCode = 9; nativeVirtualKeyCode = 9 })
+    }
+    Start-Sleep -Milliseconds 150
+  }
 
   $params = @{ format = 'png' }
   if ($Full) {
+    # Scroll through the page so lazy-loaded images load, then wait for them and go back to the top.
+    $scroll = 'new Promise(async (ok) => { for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight / 2) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 120)); } await Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))); scrollTo(0, 0); setTimeout(() => ok(true), 300); })'
+    [void](Send-Command 'Runtime.evaluate' @{ expression = $scroll; awaitPromise = $true })
     $metrics = Send-Command 'Page.getLayoutMetrics' @{}
     $h = [int][double]([regex]::Match($metrics, '"cssContentSize":\{[^}]*"height":([0-9.]+)').Groups[1].Value)
     $params = @{ format = 'png'; captureBeyondViewport = $true; clip = @{ x = 0; y = 0; width = $Width; height = $h; scale = 1 } }

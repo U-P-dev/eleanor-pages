@@ -25,6 +25,8 @@ const MIGRATED = new Set(['privacy.html', 'support.html', 'account-deletion.html
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36';
 
 const HEADING = /<(h[1-4])(\s[^>]*)?>([\s\S]*?)<\/\1>/g;
+// 見出しの書体は使わないが、狭い枠で文節の途中で折り返しやすいもの（表の見出しのセル・仕組みの図の文字）にも <wbr> を入れる
+const NARROW = /<(th|span)(\s[^>]*?(?:scope=|class="flow__(?:title|body)")[^>]*)>([\s\S]*?)<\/\1>/g;
 const LOGO = /<a class="site-logo"[^>]*>([\s\S]*?)<\/a>/g;
 const TAGLINE = /<p class="site-footer__tagline">([\s\S]*?)<\/p>/g;
 
@@ -109,6 +111,10 @@ async function main() {
     html = html.replace(HEADING, (m, tag, attrs = '', inner, offset) => {
       for (const ch of textOf(inner)) chars.add(ch);
       // 移したページの本文には入れない。すでに入っていれば入れ直さない（何度走らせても同じ結果にする）
+      if ((legalStart !== -1 && offset > legalStart) || inner.includes('<wbr>')) return m;
+      return `<${tag}${attrs}>${withWbr(inner)}</${tag}>`;
+    });
+    html = html.replace(NARROW, (m, tag, attrs, inner, offset) => {
       if ((legalStart !== -1 && offset > legalStart) || inner.includes('<wbr>')) return m;
       return `<${tag}${attrs}>${withWbr(inner)}</${tag}>`;
     });

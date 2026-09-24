@@ -8,7 +8,7 @@ import prices from '../data/prices.json';
 import kaiyakuPc from '../assets/shots/kaiyaku-top-pc.webp';
 import kaiyakuSp from '../assets/shots/kaiyaku-article-sp.webp';
 import { publishedPosts, postUrl } from '../lib/blog.mjs';
-import { jaDate, jaMonth, ymd } from '../lib/date.mjs';
+import { jaDate, ymd } from '../lib/date.mjs';
 import { yen } from '../lib/format.mjs';
 import { SITE, WORKS } from '../site.mjs';
 
@@ -17,9 +17,13 @@ const minOf = (rows: Record<string, { price: number; billing?: string }>, monthl
 const lpFrom = minOf(prices.plans);
 const careFrom = minOf(prices.subscriptions, true);
 const hp = prices.fullorder.fullorder_hp;
+const bundleFrom = prices.plans.bundle_standard.price;
+const standaloneFrom = prices.plans.standalone_standard.price;
 const fastest = prices.plans.bundle_standard.delivery_days;
 const tax = prices.tax_included ? '税込' : '税抜';
-const posts = (await publishedPosts()).slice(0, 3);
+// トップのブログ欄は、記事が 3 本たまるまで出さない（1 本だけの欄は「更新が止まっている」に見える。2026-09-24 の目隠しの確認）
+const allPosts = await publishedPosts();
+const posts = allPosts.length >= 3 ? allPosts.slice(0, 3) : [];
 const kaiyaku = WORKS.kaiyaku;
 const op = SITE.operator;
 ---
@@ -33,11 +37,11 @@ const op = SITE.operator;
             <span class="hero__line"><span class="kern-open">「</span>つくって終わり<span class="kern-close">」</span>。</span>
             <span class="hero__line">に、しない。</span>
           </span>
-          <span class="hero__what">東京・新宿のホームページ・LP 制作と保守</span>
+          <span class="hero__what">お店と小さな会社のホームページ・LP 制作と保守（東京・新宿）</span>
         </h1>
         <p class="hero__lead">公開した日から、仕組みは動きはじめる。そのあとの保守まで、つくった本人が見続けます。</p>
         <p class="hero__facts">
-          LP は<strong>{yen(lpFrom)}</strong>から。お支払いの確認から最短<strong>{fastest}</strong>でお届けします。公開後の保守は月<strong>{yen(careFrom)}</strong>からです（{tax}）。
+          LP の制作は、保守とあわせて<strong>{yen(bundleFrom)}</strong>から（保守は月<strong>{yen(careFrom)}</strong>から）、LP だけなら<strong>{yen(standaloneFrom)}</strong>からです（{tax}）。テンプレートから選んでつくるので、お支払いの確認から最短<strong>{fastest}</strong>でお届けします。
         </p>
         <p class="hero__facts">{SITE.area}</p>
         <div class="button-row">
@@ -46,26 +50,16 @@ const op = SITE.operator;
         </div>
       </div>
       <figure class="hero__media">
-        <div class="hero__shots">
-          <Picture
-            src={kaiyakuPc}
-            alt="解約手帳のトップページ。確かめた日付つきのサブスク解約手順の一覧"
-            widths={[480, 720, 1040]}
-            sizes="(min-width: 48rem) 27rem, 70vw"
-            formats={['avif', 'webp']}
-            loading="eager"
-          />
-          <Picture
-            src={kaiyakuSp}
-            alt="解約手帳の記事をスマートフォンで開いた画面。冒頭に最終確認日と、確かめた公式ページの一覧がある"
-            widths={[200, 300, 420]}
-            sizes="(min-width: 48rem) 10.5rem, 27vw"
-            formats={['avif', 'webp']}
-            loading="eager"
-          />
-        </div>
+        <Picture
+          src={kaiyakuSp}
+          alt="解約手帳の記事をスマートフォンで開いた画面。冒頭に最終確認日と、確かめた公式ページの一覧がある"
+          widths={[288, 432, 576]}
+          sizes="18rem"
+          formats={['avif', 'webp']}
+          loading="eager"
+        />
         <figcaption>
-          エレノアがつくって運営しているサイト：<a href="#apps">{kaiyaku.name}</a>（{jaMonth(kaiyaku.since)}から運用中）。{jaDate(kaiyaku.shotAt)}に撮影。
+          エレノアがつくって運営しているサイト<a href="#apps">{kaiyaku.name}</a>の記事。確かめた日付と公式ページを冒頭に書く仕組みです（{jaDate(kaiyaku.shotAt)}に撮影）。
         </figcaption>
       </figure>
     </div>
@@ -110,6 +104,7 @@ const op = SITE.operator;
   <section class="section section--minor" id="lp" aria-labelledby="lp-title">
     <div class="wrap">
       <h2 class="section__title" id="lp-title">料金とプラン</h2>
+      <p class="section__lead">LP のデザインは3つの段から選べます。保守とあわせて申し込むと、制作料金が下がります。</p>
       <PriceTables />
       <p class="section__more">
         <a href="/services.html">各プランに含まれるもの・追加サービスの料金</a>
@@ -144,11 +139,21 @@ const op = SITE.operator;
     </div>
   </section>
 
-  <section class="section" id="apps" aria-labelledby="products-title">
+  <section class="section section--sub" id="apps" aria-labelledby="products-title">
     <div class="wrap">
       <h2 class="section__title" id="products-title">つくったもの</h2>
       <p class="section__lead">自分のサービスも、自分で設計して運営しています。お客様のサイトにも、同じ考え方と仕組みを使います。</p>
       <div class="work">
+        <figure class="shot">
+          <Picture
+            src={kaiyakuPc}
+            alt="解約手帳のトップページ。確かめた日付つきのサブスク解約手順の一覧"
+            widths={[640, 960, 1280, 1600]}
+            sizes="(min-width: 72rem) 40rem, (min-width: 48rem) 55vw, 100vw"
+            formats={['avif', 'webp']}
+          />
+          <figcaption>{kaiyaku.host} のトップページ（パソコン）。{jaDate(kaiyaku.shotAt)}に撮影。</figcaption>
+        </figure>
         <div class="work__body">
           <h3 class="work__title">{kaiyaku.name}</h3>
           <p>
@@ -170,6 +175,8 @@ const op = SITE.operator;
           </dl>
           <p><a href="/products.html#kaiyaku">解約手帳の設計を読む</a></p>
         </div>
+      </div>
+      <div class="work work--small">
         <div class="work__body">
           <h3 class="work__title">このサイト</h3>
           <p>
@@ -222,11 +229,31 @@ const op = SITE.operator;
   <section class="section section--sub" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
       <h2 class="section__title" id="contact-title">お問い合わせ</h2>
-      <p class="section__lead">ご相談・お見積もりは無料です。原則1営業日以内に、メールでお返事します。{SITE.area}</p>
-      <ContactForm />
-      <p class="contact-direct">
-        メール：<a href={`mailto:${op.email}`}>{op.email}</a><br />電話：{op.phone}（留守番電話でお受けし、メールで折り返します）
-      </p>
+      <p class="section__lead">ご相談・お見積もりは無料です。いまのお困りごとを、そのままお書きください。</p>
+      <div class="contact">
+        <ContactForm />
+        <aside class="contact__aside" aria-labelledby="contact-direct-title">
+          <h3 id="contact-direct-title">メールと電話</h3>
+          <dl class="facts">
+            <div>
+              <dt>返信</dt>
+              <dd>原則1営業日以内に、メールでお返事します</dd>
+            </div>
+            <div>
+              <dt>メール</dt>
+              <dd><a href={`mailto:${op.email}`}>{op.email}</a></dd>
+            </div>
+            <div>
+              <dt>電話</dt>
+              <dd>{op.phone}（留守番電話でお受けし、メールで折り返します）</dd>
+            </div>
+            <div>
+              <dt>地域</dt>
+              <dd>{SITE.area}</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
     </div>
   </section>
 </Base>
