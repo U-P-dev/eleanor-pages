@@ -118,7 +118,7 @@ const crumbs = [{ label: 'サービス' }];
                   <td class="num">
                     {yen(s.price)}／{s.billing === '年額' ? '年' : '月'}
                   </td>
-                  <td>{s.description}</td>
+                  <td class="desc">{s.description}</td>
                 </tr>
               ))
             }
@@ -147,7 +147,7 @@ const crumbs = [{ label: 'サービス' }];
                   <td class="num">
                     {yen(a.price)}／{a.billing === '年額' ? '年' : '月'}
                   </td>
-                  <td>{a.description}</td>
+                  <td class="desc">{a.description}</td>
                 </tr>
               ))
             }

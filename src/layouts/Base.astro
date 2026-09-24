@@ -18,7 +18,7 @@ const canonical = new URL(path === '/index.html' ? '/' : path, SITE.url).href;
 const isHome = path === '/' || path === '/index.html';
 // 確認用のビルド（next.eleanor-dev.com）は全ページを検索に出さない
 const staging = process.env.STAGING === '1';
-const ogImage = new URL('/og.png', SITE.url).href;
+const ogImage = new URL('/og.jpg', SITE.url).href;
 // JSON-LD を <script> に埋めるので、</script> で閉じられないよう < を逃がす
 const ld = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c');
 const current = (href: string) => (href === path || (href === '/blog.html' && path.startsWith('/blog/')) ? 'page' : undefined);
@@ -103,7 +103,8 @@ const beacon = SITE.analytics.cloudflareBeaconToken;
           <svg class="menu-button__close" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
           </svg>
-          <span class="menu-button__label">メニュー</span>
+          <span class="menu-button__open">メニュー</span>
+          <span class="menu-button__close">閉じる</span>
         </button>
       </div>
       <nav id="mobile-menu" class="mobile-menu" aria-labelledby="mobile-menu-label" hidden>

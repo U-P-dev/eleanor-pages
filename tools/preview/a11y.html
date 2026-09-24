@@ -64,7 +64,7 @@ function checkPage(doc, win) {
   }
   out.smallTargets = small;
   // 6. フォーカス表示（黄＋黒の二重が付くか）
-  const focusables = [...doc.querySelectorAll('a[href], [tabindex="0"], summary')];
+  const focusables = [...doc.querySelectorAll('a[href], [tabindex="0"], summary, button, input, select, textarea')].filter((e) => e.getClientRects().length);
   let noRing = [];
   for (const el of focusables) {
     el.focus({ focusVisible: true });

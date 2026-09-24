@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // eleanor-dev.com。Workers Builds が `npm run build`（出力の検査込み）の後に `npx wrangler deploy` する
+  "name": "eleanor-site",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-24",
+  // 公開はカスタムドメインだけ。workers.dev とプレビューURLを開けたままにすると、同じ内容が別URLで公開され続ける
+  // （ダッシュボードで切っても、ここに書かないと次のデプロイで既定の true に戻る）
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // 「/company.html」を転送せずにそのまま返す（ほかの値は /company.html を /company へ 307 で飛ばす）
+    "html_handling": "none",
+    "not_found_handling": "404-page",
+    // www・http の転送と「/」の読み替えのため、すべての要求をまず worker/index.js に通す
+    "run_worker_first": true
+  }
+}

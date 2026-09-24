@@ -18,13 +18,20 @@ interface Props {
   content: string;
 }
 const { title, description, noindex = false, eyebrow, h1, h1Sub, appName, lead, crumbs, content } = Astro.props;
-// 旧サイトの編集用コメント（<!-- 日本語 --> など）は読者に届けない。見える本文は変わらない
-const body = content.replace(/<!--[\s\S]*?-->/g, '');
+// 本文の文字は変えずに、読み方と見え方だけを整える（見える本文が変わらないことは scripts/check_legal_text.py が照合する）
+//   - 編集用のコメント（<!-- 日本語 --> など）は読者に届けない
+//   - 表は横スクロールの枠で包む（狭い画面で本文ごとはみ出さないように。DADS テーブル）
+//   - 名前の無いアイコン（飾り）は読み上げない
+let tableNo = 0;
+const body = content
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/<table\b[\s\S]*?<\/table>/g, (t) => `<div class="table-region" role="region" tabindex="0" aria-label="表${++tableNo}">${t}</div>`)
+  .replace(/<svg\b(?![^>]*\b(?:aria-hidden|aria-label|role)=)/g, '<svg aria-hidden="true" focusable="false"');
 ---
 
 <Base title={title} description={description} noindex={noindex} jsonLd={crumbs ? [breadcrumbLd(crumbs, Astro.url.pathname)] : []}>
   {crumbs && <Breadcrumb items={crumbs} />}
-  <div class="wrap wrap--narrow page-head">
+  <div class="wrap narrow page-head">
     {eyebrow && <p class="section__eyebrow">{eyebrow}</p>}
     <h1>
       {h1}
@@ -33,7 +40,7 @@ const body = content.replace(/<!--[\s\S]*?-->/g, '');
     {appName && <p class="page-head__lead">{appName}</p>}
     {lead && <p class="page-head__lead">{lead}</p>}
   </div>
-  <div class="wrap wrap--narrow page-body">
+  <div class="wrap narrow page-body">
     <div class="legal" set:html={body} />
   </div>
 </Base>

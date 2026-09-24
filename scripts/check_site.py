@@ -40,7 +40,7 @@ PROTECTED = [
     "privacy-hitomoyou.html", "terms-hitomoyou.html", "tokusho-hitomoyou.html", "support-hitomoyou.html",
     # AdSense・Search Console・セキュリティ窓口・検索エンジン
     "ads.txt", "googlef3142e0a3a00e599.html", ".well-known/security.txt", "robots.txt", "sitemap-index.xml",
-    "favicon.svg",
+    "favicon.svg", "apple-touch-icon.png", "og.jpg",
 ]
 # index.html に無ければならないページ内の行き先（外部・自動生成ページのナビから張られている）
 PROTECTED_IDS = ["lp", "contact", "apps"]
@@ -335,8 +335,8 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
                 fail(f"<nav> の名前（aria-labelledby={' '.join(names)}）の行き先が無い")
         for region in page.regions:
             names = region.get("aria-labelledby", "").split()
-            if region.get("role") != "region" or region.get("tabindex") != "0" or not names:
-                fail("表の枠に role=region / tabindex=0 / aria-labelledby が揃っていない")
+            if region.get("role") != "region" or region.get("tabindex") != "0" or not (names or region.get("aria-label")):
+                fail("表の枠に role=region / tabindex=0 / 名前（aria-labelledby か aria-label）が揃っていない")
             elif any(n not in ids for n in names):
                 fail(f"表の枠の名前（aria-labelledby={' '.join(names)}）の行き先が無い")
         if path in MIGRATED:

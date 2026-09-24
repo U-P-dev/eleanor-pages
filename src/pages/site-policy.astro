@@ -15,10 +15,10 @@ const updated = '2026-09-24';
   jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
 >
   <Breadcrumb items={crumbs} />
-  <div class="wrap wrap--narrow page-head">
+  <div class="wrap narrow page-head">
     <h1>サイトポリシー・アクセシビリティ</h1>
   </div>
-  <div class="wrap wrap--narrow page-body">
+  <div class="wrap narrow page-body">
     <div class="prose">
       <p>
         このページは、{SITE.operator.name}（以下「当方」）が運営するウェブサイト eleanor-dev.com（以下「このサイト」）の利用についてまとめたものです。
@@ -75,8 +75,20 @@ const updated = '2026-09-24';
         <li>キーボードだけで操作でき、いま操作している場所を黄色と黒の枠で示します</li>
         <li>ブラウザの文字の大きさの設定に合わせて、文字が大きくなります</li>
       </ul>
+      <h3 id="self-check">自己点検の結果（2026年9月24日）</h3>
       <p>
-        試験の結果は、公開前の試験を終えたらこのページに載せます。読みにくい箇所や使いにくい箇所があれば、<a href="/#contact">お問い合わせ</a>からお知らせください。
+        公開前に、このサイトの全ページ（上の3ページを除く）を、画面の幅 320px・375px・1280px で機械で調べ、フォーカスの表示は目で確かめました。
+      </p>
+      <ul>
+        <li>見出しの順序の飛び、名前の無いリンク・ナビゲーション、代替テキストの無い画像: いずれも 0 件</li>
+        <li>文字と背景の明るさの比: 最も低いところで 5.13 対 1（基準は 4.5 対 1 以上）</li>
+        <li>押せる範囲が 24px に満たないリンク: 0 件</li>
+        <li>画面の幅 320px での横へのはみ出し: 0 件</li>
+        <li>行の間隔・文字の間隔を広げたときの文字の欠け: 0 件</li>
+      </ul>
+      <p>
+        JIS X 8341-3:2016 のすべての達成基準を確かめる試験はまだ行っていないため、「準拠」「一部準拠」の表明はしていません。
+        読みにくい箇所や使いにくい箇所があれば、<a href="/#contact">お問い合わせ</a>からお知らせください。
       </p>
 
       <h2 id="design">デザインについて</h2>

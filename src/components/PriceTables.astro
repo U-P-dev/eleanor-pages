@@ -70,7 +70,7 @@ const taxNote = prices.tax_included ? '税込' : '税抜';
             <td class="num">
               {yen(s.price)}／{s.billing === '年額' ? '年' : '月'}
             </td>
-            <td>{s.description}</td>
+            <td class="desc">{s.description}</td>
           </tr>
         ))
       }

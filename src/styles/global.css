@@ -137,8 +137,8 @@ a:focus-visible {
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-.wrap--narrow {
-  max-width: calc(var(--measure) + 2 * var(--gutter));
+.narrow > * {
+  max-width: var(--measure);
 }
 main {
   display: block;
@@ -635,6 +635,11 @@ a.button--secondary:any-link {
   margin-block: 0.375rem;
   padding-left: 1.75rem;
 }
+/* 単独で置いたリンクは押せる範囲を 24px 以上に（WCAG 2.2 達成基準 2.5.8） */
+.check-list > li > a:only-child {
+  display: inline-block;
+  padding-block: 0.125rem;
+}
 .check-list > li::before {
   content: '';
   position: absolute;
@@ -657,7 +662,12 @@ a.button--secondary:any-link {
 }
 @media (min-width: 48rem) {
   .steps {
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 64rem) {
+  .steps {
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 .steps > li {
@@ -719,8 +729,12 @@ a.button--secondary:any-link {
   font-weight: 700;
 }
 .table-region tbody th {
+  min-width: 9em;
   color: var(--text-strong);
   font-weight: 700;
+}
+.table-region .desc {
+  min-width: 18em;
 }
 .table-region .num {
   text-align: right;
@@ -1080,6 +1094,7 @@ select.input {
   color: var(--text-sub);
 }
 .article-list {
+  max-width: var(--measure);
   margin: 0;
   padding: 0;
   border-top: 1px solid var(--border);
@@ -1185,7 +1200,12 @@ select.input {
 }
 @media (min-width: 48rem) {
   .site-footer__inner {
-    grid-template-columns: 1.3fr repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 64rem) {
+  .site-footer__inner {
+    grid-template-columns: 1fr 0.8fr 1.3fr 1.2fr;
   }
 }
 .site-footer__about p {
@@ -1209,6 +1229,7 @@ select.input {
 }
 .utility-links a:any-link {
   display: inline-block;
+  word-break: auto-phrase;
   padding-block: 0.3125rem;
   color: var(--text);
   line-height: 1.4;
