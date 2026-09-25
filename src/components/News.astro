@@ -1,0 +1,31 @@
+---
+// お知らせ（トップ・新しい順）と沿革（会社概要・古い順）。データは src/data/news.json の 1 か所。
+// 日付の入った記録は「更新が続いている」ことの手がかりになる（国内の調査・J-Net21）。書くのは確かめられる事実だけ。
+import news from '../data/news.json';
+import { jaDate, jaMonth } from '../lib/date.mjs';
+
+interface Props {
+  kind?: 'news' | 'history';
+  limit?: number;
+}
+const { kind = 'news', limit = 3 } = Astro.props;
+type Item = { date: string; text: string; href?: string; history?: boolean };
+const all = news.items as Item[];
+const items =
+  kind === 'history'
+    ? all.filter((i) => i.history).sort((a, b) => a.date.localeCompare(b.date))
+    : [...all].sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit);
+---
+
+<ul class="news" role="list">
+  {
+    items.map((i) => (
+      <li class="news__item">
+        <time class="news__date" datetime={i.date}>
+          {kind === 'history' ? jaMonth(i.date) : jaDate(i.date)}
+        </time>
+        <p class="news__text">{i.href ? <a href={i.href}>{i.text}</a> : i.text}</p>
+      </li>
+    ))
+  }
+</ul>

@@ -1,10 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import News from '../components/News.astro';
 import Person from '../components/Person.astro';
+import prices from '../data/prices.json';
 import { breadcrumbLd } from '../lib/breadcrumb.mjs';
 import { ORG_ID, organization } from '../lib/jsonld.mjs';
-import { jaDate } from '../lib/date.mjs';
+import { jaDate, jaMonth } from '../lib/date.mjs';
 import updated from '../data/updated.json';
 import { SITE } from '../site.mjs';
 
@@ -76,8 +78,8 @@ const op = SITE.operator;
           <dd>個人事業</dd>
         </div>
         <div>
-          <dt>設立</dt>
-          <dd>2026年</dd>
+          <dt>開業</dt>
+          <dd>{jaMonth(op.founded)}</dd>
         </div>
         <div>
           <dt>事業内容</dt>
@@ -94,6 +96,14 @@ const op = SITE.operator;
           <dd>{SITE.area}</dd>
         </div>
         <div>
+          <dt>ご来訪</dt>
+          <dd>所在地へのご来訪と、対面でのお打ち合わせはお受けしていません。</dd>
+        </div>
+        <div>
+          <dt>お客様</dt>
+          <dd>事業者の方（お店・会社）向けのサービスです（<a href="/terms-lp.html">利用規約</a> 第3条）。</dd>
+        </div>
+        <div>
           <dt>電話番号</dt>
           <dd>{op.phone}（受付時間 {op.hours.label}。{op.hours.note}）</dd>
         </div>
@@ -106,10 +116,25 @@ const op = SITE.operator;
           <dd>お問い合わせには、{op.reply}。営業日は{op.businessDays}です。</dd>
         </div>
         <div>
+          <dt>インボイス</dt>
+          <dd>
+            {
+              prices.invoice_registered && prices.invoice_number
+                ? `適格請求書発行事業者の登録番号 ${prices.invoice_number}`
+                : '適格請求書発行事業者の登録を申請しています。登録番号は、通知が届きしだい載せます。'
+            }
+          </dd>
+        </div>
+        <div>
           <dt>最終更新</dt>
           <dd><time datetime={updated['/company.html']}>{jaDate(updated['/company.html'])}</time></dd>
         </div>
       </dl>
+    </section>
+
+    <section class="section section--minor" id="history" aria-labelledby="history-title">
+      <h2 class="section__title" id="history-title">これまでの歩み</h2>
+      <News kind="history" />
     </section>
 
     <section class="section section--minor page-end" aria-labelledby="company-end">

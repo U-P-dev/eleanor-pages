@@ -55,6 +55,8 @@ PROTECTED = [
 ]
 # index.html に無ければならないページ内の行き先（外部・自動生成ページのナビから張られている）
 PROTECTED_IDS = ["lp", "contact", "apps"]
+# やめた節の行き先（中身の無い「準備中のアプリ」・会社名の欄・選択肢の箱）。出力に残っていたら古い書き方のまま
+RETIRED_IDS = ["apps-coming", "cf-org", "cf-kind", "cf-error"]
 # LP 事業が自動生成するページ。このサイトの検査の対象外（存在だけ確かめる）
 GENERATED = {"/tokusho.html", "/privacy-lp.html", "/terms-lp.html"}
 # ページではないファイル（Search Console の所有確認）
@@ -563,6 +565,22 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
         if path != "/" and re.search(r'href="/(?:index\.html)?#contact"', raw):
             fail("お問い合わせへのリンクがトップの節（/#contact）を指している（/contact.html へ）")
 
+        # --- 実物の見せ方（見本は架空と明記・看板の画像は先に読む・日付は過去だけ） ---
+        for fig in re.findall(r'<figure class="sample"[\s\S]*?</figure>', raw):
+            if "架空" not in fig:
+                fail("LP の見本の説明に「架空の店」と書いていない（実在の店と誤認させない）")
+        if path == "/":
+            hero = re.search(r'<section class="hero"[\s\S]*?</section>', raw)
+            img = re.search(r"<img\b[^>]*>", hero.group(0)) if hero else None
+            if not img:
+                notes.append("  ⚠ / の看板に画像が無い（見本の画面を置く）")
+            elif 'loading="lazy"' in img.group(0) or 'fetchpriority="high"' not in img.group(0):
+                fail("看板の画像が遅延読み込みになっているか、先に読む指定（fetchpriority=high）が無い（最初の画面の画像）")
+        today = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9)).date().isoformat()
+        for d in re.findall(r'<time[^>]*datetime="(\d{4}-\d{2}-\d{2})', raw):
+            if d > today:
+                fail(f"未来の日付 {d} が <time> にある（お知らせと記録は起きたことだけ）")
+
         # --- 画像: 代替テキスト・大きさ・ファイルの実在 ---
         for img in page.imgs:
             alt = img.get("alt")
@@ -635,6 +653,9 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
             fail("meta description が無いか短すぎる")
         if page.h1 != 1:
             fail(f"H1 が {page.h1} 個（1個にする）")
+        for rid in RETIRED_IDS:
+            if rid in page.ids:
+                fail(f"やめた節・欄の id {rid} が残っている")
         dup = sorted({i for i in page.ids if page.ids.count(i) > 1})
         if dup:
             fail(f"id が重複している: {dup[:3]}")

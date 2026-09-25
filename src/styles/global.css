@@ -560,15 +560,13 @@ a.button--secondary:any-link {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+/* 看板の見本の画面。広い画面は右の列いっぱいにパソコンの画面、狭い画面は看板の文のすぐ後にスマートフォンの画面 */
 .hero__media {
-  width: min(100%, 18rem);
   margin: 0;
-  justify-self: start;
 }
-/* 狭い画面では、看板の画面は出さない（最初の画面を看板と料金に絞る）。同じ画面は「つくったもの」に出る */
 @media (max-width: 47.99rem) {
   .hero__media {
-    display: none;
+    width: min(100%, 18rem);
   }
 }
 /* つくったもの: 広い画面はパソコンの画面、狭い画面はスマートフォンの画面（パソコンの画面を縮めると読めない） */
@@ -603,6 +601,10 @@ a.button--secondary:any-link {
   color: var(--text-mid);
   font-size: var(--font-size-16);
   line-height: 1.6;
+}
+/* 画面の説明の後ろに置く短いリンクは、途中で折り返さない（「ほ／かの見本」と割れないように） */
+.hero__media figcaption a {
+  white-space: nowrap;
 }
 
 /* ── 節 ──
@@ -653,6 +655,90 @@ a.button--secondary:any-link {
   margin: var(--space-24) 0 0;
 }
 
+/* ── LP の見本: パソコンの画面を左、説明とスマートフォンの画面を右。狭い画面はスマートフォンの画面だけ ── */
+.sample {
+  margin: 0;
+}
+.sample + .sample {
+  margin-top: var(--space-40);
+  padding-top: var(--space-40);
+  border-top: var(--rule);
+}
+.sample__pc img,
+.sample__sp img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: var(--rule);
+}
+.sample__pc picture,
+.sample__sp picture {
+  display: block;
+}
+@media (max-width: 47.99rem) {
+  .sample__pc {
+    display: none;
+  }
+}
+.sample__side {
+  display: grid;
+  align-content: start;
+  gap: var(--space-24);
+}
+.sample__sp {
+  width: min(100%, 18rem);
+}
+@media (min-width: 48rem) {
+  .sample__sp {
+    width: 12rem;
+  }
+}
+.sample__title {
+  margin-bottom: var(--space-8);
+  font-size: var(--font-size-20);
+}
+.sample__shop {
+  margin: 0;
+  color: var(--text-mid);
+}
+.sample__caption .facts {
+  margin-bottom: 0;
+}
+.sample-notes {
+  max-width: var(--measure);
+  margin: var(--space-24) 0 0;
+  padding-left: var(--space-24);
+  color: var(--text-mid);
+}
+
+/* ── お知らせ・沿革: 日付と一文。日付は補足の色で桁をそろえる ── */
+.news {
+  max-width: 48rem;
+  margin: 0;
+  padding: 0;
+  border-top: var(--rule);
+  list-style: none;
+}
+.news__item {
+  display: grid;
+  gap: 0.25rem;
+  padding-block: var(--space-16);
+  border-bottom: var(--rule);
+}
+@media (min-width: 48rem) {
+  .news__item {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: var(--space-24);
+  }
+}
+.news__date {
+  color: var(--text-sub);
+  font-variant-numeric: tabular-nums;
+}
+.news__text {
+  margin: 0;
+}
+
 /* ── 頼めること（トップ）: 主力の LP を大きく、残りを右に小さく。同じ形のカードを並べない ── */
 .offer {
   padding-top: var(--space-24);
@@ -694,6 +780,10 @@ a.button--secondary:any-link {
 }
 .offer p {
   margin-block: 0 var(--space-16);
+}
+/* 価格のすぐ下に条件（保守とあわせてのお申し込み・1 年間の合計）を置く（消費者庁: 強調と条件を離さない） */
+.offer__terms {
+  color: var(--text-strong);
 }
 .offer__more {
   max-width: var(--measure);
@@ -930,6 +1020,14 @@ a.button--secondary:any-link {
 /* 短い値（納期など）は途中で折り返さない */
 .table-region .nowrap {
   white-space: nowrap;
+}
+/* 表のセルの中の箇条（保守の内容を「＋」の区切りで分けたもの） */
+.cell-list {
+  margin: 0;
+  padding-left: 1.25em;
+}
+.cell-list > li + li {
+  margin-top: 0.25rem;
 }
 /* 狭い画面では、料金表が枠の中に収まるように最小幅と余白を詰める（横スクロールで金額が隠れないように）。
    行の見出しは「スタンダード」（6 字）が 1 行に入る幅を残す（押し潰すと 1 字ずつ縦に折り返す） */
@@ -1440,7 +1538,8 @@ textarea.input {
 }
 
 /* ── ページの終わりの一言とボタン（帯で塗らない。従の節として罫で区切るだけ） ── */
-.page-end {
+/* 罫は節の幅（本文の幅）に引き、中の文だけを文章の幅にする */
+.page-end > * {
   max-width: var(--measure);
 }
 .page-end h2 {

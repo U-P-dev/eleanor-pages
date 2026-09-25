@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Flow from '../components/Flow.astro';
+import SampleShelf from '../components/SampleShelf.astro';
 import kaiyakuPc from '../assets/shots/kaiyaku-top-pc.webp';
 import kaiyakuSp from '../assets/shots/kaiyaku-article-sp.webp';
 import { breadcrumbLd } from '../lib/breadcrumb.mjs';
@@ -14,21 +15,31 @@ const kaiyaku = WORKS.kaiyaku;
 ---
 
 <Base
-  title={`つくったもの：解約手帳とこのサイトの設計｜${SITE.name}`}
-  description="エレノアが自分でつくって運営しているサイトと、その設計の考え方。間違いを公開前に機械で止める仕組み、1か所のデータから料金の表示をつくる仕組みなど、お客様のサイトにも使っている考え方を紹介します。"
+  title={`つくったもの：LP の見本・解約手帳・このサイトの設計｜${SITE.name}`}
+  description="エレノアの LP の見本（架空の店に仕立てたもの）と、自分でつくって運営しているサイトの設計。間違いを公開前に機械で止める仕組み、1か所のデータから料金の表示をつくる仕組みなど、お客様のサイトにも使っている考え方を紹介します。"
   jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname)]}
 >
   <Breadcrumb items={crumbs} />
   <div class="wrap page-head">
     <h1>つくったもの</h1>
     <p class="page-head__lead">
-      自分のサービスも、自分で設計して運営しています。公開中のものは画面と事実を、準備中のアプリはその旨を載せています。お客様のサイトにも、同じ考え方を使います。
+      お客様に選んでいただく LP の見本と、自分で設計して運営しているサイトを、画面と事実で載せています。お客様のサイトにも、同じ考え方と仕組みを使います。
     </p>
   </div>
 
   <div class="wrap page-body">
-    <section class="section" id="kaiyaku" aria-labelledby="kaiyaku-title">
-      <h2 id="kaiyaku-title">{kaiyaku.name}</h2>
+    <section class="section" id="samples" aria-labelledby="samples-title">
+      <h2 id="samples-title">LP の見本</h2>
+      <p class="section__lead">
+        テンプレートから選ぶ LP の見本です。架空の店に仕立てています。スタンダードの見本は、用意ができしだい載せます。料金は<a
+          href="/services.html#lp-plans">サービスと料金</a
+        >にあります。
+      </p>
+      <SampleShelf />
+    </section>
+
+    <section class="section section--minor" id="kaiyaku" aria-labelledby="kaiyaku-title">
+      <h2 class="section__title" id="kaiyaku-title">{kaiyaku.name}</h2>
       <div class="grid work">
         <figure class="grid__main shot">
           <div class="work__shots">
@@ -51,12 +62,16 @@ const kaiyaku = WORKS.kaiyaku;
         </figure>
         <div class="grid__side work__body">
           <p>
-            {kaiyaku.summary}です（<a href={kaiyaku.url}>{kaiyaku.host}</a>）。手順や金額は変わるので、「いつ確かめたか」が無い情報は載せない、と決めてつくりました。
+            {kaiyaku.summary}です（<a href={kaiyaku.url}>{kaiyaku.host}</a>）。手順や金額は変わるので、「いつ確かめたか」が無い情報は載せない、と決めてつくりました。読む人は、記事の冒頭で、情報がいつ時点のものかと、確かめた公式ページを見られます。
           </p>
           <dl class="facts">
             <div>
               <dt>公開</dt>
               <dd>{jaDate(kaiyaku.since)}から運用中</dd>
+            </div>
+            <div>
+              <dt>記事</dt>
+              <dd>{kaiyaku.articles.count}本（{jaDate(kaiyaku.articles.countedAt)}時点）</dd>
             </div>
             <div>
               <dt>担当</dt>
@@ -113,21 +128,6 @@ const kaiyaku = WORKS.kaiyaku;
           このサイトの URL は、お支払いの画面やアプリの設定から直接リンクされています。作り直しても URL が1つも変わらないことを、公開のたびに機械で確かめています。
         </p>
         <p>使っている技術は Astro（サイトの生成）、Cloudflare Workers（配信）、Python（検査）です。</p>
-      </div>
-    </section>
-
-    <section class="section section--minor" id="apps-coming" aria-labelledby="apps-coming-title">
-      <h2 class="section__title" id="apps-coming-title">準備中のアプリ</h2>
-      <div class="prose">
-        <p>次の2つは、ストアでの公開を準備しています。サポートと規約のページは先に公開しています。</p>
-        <ul>
-          <li>SONO-HINO（スマートフォンアプリ）：<a href="/support.html">サポート</a>・<a href="/privacy.html">プライバシーポリシー</a></li>
-          <li>
-            ヒトモヨウ（人物相関図アプリ）：<a href="/support-hitomoyou.html">サポート</a>・<a href="/privacy-hitomoyou.html"
-              >プライバシーポリシー</a
-            >
-          </li>
-        </ul>
       </div>
     </section>
 

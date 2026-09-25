@@ -50,6 +50,10 @@ def extract(pricing: dict) -> dict:
     # 保守の解約の条件と、解約後に LP と独自ドメインを引き渡すか（差額の金額は plans から計算する。ここに金額を持たない）
     out["subscription_cancellation"] = pricing["terms"]["subscription_cancellation"]
     out["buyout_includes_domain"] = bool(pricing["buyout"].get("includes_domain"))
+    # 後払い（掛売り）を受けるか・インボイスの登録の状態（会社概要とよくある質問に出す。番号は登録が済んだら正本に入る）
+    out["credit_terms"] = bool(pricing["payment"].get("credit_terms", False))
+    out["invoice_registered"] = bool(pricing["invoice"].get("registered"))
+    out["invoice_number"] = str(pricing["invoice"].get("registration_number") or "")
     return out
 
 

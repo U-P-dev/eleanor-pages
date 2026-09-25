@@ -1,0 +1,11 @@
+{
+  "_note": "お知らせ（トップに新しい順で 3 件）と沿革（会社概要に history: true のものを古い順で）。書くのは確かめられる事実だけ（日付は公開記録・git の履歴・届出の控えで確かめる）。未来の日付は書かない（scripts/check_site.py が止める）",
+  "items": [
+    { "date": "2026-09-25", "text": "電話の受付時間を、平日 8:00〜23:00、土日祝 9:00〜18:00 にしました。", "href": "/contact.html" },
+    { "date": "2026-09-23", "text": "サブスクの解約手順を確かめた日付つきでまとめたサイト「解約手帳」を公開しました。", "href": "/products.html#kaiyaku", "history": true },
+    { "date": "2026-09-19", "text": "人物相関図アプリ「ヒトモヨウ」のサポートページを公開しました。", "href": "/support-hitomoyou.html" },
+    { "date": "2026-08-10", "text": "LP の制作と保守の料金と、取引の条件を公開しました。", "href": "/services.html", "history": true },
+    { "date": "2026-03-11", "text": "スマートフォンアプリ「SONO-HINO」のサポートページを公開しました。", "href": "/support.html", "history": true },
+    { "date": "2026-03-06", "text": "エレノアを開業しました。", "history": true }
+  ]
+}

@@ -1,6 +1,8 @@
 // よくある質問。画面（サービスのページ）と構造化データ（FAQPage）の両方をここから作る。
 // 金額・日数・条件は prices.json（料金の正本から抜き出したもの）から入れる。ここに数字を直書きしない。
 // html は画面用（リンクを含む）、text は構造化データ用（タグなしで同じ内容）。
+import fs from 'node:fs';
+import path from 'node:path';
 import prices from './prices.json';
 import { CONTACT, SITE } from '../site.mjs';
 import { yen } from '../lib/format.mjs';
@@ -15,6 +17,17 @@ const diffs = ['standard', 'rich', 'premium']
   .filter((n) => Number.isFinite(n));
 const buyout = Math.min(...diffs) === Math.max(...diffs) ? yen(diffs[0]) : `${yen(Math.min(...diffs))}〜${yen(Math.max(...diffs))}`;
 const methods = prices.payment_methods.join('・');
+
+// 事業を続けられなくなったときの約束は、利用規約（LP 事業が生成する terms-lp.html）の第15条が正本。
+// よくある質問はその要約なので、条文の要点が変わったらビルドを止める（食い違ったまま公開しない）
+const terms = fs
+  .readFileSync(path.join(process.cwd(), 'terms-lp.html'), 'utf8')
+  .replace(/<[^>]+>/g, '')
+  .replace(/\s+/g, ' ');
+const art15 = terms.slice(terms.indexOf('第15条'), terms.indexOf('第16条'));
+if (!/3 か月前までに登録メールへ通知し、引き渡し版と独自ドメインの移管を無償で行い、年額の前払い分のうち未提供の期間に相当する額を返金/.test(art15)) {
+  throw new Error('利用規約 第15条の文言が変わった。src/data/faq.mjs の「続けられなくなったら」の答えを直してから公開する');
+}
 
 const items = [
   {
@@ -46,6 +59,20 @@ const items = [
     html: `LP＋保守プランでお申し込みの場合、LP単体プランとの差額（${buyout}）をお支払いいただければ、LP${
       prices.buyout_includes_domain ? 'と独自ドメイン' : ''
     }をそのままお持ち帰りいただけます。くわしい条件は${tokusho()}をご覧ください。`,
+  },
+  {
+    q: 'ひとりで運営していて、続けられなくなったらどうなりますか？',
+    html: `代表ひとりで運営しています。事業の終了や長期の不在でサービスを続けられなくなるときは、3か月前までにお知らせし、LP のファイル一式（引き渡し版）と独自ドメインの移管を無償で行います。年額でお支払いの保守は、残りの期間の分を返金します（<a href="/terms-lp.html">利用規約</a> 第15条）。`,
+  },
+  {
+    q: '請求書払い（後払い）はできますか？',
+    html: prices.credit_terms
+      ? `できます。お支払いの方法は${methods}です。`
+      : `できません。制作費はご注文のときに${prices.payment_timing}でお支払いいただきます（${methods}）。お支払いを確認してから制作に入ります。`,
+  },
+  {
+    q: '「営業日」はいつですか？',
+    html: `${SITE.operator.businessDays}です。納期と、お問い合わせへのお返事の日数は、営業日で数えます。お電話は${SITE.operator.hours.label}に受け付けています。`,
   },
   {
     q: 'いま使っているサイトの引っ越しだけを頼めますか？',

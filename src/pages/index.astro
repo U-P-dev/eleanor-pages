@@ -1,30 +1,23 @@
 ---
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import HeroSample from '../components/HeroSample.astro';
+import News from '../components/News.astro';
 import Person from '../components/Person.astro';
 import PriceTables from '../components/PriceTables.astro';
+import SampleShelf from '../components/SampleShelf.astro';
+import Timeline from '../components/Timeline.astro';
 import prices from '../data/prices.json';
 import kaiyakuPc from '../assets/shots/kaiyaku-top-pc.webp';
 import kaiyakuSp from '../assets/shots/kaiyaku-article-sp.webp';
-import { publishedPosts, postUrl } from '../lib/blog.mjs';
-import { jaDate, ymd } from '../lib/date.mjs';
+import { jaDate } from '../lib/date.mjs';
 import { yen } from '../lib/format.mjs';
+import { bundle, careFrom, fastest, firstYear, lpFrom, standalone, tax } from '../lib/prices.mjs';
 import { SITE, WORKS } from '../site.mjs';
 
-const minOf = (rows: Record<string, { price: number; billing?: string }>, monthlyOnly = false) =>
-  Math.min(...Object.values(rows).filter((r) => !monthlyOnly || r.billing === '月額').map((r) => r.price));
-const lpFrom = minOf(prices.plans);
-const careFrom = minOf(prices.subscriptions, true);
 const hp = prices.fullorder.fullorder_hp;
-const bundleFrom = prices.plans.bundle_standard.price;
-const standaloneFrom = prices.plans.standalone_standard.price;
-const fastest = prices.plans.bundle_standard.delivery_days;
 // 含まれるものの短い項目（原稿・フォーム・解析）。料金データの文言をそのまま使う（ここで書き直すと約束の文言とずれる）
-const lpIncludes = prices.plans.bundle_standard.includes.filter((i) => i.length <= 20);
-const tax = prices.tax_included ? '税込' : '税抜';
-// トップのブログ欄は、記事が 3 本たまるまで出さない（1 本だけの欄は「更新が止まっている」に見える。2026-09-24 の目隠しの確認）
-const allPosts = await publishedPosts();
-const posts = allPosts.length >= 3 ? allPosts.slice(0, 3) : [];
+const lpIncludes = bundle.includes.filter((i: string) => i.length <= 20);
 const kaiyaku = WORKS.kaiyaku;
 const op = SITE.operator;
 ---
@@ -42,25 +35,24 @@ const op = SITE.operator;
         </h1>
         <p class="hero__lead">公開した日から、仕組みは動きはじめる。そのあとの保守まで、つくった本人が見続けます。</p>
         <p class="hero__facts">
-          LP の制作は、保守とあわせて<strong>{yen(bundleFrom)}</strong>から（保守は月<strong>{yen(careFrom)}</strong>から）、LP だけなら<strong>{yen(standaloneFrom)}</strong>からです（{tax}）。テンプレートから選んでつくるので、お支払いの確認から最短<strong>{fastest}</strong>でお届けします。
+          LP の制作は、保守とあわせて<strong>{yen(bundle.price)}</strong>から（保守は月<strong>{yen(careFrom)}</strong>から）、LP だけなら<strong>{yen(standalone.price)}</strong>からです（{tax}）。テンプレートから選んでつくるので、お支払いの確認から最短<strong>{fastest}</strong>で、確認用の実物をお送りします。
         </p>
         <div class="button-row">
           <a class="button button--primary button--large" href="#lp">料金とプランを見る</a>
           <a class="button-row__link" href="/contact.html">無料で相談する</a>
         </div>
       </div>
-      <figure class="grid__side hero__media">
-        <Picture
-          src={kaiyakuSp}
-          alt="解約手帳の記事をスマートフォンで開いた画面。冒頭に最終確認日と、確かめた公式ページの一覧がある"
-          widths={[288, 432, 576]}
-          sizes="18rem"
-          formats={['avif', 'webp']}
-        />
-        <figcaption>
-          エレノアがつくって運営しているサイト<a href="#apps">{kaiyaku.name}</a>の記事。確かめた日付と公式ページを冒頭に書く仕組みです（{jaDate(kaiyaku.shotAt)}に撮影）。
-        </figcaption>
-      </figure>
+      <HeroSample />
+    </div>
+  </section>
+
+  <section class="section" id="samples" aria-labelledby="samples-title">
+    <div class="wrap">
+      <h2 class="section__title" id="samples-title">LP の見本</h2>
+      <p class="section__lead">
+        テンプレートは、制作者が1点ずつ確かめたものだけを使います。架空の店に仕立てた見本を2つ載せています。スタンダードの見本は、用意ができしだい載せます。
+      </p>
+      <SampleShelf />
     </div>
   </section>
 
@@ -74,11 +66,14 @@ const op = SITE.operator;
         <div class="grid__main offer__main">
           <h3 class="offer__title">LP の制作</h3>
           <p class="offer__price"><strong>{yen(lpFrom)}</strong>から（{tax}）・最短{fastest}</p>
+          <p class="offer__terms">
+            保守メンテナンス（月{yen(careFrom)}から）とあわせてのお申し込みです。公開から1年間の合計は、月額払いで{yen(firstYear.monthlyTotal)}、年額払いで{yen(firstYear.annualTotal)}です（{tax}・独自ドメインの費用は別途）。
+          </p>
           <p>
             1ページで伝えるサイトを、制作者が1点ずつ確認したデザインから選んでつくります。やりとりはすべてメールで、お打ち合わせはありません。公開の前に実物をご確認いただき、{prices.pre_delivery_revisions}回まで手直しします。
           </p>
-          <ul class="check-list">{lpIncludes.map((i) => <li>{i}</li>)}</ul>
-          <p><a href="#lp">LP の料金とプランを見る</a></p>
+          <ul class="check-list">{lpIncludes.map((i: string) => <li>{i}</li>)}</ul>
+          <p><a href="/services.html#lp-plans">LP の料金と、1年間の合計の内訳</a></p>
         </div>
         <div class="grid__side offer__side">
           <div class="offer__item">
@@ -103,39 +98,37 @@ const op = SITE.operator;
 
   <section class="section section--minor" id="lp" aria-labelledby="lp-title">
     <div class="wrap">
-      <h2 class="section__title" id="lp-title">料金とプラン</h2>
+      <h2 class="section__title" id="lp-title">LP の料金</h2>
       <p class="section__lead">LP のデザインは3つの段から選べます。保守とあわせて申し込むと、制作料金が下がります。</p>
-      <PriceTables />
+      <PriceTables notes />
       <p class="section__more">
-        <a href="/services.html">各プランに含まれるもの・追加サービスの料金</a>
+        <a href="/services.html">保守・フルオーダー・追加サービスの料金と、各プランに含まれるもの</a>
       </p>
     </div>
   </section>
 
   <section class="section section--minor" aria-labelledby="flow-title">
     <div class="wrap">
-      <h2 class="section__title" id="flow-title">LP ができるまで</h2>
-      <ul class="timeline" role="list">
-        <li class="timeline__step">
-          <p class="timeline__when"><span class="visually-hidden">手順</span><span class="timeline__num">1</span>お申し込みの日</p>
-          <h3 class="timeline__title">プランを選んで、お支払い</h3>
-          <p>
-            料金表からプランを選び、お問い合わせからお知らせください。お支払いは{prices.payment_timing}（{prices.payment_methods.join('・')}）です。
-          </p>
-        </li>
-        <li class="timeline__step">
-          <p class="timeline__when"><span class="visually-hidden">手順</span><span class="timeline__num">2</span>最短{fastest}</p>
-          <h3 class="timeline__title">質問に答えて、実物を確かめる</h3>
-          <p>
-            お店のことや載せたいことを、メールでうかがいます。お支払いの確認から最短{fastest}で実物をお送りし、ご返信から{prices.revision_turnaround}で手直しします（{prices.pre_delivery_revisions}回まで）。
-          </p>
-        </li>
-        <li class="timeline__step">
-          <p class="timeline__when"><span class="visually-hidden">手順</span><span class="timeline__num">3</span>公開したあと</p>
-          <h3 class="timeline__title">公開して、保守を続ける</h3>
-          <p>公開したあとは、保守メンテナンス（月{yen(careFrom)}から）で、表示の確認と掲載内容の差し替えを続けます。</p>
-        </li>
-      </ul>
+      <h2 class="section__title" id="flow-title">ご依頼の流れ（LP）</h2>
+      <Timeline
+        steps={[
+          {
+            when: 'お申し込みの日',
+            title: 'プランを選んで、お支払い',
+            body: `料金表からプランを選び、<a href="/contact.html">お問い合わせ</a>からお知らせください。お支払いは${prices.payment_timing}（${prices.payment_methods.join('・')}）です。`,
+          },
+          {
+            when: `最短${fastest}`,
+            title: '質問に答えて、実物を確かめる',
+            body: `お店のことや載せたいことを、メールでうかがいます。お支払いの確認から最短${fastest}で実物をお送りし、ご返信から${prices.revision_turnaround}で手直しします（${prices.pre_delivery_revisions}回まで）。`,
+          },
+          {
+            when: '公開したあと',
+            title: '公開して、保守を続ける',
+            body: `公開したあとは、保守メンテナンス（月${yen(careFrom)}から）で、表示の確認と掲載内容の差し替えを続けます。`,
+          },
+        ]}
+      />
     </div>
   </section>
 
@@ -167,12 +160,16 @@ const op = SITE.operator;
         <div class="grid__side work__body">
           <h3 class="work__title">{kaiyaku.name}</h3>
           <p>
-            {kaiyaku.summary}です。手順や金額は変わるので、公式ページで確かめた日付が無い記事は公開できない仕組みにしています。
+            {kaiyaku.summary}です。手順や金額は変わるので、公式ページで確かめた日付が無い記事は公開できない仕組みにしています。読む人は、情報がいつ時点のものかを記事の冒頭で確かめられます。
           </p>
           <dl class="facts">
             <div>
               <dt>公開</dt>
               <dd>{jaDate(kaiyaku.since)}から運用中</dd>
+            </div>
+            <div>
+              <dt>記事</dt>
+              <dd>{kaiyaku.articles.count}本（{jaDate(kaiyaku.articles.countedAt)}時点）</dd>
             </div>
             <div>
               <dt>担当</dt>
@@ -195,7 +192,6 @@ const op = SITE.operator;
           <p><a href="/products.html#this-site">このサイトの設計を読む</a></p>
         </div>
       </div>
-      <p class="section__more">スマートフォンアプリの SONO-HINO と、人物相関図アプリのヒトモヨウは、ストアでの公開を準備しています。</p>
     </div>
   </section>
 
@@ -211,30 +207,13 @@ const op = SITE.operator;
     </div>
   </section>
 
-  {
-    posts.length > 0 && (
-      <section class="section section--minor" aria-labelledby="blog-title">
-        <div class="wrap">
-          <h2 class="section__title" id="blog-title">ブログ</h2>
-          <ul class="article-list">
-            {posts.map((p) => (
-              <li class="article-list__item">
-                <a class="article-list__link" href={postUrl(p)}>
-                  {p.data.title}
-                </a>
-                <p class="article-list__meta">
-                  {p.data.category}・<time datetime={ymd(p.data.published_at)}>{ymd(p.data.published_at)}</time>
-                </p>
-              </li>
-            ))}
-          </ul>
-          <p class="section__more">
-            <a href="/blog.html">ブログの記事一覧</a>
-          </p>
-        </div>
-      </section>
-    )
-  }
+  <section class="section section--minor" aria-labelledby="news-title">
+    <div class="wrap">
+      <h2 class="section__title" id="news-title">お知らせ</h2>
+      <News limit={3} />
+      <p class="section__more"><a href="/company.html#history">これまでの歩み（会社概要）</a></p>
+    </div>
+  </section>
 
   <section class="section section--sub" id="contact" aria-labelledby="contact-title">
     <div class="wrap grid contact">

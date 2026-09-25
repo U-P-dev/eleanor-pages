@@ -19,7 +19,8 @@ export const SITE = {
     postalCode: '160-0022',
     address: '東京都新宿区新宿2丁目8番15号 パークフロント新宿 202号室',
     addressParts: { region: '東京都', locality: '新宿区', street: '新宿2丁目8番15号 パークフロント新宿 202号室' },
-    founded: '2026',
+    // 開業の日（開業届の提出日）
+    founded: '2026-03-06',
     // 電話の受付時間（2026-09-25 👤）。特定商取引法に基づく表示（LP 事業の config の support_hours）と同じ言い方にする
     hours: {
       label: '平日 8:00〜23:00、土日祝 9:00〜18:00',
@@ -48,6 +49,8 @@ export const WORKS = {
     summary: 'サブスクの解約手順を、公式ページで確かめた日付つきでまとめたサイト',
     // 画面（src/assets/shots/kaiyaku-*.webp）を撮った日。撮り直したら更新する
     shotAt: '2026-09-24',
+    // 公開中の記事の本数（サイトマップで数えた日と一緒に。数え直したら両方を更新する）
+    articles: { count: 16, countedAt: '2026-09-25' },
   },
 };
 

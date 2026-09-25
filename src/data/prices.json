@@ -206,5 +206,8 @@
   "revision_turnaround": "1営業日",
   "refund_window_hours": 24,
   "subscription_cancellation": "次回更新日の前日までにご連絡いただければ解約できます（日割りでの返金はありません）",
-  "buyout_includes_domain": true
+  "buyout_includes_domain": true,
+  "credit_terms": false,
+  "invoice_registered": false,
+  "invoice_number": ""
 }
