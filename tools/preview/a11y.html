@@ -59,6 +59,8 @@ function checkPage(doc, win) {
   for (const a of doc.querySelectorAll('a')) {
     const standalone = a.closest('.utility-links, .toc, .article-list, .breadcrumb, .site-header') || (a.parentElement.tagName === 'LI' && a.parentElement.textContent.trim() === a.textContent.trim());
     if (!standalone) continue;
+    // 隠れている要素（狭い画面で出ないメニューなど）は押せないので数えない
+    if (!a.getClientRects().length) continue;
     const r = a.getBoundingClientRect();
     if (r.height < 24 || r.width < 24) small.push(a.textContent.trim().slice(0, 12) + ` ${Math.round(r.width)}x${Math.round(r.height)}`);
   }
@@ -85,7 +87,7 @@ function spacingOverride(doc) {
   const s = doc.createElement('style');
   s.textContent = '* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }';
   doc.head.appendChild(s);
-  const clipped = [...doc.querySelectorAll('body *')].filter((e) => { const cs = e.ownerDocument.defaultView.getComputedStyle(e); return (cs.overflow === 'hidden' || cs.overflowY === 'hidden') && e.scrollHeight > e.clientHeight + 1 && !e.classList.contains('visually-hidden'); }).length;
+  const clipped = [...doc.querySelectorAll('body *')].filter((e) => { const cs = e.ownerDocument.defaultView.getComputedStyle(e); return (cs.overflow === 'hidden' || cs.overflowY === 'hidden') && e.scrollHeight > e.clientHeight + 1 && !e.classList.contains('visually-hidden') && cs.clipPath !== 'inset(50%)'; }).length;
   return { clipped, hOverflow: doc.documentElement.scrollWidth - doc.documentElement.clientWidth };
 }
 

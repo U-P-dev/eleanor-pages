@@ -1,18 +1,20 @@
 // ビルドの後に dist/ の HTML の見出しを仕上げる（npm run build の中で astro build と copy_generated.mjs の後に走る）。
 //   1. 見出し（h1〜h4）の文節の区切りに <wbr> を入れる。iPhone の Safari は word-break: auto-phrase が効かないので、
 //      CSS の keep-all と組み合わせて「文節の途中で折り返さない」を全ブラウザで揃える（移したページの本文には入れない）
-//   2. 見出しとロゴに使っている字だけを、Google Fonts から Zen Kaku Gothic New 700 の woff2 として切り出し、
-//      dist/fonts/ に置いてこのサイトから配る（閲覧者の情報を外部に送らない。書体は SIL OFL 1.1・public/fonts/OFL.txt）
+//   2. 見出しとロゴに使っている字だけを、Google Fonts から Noto Sans JP 700 の woff2 として切り出し、
+//      dist/fonts/ に置いてこのサイトから配る（閲覧者の情報を外部に送らない。書体は SIL OFL 1.1・public/fonts/OFL.txt）。
+//      見出しは字詰め（palt）を効かせるので、切り出した書体に palt が入っているかを確かめて報告に書く
 //   3. 各ページの <head> に @font-face と preload を差し込む
 // 書体の取得に失敗しても終了コードは 0（見出しは本文と同じ OS の書体で出る。scripts/check_site.py が WARN を出す）。
 // HEADING_FONT=off で 2 と 3 を飛ばす（書体なしでも組めるかを確かめるとき）。
 import { createHash } from 'node:crypto';
+import { brotliDecompressSync } from 'node:zlib';
 import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = path.dirname(path.dirname(new URL(import.meta.url).pathname));
 const DIST = path.join(ROOT, 'dist');
-const FAMILY = 'Zen Kaku Gothic New';
+const FAMILY = 'Noto Sans JP';
 const WEIGHT = 700;
 const CSS_NAME = 'Eleanor Heading';
 const REPORT = path.join(ROOT, '.astro', 'heading-font.json');
@@ -100,6 +102,51 @@ async function fetchFont(chars) {
   return buf;
 }
 
+// woff2 の中の表（圧縮された 1 本の流れ）を開き、GPOS の機能一覧に palt（字詰め）があるかを見る。
+// 見出しの CSS は font-feature-settings: 'palt' を前提にしているので、書体に無ければ報告して check_site.py が止める
+function hasPalt(buf) {
+  let p = 12;
+  const numTables = buf.readUInt16BE(p);
+  const compressed = buf.readUInt32BE(20);
+  p = 48;
+  const base128 = () => {
+    let v = 0;
+    for (let i = 0; i < 5; i++) {
+      const b = buf[p++];
+      v = v * 128 + (b & 0x7f);
+      if (!(b & 0x80)) return v;
+    }
+    throw new Error('woff2 の表の長さが読めない');
+  };
+  const tables = [];
+  for (let i = 0; i < numTables; i++) {
+    const flags = buf[p++];
+    let tag = ['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name', 'OS/2', 'post', 'cvt ', 'fpgm', 'glyf', 'loca', 'prep', 'CFF ', 'VORG', 'EBDT',
+      'EBLC', 'gasp', 'hdmx', 'kern', 'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx', 'BASE', 'GDEF', 'GPOS', 'GSUB'][flags & 0x3f];
+    if ((flags & 0x3f) === 63) {
+      tag = buf.toString('latin1', p, p + 4);
+      p += 4;
+    }
+    const length = base128();
+    const version = flags >> 6;
+    const transformed = (tag === 'glyf' || tag === 'loca') ? version === 0 : version !== 0;
+    tables.push({ tag, length: transformed ? base128() : length });
+  }
+  const data = brotliDecompressSync(buf.subarray(p, p + compressed));
+  let offset = 0;
+  for (const t of tables) {
+    if (t.tag === 'GPOS') {
+      const gpos = data.subarray(offset, offset + t.length);
+      const list = gpos.readUInt16BE(6);
+      const count = gpos.readUInt16BE(list);
+      for (let i = 0; i < count; i++) if (gpos.toString('latin1', list + 2 + i * 6, list + 6 + i * 6) === 'palt') return true;
+      return false;
+    }
+    offset += t.length;
+  }
+  return false;
+}
+
 async function main() {
   const files = pages(DIST);
   const chars = new Set();
@@ -124,7 +171,7 @@ async function main() {
   }
   // 空白・改行は書体に要らない
   const glyphs = [...chars].filter((c) => c.trim()).sort().join('');
-  const report = { family: FAMILY, weight: WEIGHT, glyphs: glyphs.length, file: null, bytes: 0, error: null };
+  const report = { family: FAMILY, weight: WEIGHT, glyphs: glyphs.length, file: null, bytes: 0, palt: null, error: null };
 
   if (process.env.HEADING_FONT === 'off') {
     report.error = 'HEADING_FONT=off（書体を取りに行かなかった）';
@@ -154,6 +201,12 @@ async function main() {
       }
       report.file = href;
       report.bytes = buf.length;
+      try {
+        report.palt = hasPalt(buf);
+      } catch (e) {
+        report.palt = null;
+        report.error = `palt を確かめられなかった: ${e.message || e}`;
+      }
     } catch (e) {
       report.error = String(e.message || e);
     }
@@ -163,7 +216,7 @@ async function main() {
   const mark = report.file ? '✅' : '⚠️';
   console.log(
     `${mark} 見出し: <wbr> を ${wbrPages} ページに入れた・字 ${report.glyphs} 種` +
-      (report.file ? `・書体 ${report.file}（${(report.bytes / 1024).toFixed(1)}KB）` : `・書体なし（${report.error}）`),
+      (report.file ? `・書体 ${report.file}（${(report.bytes / 1024).toFixed(1)}KB・palt ${report.palt ? 'あり' : 'なし'}）` : `・書体なし（${report.error}）`),
   );
 }
 

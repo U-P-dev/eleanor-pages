@@ -5,3 +5,4 @@ dist/
 .astro/
 .wrangler/
 tools/preview/out/
+__pycache__/

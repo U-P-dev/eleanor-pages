@@ -24,7 +24,7 @@ function mark(c, x, y, s) {
   // src/components/LogoMark.astro と同じ形（32 の格子）
   c.fillStyle = '#d7263d'; c.fillRect(x + 2 * s, y + 8 * s, 20 * s, 22 * s);
   c.fillStyle = '#1f4fd1'; c.fillRect(x + 10 * s, y + 2 * s, 20 * s, 20 * s);
-  c.fillStyle = '#7c3aed'; c.fillRect(x + 10 * s, y + 8 * s, 12 * s, 14 * s);
+  c.fillStyle = '#7b3a87'; c.fillRect(x + 10 * s, y + 8 * s, 12 * s, 14 * s);
 }
 
 async function draw() {
@@ -36,7 +36,7 @@ async function draw() {
   c.fillStyle = INK; c.textBaseline = 'alphabetic';
   c.font = `700 44px ${HEADING}`; c.fillText('エレノア', 184, 132);
   c.fillStyle = MID; c.font = `400 26px ${BODY}`; c.fillText('Eleanor', 392, 130);
-  // 看板。行頭の始め括弧は二分ぶら下げ、「」。」は二分詰める（サイトの .kern-open / .kern-close と同じ）
+  // 看板。行頭の始め括弧は二分ぶら下げ、「」。」は二分詰める（サイトは見出しの palt で詰まる。canvas では効かないので手で合わせる）
   c.fillStyle = INK; c.font = `700 100px ${HEADING}`;
   const em = 100, x0 = 88;
   let x = x0 - em / 2;
@@ -44,7 +44,12 @@ async function draw() {
     c.fillText(ch, x, 330);
     x += adv === null ? c.measureText(ch).width : adv * em;
   }
-  c.fillText('に、しない。', x0, 450);
+  // 2 行目の読点も二分詰める（canvas では palt が効かないので、サイトの見出しと同じ詰め方を手で合わせる）
+  x = x0;
+  for (const [ch, adv] of [['に', null], ['、', 0.5], ['しない。', null]]) {
+    c.fillText(ch, x, 450);
+    x += adv === null ? c.measureText(ch).width : adv * em;
+  }
   c.fillStyle = MID; c.font = `700 36px ${HEADING}`;
   c.fillText('東京・新宿のホームページ・LP 制作と保守', x0, 540);
   c.fillStyle = RULE; c.fillRect(x0, 568, 1024, 1);

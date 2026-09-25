@@ -14,10 +14,10 @@ const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/person/*.
 const photo = Object.values(photos)[0]?.default;
 ---
 
-<div class={photo ? 'person person--photo' : 'person'}>
+<div class={photo ? 'grid person person--photo' : 'grid person'}>
   {
     photo && (
-      <figure class="person__photo">
+      <figure class="grid__side person__photo">
         <Picture
           src={photo}
           alt={`エレノア代表の${SITE.operator.representative}`}
@@ -28,7 +28,7 @@ const photo = Object.values(photos)[0]?.default;
       </figure>
     )
   }
-  <div class="person__body">
+  <div class="grid__main person__body">
     <h2 class="section__title" id={headingId}>{heading}</h2>
     <slot />
   </div>

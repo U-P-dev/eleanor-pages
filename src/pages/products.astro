@@ -29,8 +29,8 @@ const kaiyaku = WORKS.kaiyaku;
   <div class="wrap page-body">
     <section class="section" id="kaiyaku" aria-labelledby="kaiyaku-title">
       <h2 id="kaiyaku-title">{kaiyaku.name}</h2>
-      <div class="work">
-        <figure class="shot">
+      <div class="grid work">
+        <figure class="grid__main shot">
           <div class="work__shots">
             <Picture
               src={kaiyakuPc}
@@ -49,7 +49,7 @@ const kaiyaku = WORKS.kaiyaku;
           </div>
           <figcaption>{kaiyaku.host} のトップページ（パソコン）と記事（スマートフォン）。{jaDate(kaiyaku.shotAt)}に撮影。</figcaption>
         </figure>
-        <div class="work__body">
+        <div class="grid__side work__body">
           <p>
             {kaiyaku.summary}です（<a href={kaiyaku.url}>{kaiyaku.host}</a>）。手順や金額は変わるので、「いつ確かめたか」が無い情報は載せない、と決めてつくりました。
           </p>
@@ -131,7 +131,7 @@ const kaiyaku = WORKS.kaiyaku;
       </div>
     </section>
 
-    <section class="page-end" aria-labelledby="products-end">
+    <section class="section section--minor page-end" aria-labelledby="products-end">
       <h2 id="products-end">同じ考え方で、お店のサイトもつくります</h2>
       <p>
         予約や問い合わせまわりの仕組み、サイトの引っ越しのご相談も、フルオーダーでお受けします（<a href="/services.html#extend"

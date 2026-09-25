@@ -32,11 +32,11 @@ const op = SITE.operator;
 
 <Base title={`ホームページと LP の制作・保守｜東京・新宿の${SITE.name}`} description={SITE.description}>
   <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap hero__inner">
-      <div class="hero__text">
+    <div class="wrap grid hero__inner">
+      <div class="grid__main hero__text">
         <h1 class="hero__title" id="hero-title">
           <span class="hero__copy">
-            <span class="hero__line"><span class="kern-open">「</span>つくって終わり<span class="kern-close">」</span>。</span>
+            <span class="hero__line">「つくって終わり」。</span>
             <span class="hero__line">に、しない。</span>
           </span>
           <span class="hero__what">お店と小さな会社のホームページと LP（1ページのサイト）の制作・保守</span>
@@ -50,7 +50,7 @@ const op = SITE.operator;
           <a class="button-row__link" href="#contact">無料で相談する</a>
         </div>
       </div>
-      <figure class="hero__media">
+      <figure class="grid__side hero__media">
         <Picture
           src={kaiyakuSp}
           alt="解約手帳の記事をスマートフォンで開いた画面。冒頭に最終確認日と、確かめた公式ページの一覧がある"
@@ -71,8 +71,8 @@ const op = SITE.operator;
       <p class="section__lead">
         お店と小さな会社のサイトを、つくるところから公開後の保守まで引き受けます。窓口も制作も、最初から最後まで同じ開発者です。
       </p>
-      <div class="offer">
-        <div class="offer__main">
+      <div class="grid offer">
+        <div class="grid__main offer__main">
           <h3 class="offer__title">LP の制作</h3>
           <p class="offer__price"><strong>{yen(lpFrom)}</strong>から（{tax}）・最短{fastest}</p>
           <p>
@@ -81,7 +81,7 @@ const op = SITE.operator;
           <ul class="check-list">{lpIncludes.map((i) => <li>{i}</li>)}</ul>
           <p><a href="#lp">LP の料金とプランを見る</a></p>
         </div>
-        <div class="offer__side">
+        <div class="grid__side offer__side">
           <div class="offer__item">
             <h3 class="offer__title">ホームページの制作（フルオーダー）</h3>
             <p class="offer__price"><strong>{yen(hp.price)}</strong>から（{tax}）・納期{hp.delivery_days}</p>
@@ -140,12 +140,12 @@ const op = SITE.operator;
     </div>
   </section>
 
-  <section class="section section--sub" id="apps" aria-labelledby="products-title">
+  <section class="section" id="apps" aria-labelledby="products-title">
     <div class="wrap">
       <h2 class="section__title" id="products-title">つくったもの</h2>
       <p class="section__lead">自分のサービスも、自分で設計して運営しています。お客様のサイトにも、同じ考え方と仕組みを使います。</p>
-      <div class="work">
-        <figure class="shot shot--pc">
+      <div class="grid work">
+        <figure class="grid__main shot shot--pc">
           <Picture
             src={kaiyakuPc}
             alt="解約手帳のトップページ。確かめた日付つきのサブスク解約手順の一覧"
@@ -155,7 +155,7 @@ const op = SITE.operator;
           />
           <figcaption>{kaiyaku.host} のトップページ（パソコン）。{jaDate(kaiyaku.shotAt)}に撮影。</figcaption>
         </figure>
-        <figure class="shot shot--sp">
+        <figure class="grid__main shot shot--sp">
           <Picture
             src={kaiyakuSp}
             alt="解約手帳の記事をスマートフォンで開いた画面。冒頭に最終確認日と、確かめた公式ページの一覧がある"
@@ -165,7 +165,7 @@ const op = SITE.operator;
           />
           <figcaption>{kaiyaku.host} の記事（スマートフォン）。{jaDate(kaiyaku.shotAt)}に撮影。</figcaption>
         </figure>
-        <div class="work__body">
+        <div class="grid__side work__body">
           <h3 class="work__title">{kaiyaku.name}</h3>
           <p>
             {kaiyaku.summary}です。手順や金額は変わるので、公式ページで確かめた日付が無い記事は公開できない仕組みにしています。
@@ -241,9 +241,9 @@ const op = SITE.operator;
     <div class="wrap">
       <h2 class="section__title" id="contact-title">お問い合わせ</h2>
       <p class="section__lead">ご相談・お見積もりは無料です。いまのお困りごとを、そのままお書きください。</p>
-      <div class="contact">
-        <ContactForm />
-        <aside class="contact__aside" aria-labelledby="contact-direct-title">
+      <div class="grid contact">
+        <div class="grid__main"><ContactForm /></div>
+        <aside class="grid__side contact__aside" aria-labelledby="contact-direct-title">
           <h3 id="contact-direct-title">メールと電話</h3>
           <dl class="facts">
             <div>

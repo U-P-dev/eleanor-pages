@@ -1,6 +1,6 @@
 ---
 // 仕組みの流れ図。画像ではなく HTML のリストで描く（読み上げ・拡大・翻訳が効くように）。
-// 狭い画面では縦、768px 以上では横に並ぶ。番号は文字で書く（DADS: <ol> を使わない）。箱や矢印では囲まず、上の罫と墨の印だけにする。
+// 図の名前（figcaption）は図の上に置く（説明が最後の段の一部に見えないように）。狭い画面では縦、768px 以上では横に並ぶ。番号は文字で書く（DADS: <ol> を使わない）。箱や矢印では囲まず、上の罫と墨の印だけにする。
 interface Props {
   label: string;
   steps: { title: string; body: string }[];
@@ -9,6 +9,7 @@ const { label, steps } = Astro.props;
 ---
 
 <figure class="flow">
+  <figcaption class="flow__caption">{label}</figcaption>
   <ul class="flow__list" role="list" aria-label={label}>
     {
       steps.map((s, i) => (
@@ -20,5 +21,4 @@ const { label, steps } = Astro.props;
       ))
     }
   </ul>
-  <figcaption class="flow__caption">{label}</figcaption>
 </figure>

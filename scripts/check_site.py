@@ -13,6 +13,8 @@
   - 色のコントラスト比（src/styles/tokens.css の値で、文字 4.5:1・枠やアイコン 3:1）
   - 生成 AI が作ったページの目印として挙がる型を戻さない（DESIGN.md §1）: 面のグラデーション・見出しの上の英字・
     同じ形のカード・一律の角丸・飾りの影・紫の飾り使い・本文のダッシュ
+  - 見た目の決まり（DESIGN.md §3・§4）: 文字の大きさは段の値だけ・表に縦の罫を引かない・灰の地はお問い合わせだけ・
+    見出しは字詰め（palt）・旧ブランド色を使わない
   - SEO と AIO: 構造化データ（JSON として読めるか・@id のつながり・電話の国番号・日時の時差・FAQ と画面の一致）、
     title と description の重複、画像の代替テキストと大きさ、llms.txt、robots.txt、サイトマップの最終更新日
   - 公開リポジトリと出力に、サブドメインのホスト名や IP アドレスを持ち込まない
@@ -84,11 +86,11 @@ CONTRAST = [
     ("color-neutral-solid-gray-700", GRAY50, 4.5, "灰の地の表の注記"),
     ("color-neutral-solid-gray-600", WHITE, 4.5, "日付・フォームの補足"),
     ("color-neutral-solid-gray-600", GRAY50, 4.5, "灰の地のフォームの補足・©"),
-    (WHITE, "color-brand-violet", 4.5, "塗りのボタン"),
-    (WHITE, "color-primitive-purple-900", 4.5, "塗りのボタン（ホバー）"),
-    (WHITE, "color-primitive-purple-1000", 4.5, "塗りのボタン（押下）"),
+    (WHITE, "color-brand", 4.5, "塗りのボタン"),
+    (WHITE, "color-brand-hover", 4.5, "塗りのボタン（ホバー）"),
+    (WHITE, "color-brand-press", 4.5, "塗りのボタン（押下）"),
     (WHITE, "color-neutral-solid-gray-900", 4.5, "手順の番号（移したページ）"),
-    ("color-brand-violet", WHITE, 3.0, "今いるページの下線・ロゴの重なり"),
+    ("color-brand", WHITE, 3.0, "今いるページの下線・ロゴの重なり"),
     ("color-logo-red", WHITE, 3.0, "ロゴの赤"),
     ("color-logo-blue", WHITE, 3.0, "ロゴの青"),
     ("color-error-2", WHITE, 4.5, "「※必須」・エラー"),
@@ -99,6 +101,8 @@ CONTRAST = [
     ("color-primitive-magenta-900", GRAY50, 4.5, "灰の地の訪問済みリンク"),
     ("color-primitive-blue-900", WHITE, 4.5, "ホバー中のリンク"),
     ("color-primitive-orange-800", WHITE, 4.5, "押している間のリンク"),
+    ("color-primitive-blue-900", GRAY50, 4.5, "灰の地でホバー中のリンク"),
+    ("color-primitive-orange-900", GRAY50, 4.5, "灰の地で押している間のリンク"),
     ("color-primitive-blue-1000", "color-primitive-yellow-300", 4.5, "フォーカス中のリンク（黄色の地）"),
     ("color-primitive-magenta-900", "color-primitive-yellow-300", 4.5, "フォーカス中の訪問済みリンク"),
     ("color-neutral-solid-gray-420", WHITE, 3.0, "白の地の罫線・画面の枠"),
@@ -110,13 +114,22 @@ CONTRAST = [
 
 # ── 生成 AI が作ったページの目印として挙がる型（DESIGN.md §1。出典は同じ節）を戻さない ──
 # 見た目の型をやめたときに消したクラス。出力に残っていたら、どこかの部品が古い書き方のまま
-RETIRED_CLASSES = ["section__eyebrow", "hero__eyebrow", "card--accent", "section--tint", "cta-band", "on-dark", "tag-list"]
+RETIRED_CLASSES = ["section__eyebrow", "hero__eyebrow", "card--accent", "section--tint", "cta-band", "on-dark", "tag-list",
+                   # 2026-09-25: 見出しの字詰めを palt に任せた・節の余白をそろえた
+                   "kern-open", "kern-close", "section--flush"]
 # 角丸は 3 段だけ（0・4px・8px）。全部に同じ角丸を付けない・丸い札を作らない
 RADIUS_OK = {"0", "0px", "var(--border-radius-4)", "var(--border-radius-8)", ".25rem", "0.25rem", ".5rem", "0.5rem", "4px", "8px"}
 # ブランドの紫を使ってよいのは「塗りのボタン」「今いるページ」「ロゴ」だけ（ロゴは SVG なので CSS には出ない）
-VIOLET = ["var(--key)", "var(--key-strong)", "var(--key-press)", "var(--color-brand-violet)", "#7c3aed",
-          "var(--color-primitive-purple-900)", "var(--color-primitive-purple-1000)"]
+BRAND = ["#7b3a87", "#622e6c", "#4a2351"]
+VIOLET = ["var(--key)", "var(--key-hover)", "var(--key-press)", "var(--color-brand)", "var(--color-brand-hover)",
+          "var(--color-brand-press)", *BRAND]
 VIOLET_OK = ("button--primary", "aria-current", ":root")
+# 旧ブランド色（Tailwind の既定色 violet-600 と同じ値。2026-09-25 に #7b3a87 へ替えた）。CSS にも HTML の属性にも書かない
+RETIRED_COLORS = ["#7c3aed"]
+# 文字の大きさは段の値だけ（DADS の Std-16/17/20/24/32/45 と看板。DESIGN.md §3）。14px はメニューのボタンとロゴの英字だけ
+FONT_OK = {"1rem", "1.0625rem", "1.25rem", "1.5rem", "2rem", "2.8125rem", "3.5625rem", "inherit", "1em"}
+FONT_14 = (".875rem", ("menu-button", "site-logo__en", ":root"))
+HERO_OK = {"min(8.8vw,2.5rem)", "clamp(2.5rem,5.2vw,3.5625rem)"}
 # グラデーションを使ってよいのは、表の横スクロールを知らせる端の影だけ（機能で、飾りではない）
 GRADIENT_OK = (".table-region",)
 LOGO_SVG = re.compile(r'<svg class="site-logo__mark"[\s\S]*?</svg>')
@@ -301,6 +314,7 @@ def css_rules(css: str):
 def check_css(dist: str, inline_css: list[str]) -> list[str]:
     """生成 AI が作ったページの目印として挙がる見た目の型を、出力の CSS から探す（DESIGN.md §1）"""
     fails: list[str] = []
+    heading_palt: list[bool] = []
     sources = [(os.path.relpath(p, dist), open(p, encoding="utf-8").read()) for p in sorted(glob.glob(os.path.join(dist, "_astro", "*.css")))]
     sources += [("<style>", c) for c in inline_css]
     for name, css in sources:
@@ -325,6 +339,28 @@ def check_css(dist: str, inline_css: list[str]) -> list[str]:
             for token in VIOLET:
                 if token in low and not any(ok in sel for ok in VIOLET_OK):
                     fails.append(f"  ✗ CSS {where}: ブランドの紫（{token}）を飾りに使っている（塗りのボタン・今いるページ・ロゴだけ）")
+            for token in RETIRED_COLORS:
+                if token in low:
+                    fails.append(f"  ✗ CSS {where}: 旧ブランド色 {token} を使っている（ブランド色は {BRAND[0]}）")
+            for prop, v in re.findall(r"(?:^|;)\s*(font-size|--font-size-[\w-]+|--fs-[\w-]+)\s*:\s*([^;]+)", low):
+                v = re.sub(r"(?<![\d.])0\.", ".", v.replace(" ", "").replace("!important", ""))
+                ok = (v.startswith(("var(--font-size-", "var(--fs-")) or v.replace(".", "0.", 1) in FONT_OK or v in FONT_OK
+                      or (prop == "--fs-hero" and v in HERO_OK)
+                      or (v == FONT_14[0] and any(w in sel for w in FONT_14[1])))
+                if not ok:
+                    fails.append(f"  ✗ CSS {where}: 文字の大きさ {v}（段の値だけ。DESIGN.md §3）")
+            # 表は行の横罫だけで区切る（縦の罫・四方の枠を引かない。DADS のテーブル・Refactoring UI「罫を減らす」）
+            if re.search(r"table-region|table--stack|\btable\b|data-table", sel):
+                for m in re.finditer(r"(?:^|;)\s*(border|border-left|border-right|border-inline(?:-start|-end)?)\s*:\s*([^;]+)", low):
+                    if m.group(2).strip() not in ("0", "none", "0 none", "none 0"):
+                        fails.append(f"  ✗ CSS {where}: 表に縦の罫・四方の枠（{m.group(1)}: {m.group(2).strip()}）。行の横罫だけにする")
+            # 見出しは字詰め（palt）を効かせる
+            if re.search(r"(?:^|,)h1(?:,|$)", sel) and "font-feature-settings" in low:
+                heading_palt.append("palt" in low)
+    if heading_palt and not any(heading_palt):
+        fails.append("  ✗ CSS: 見出し（h1〜h4）の規則に font-feature-settings: 'palt' が無い（見出しは字詰めする。DESIGN.md §3）")
+    elif not heading_palt:
+        fails.append("  ✗ CSS: 見出し（h1〜h4）の書体の設定が見つからない")
     return fails
 
 
@@ -462,11 +498,19 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
                 fail(f"やめた型のクラス {cls} が残っている")
         markup = LOGO_SVG.sub("", re.sub(r'<script type="application/ld\+json">[\s\S]*?</script>', "", raw))
         # 本文で色の値を文字として書くのはよい（記事で説明するため）。属性（fill・style など）に書いたものを見る
-        if re.search(r'=\s*"[^"]*#7c3aed', markup, re.I):
+        if re.search(r'=\s*"[^"]*#7b3a87', markup, re.I):
             fail("ブランドの紫を HTML の属性に直接書いている（使ってよいのはロゴの印だけ）")
+        for token in RETIRED_COLORS:
+            if re.search(r'=\s*"[^"]*' + token, raw, re.I):
+                fail(f"旧ブランド色 {token} が HTML の属性に残っている（ロゴを含む）")
+        for tag in re.findall(r"<[a-z]+\b[^>]*\bclass=\"[^\"]*\bsection--sub\b[^\"]*\"[^>]*>", raw):
+            if 'id="contact"' not in tag:
+                fail(f"灰の地（section--sub）はお問い合わせの節だけ: {tag[:70]!r}")
         if re.search(r"linear-?gradient|radial-?gradient|conic-gradient", markup, re.I):
             fail("HTML にグラデーションがある")
         if path not in MIGRATED:
+            if re.search(r'\bstyle="[^"]*font-size', raw):
+                fail("HTML の style 属性で文字の大きさを指定している（段の値は CSS で決める）")
             m = EYEBROW.search(raw)
             if m:
                 fail(f"見出しの直前に英字だけの小見出しがある: {m.group(0)[:60]!r}")
@@ -641,7 +685,9 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
     report_path = os.path.join(root, ".astro", "heading-font.json")
     report = json.load(open(report_path, encoding="utf-8")) if os.path.isfile(report_path) else {}
     if report.get("file"):
-        notes.append(f"  · 見出しの書体 {report['file']}（{report['bytes'] / 1024:.1f}KB・{report['glyphs']} 字）")
+        notes.append(f"  · 見出しの書体 {report.get('family')} {report['file']}（{report['bytes'] / 1024:.1f}KB・{report['glyphs']} 字・palt {report.get('palt')}）")
+        if report.get("palt") is False:
+            fails.append(f"  ✗ 見出しの書体（{report.get('family')}）に字詰め（palt）が無い。見出しは palt を前提に組んでいる")
     else:
         notes.append(f"  ⚠ 見出しの書体を作れなかった（{report.get('error', 'scripts/headings.mjs が走っていない')}）。見出しは本文と同じ書体で出る")
 
