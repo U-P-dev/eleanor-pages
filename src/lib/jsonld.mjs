@@ -34,6 +34,26 @@ export function organization({ full = false } = {}) {
   };
 }
 
+/** 問い合わせの窓口（お問い合わせのページで Organization に付ける）。電話の受付時間は画面と同じ SITE の値から */
+export function contactPoint() {
+  const op = SITE.operator;
+  return {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    telephone: op.phoneIntl,
+    email: op.email,
+    url: abs('/contact.html'),
+    availableLanguage: 'ja',
+    areaServed: 'JP',
+    hoursAvailable: op.hours.spec.map((s) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: s.days,
+      opens: s.opens,
+      closes: s.closes,
+    })),
+  };
+}
+
 /** 代表（勤め先は書かない。worksFor はエレノアだけ） */
 export function person() {
   return {

@@ -1,7 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import ContactForm from '../components/ContactForm.astro';
 import Person from '../components/Person.astro';
 import PriceTables from '../components/PriceTables.astro';
 import prices from '../data/prices.json';
@@ -47,7 +46,7 @@ const op = SITE.operator;
         </p>
         <div class="button-row">
           <a class="button button--primary button--large" href="#lp">料金とプランを見る</a>
-          <a class="button-row__link" href="#contact">無料で相談する</a>
+          <a class="button-row__link" href="/contact.html">無料で相談する</a>
         </div>
       </div>
       <figure class="grid__side hero__media">
@@ -238,33 +237,31 @@ const op = SITE.operator;
   }
 
   <section class="section section--sub" id="contact" aria-labelledby="contact-title">
-    <div class="wrap">
-      <h2 class="section__title" id="contact-title">お問い合わせ</h2>
-      <p class="section__lead">ご相談・お見積もりは無料です。いまのお困りごとを、そのままお書きください。</p>
-      <div class="grid contact">
-        <div class="grid__main"><ContactForm /></div>
-        <aside class="grid__side contact__aside" aria-labelledby="contact-direct-title">
-          <h3 id="contact-direct-title">メールと電話</h3>
-          <dl class="facts">
-            <div>
-              <dt>返信</dt>
-              <dd>原則1営業日以内に、メールでお返事します</dd>
-            </div>
-            <div>
-              <dt>メール</dt>
-              <dd><a href={`mailto:${op.email}`}>{op.email}</a></dd>
-            </div>
-            <div>
-              <dt>電話</dt>
-              <dd>{op.phone}（留守番電話でお受けし、メールで折り返します）</dd>
-            </div>
-            <div>
-              <dt>地域</dt>
-              <dd>{SITE.area}</dd>
-            </div>
-          </dl>
-        </aside>
+    <div class="wrap grid contact">
+      <div class="grid__main">
+        <h2 class="section__title" id="contact-title">お問い合わせ</h2>
+        <p class="section__lead">ご相談・お見積もりは無料です。フォームから送っていただくと、{op.reply}。</p>
+        <div class="button-row">
+          <a class="button button--primary button--large" href="/contact.html">お問い合わせフォームへ</a>
+        </div>
       </div>
+      <aside class="grid__side contact__aside" aria-labelledby="contact-direct-title">
+        <h3 id="contact-direct-title">メールと電話</h3>
+        <dl class="facts">
+          <div>
+            <dt>メール</dt>
+            <dd><a href={`mailto:${op.email}`}>{op.email}</a></dd>
+          </div>
+          <div>
+            <dt>電話</dt>
+            <dd>{op.phone}<br />受付時間 {op.hours.label}。{op.hours.note}</dd>
+          </div>
+          <div>
+            <dt>地域</dt>
+            <dd>{SITE.area}</dd>
+          </div>
+        </dl>
+      </aside>
     </div>
   </section>
 </Base>

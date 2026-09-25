@@ -7,7 +7,7 @@ import { faqs } from '../data/faq.mjs';
 import { breadcrumbLd } from '../lib/breadcrumb.mjs';
 import { faqPage } from '../lib/jsonld.mjs';
 import { yen } from '../lib/format.mjs';
-import { SITE } from '../site.mjs';
+import { CONTACT, SITE } from '../site.mjs';
 
 type Plan = { name: string; price: number; delivery_days?: string; includes?: string[]; included_pages?: number; extra_page_price?: number };
 type Row = { name: string; price: number; billing?: string; description?: string; delivery_days?: string };
@@ -149,7 +149,9 @@ const url = new URL(Astro.url.pathname, SITE.url).href;
           <li>いまお使いのサイト・ドメイン・サーバーの移行</li>
           <li>公開後に自分たちで更新できる形への作り替え</li>
         </ul>
-        <p>お問い合わせの種類で「フルオーダー・その他相談」を選び、いまの状況とお困りごとをお書きください。</p>
+        <p>
+          <a href="/contact.html">お問い合わせ</a>の種類で「{CONTACT.kinds.find((k) => k.startsWith('フルオーダー'))}」を選び、いまの状況とお困りごとをお書きください。
+        </p>
       </div>
     </section>
 
@@ -255,7 +257,7 @@ const url = new URL(Astro.url.pathname, SITE.url).href;
       <h2 id="services-end">どのプランが合うか迷ったら</h2>
       <p>いまのお困りごとをお書きいただければ、合うプランと費用の目安をメールでお返事します。ご相談は無料です。</p>
       <div class="button-row">
-        <a class="button button--primary button--large" href="/#contact">相談する</a>
+        <a class="button button--primary button--large" href="/contact.html">相談する</a>
       </div>
     </section>
   </div>

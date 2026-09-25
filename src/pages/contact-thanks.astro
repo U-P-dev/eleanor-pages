@@ -1,0 +1,31 @@
+---
+// 問い合わせフォームの送信のあとに移る画面（検索には出さない・サイトマップにも載せない）
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site.mjs';
+
+const op = SITE.operator;
+---
+
+<Base title={`送信しました（お問い合わせ）｜${SITE.name}`} description="お問い合わせを受け付けました。原則1営業日以内に、メールでお返事します。" noindex>
+  <div class="wrap page-head">
+    <h1>送信しました</h1>
+    <p class="page-head__lead">お問い合わせを受け付けました。{op.reply}（営業日は{op.businessDays}です）。</p>
+  </div>
+  <div class="wrap page-body">
+    <section class="section" aria-labelledby="no-reply-title">
+      <h2 class="section__title" id="no-reply-title">お返事が届かないとき</h2>
+      <div class="prose">
+        <p>
+          迷惑メールのフォルダーに入っていないかをご確認ください。2営業日たっても届かないときは、お手数ですが <a
+            href={`mailto:${op.email}`}>{op.email}</a
+          > へ直接お送りいただくか、お電話（{op.phone}・受付時間 {op.hours.label}）でお知らせください。
+        </p>
+        <ul>
+          <li><a href="/services.html">サービスと料金</a></li>
+          <li><a href="/products.html">つくったもの</a></li>
+          <li><a href="/">トップページ</a></li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</Base>

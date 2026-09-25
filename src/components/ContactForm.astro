@@ -1,79 +1,199 @@
 ---
-// 問い合わせ。送信の受け口（サーバー）はまだ無いので、入力を件名と本文に組み立ててメールソフトを開く（mailto）。
-// DADS のフォームの作法: ラベルは入力欄の上／「※必須」「※任意」／入力例は補足文に書き、プレースホルダーは使わない。
-import { SITE } from '../site.mjs';
+// 問い合わせフォーム（お問い合わせのページ /contact.html で使う）。
+// 送り先は LP 事業の受け口（src/site.mjs の CONTACT）。受け口が保存する欄は name・email・subject・message だけなので、
+// それ以外の欄は置かない（会社名・店名は本文に書いてもらう）。迷惑送信は Turnstile・ハニーポット（_hp）・回数の上限で防ぐ。
+// DADS のフォームの作法: ラベルは入力欄の上／「※必須」「※任意」／補足文はラベルの下／プレースホルダーは使わない／
+// エラーは欄ごとに「＊」で始めて出し、冒頭の要約から各欄へ移れるようにする（NN/g・GOV.UK も同じ）。
+// 送信は fetch（結果を JSON で受ける）→ 成功なら /contact-thanks.html へ移る。JavaScript が無いと Turnstile が動かず
+// 送れないので、そのときは送信ボタンを出さず、メールと電話を案内する。
+import { CONTACT, SITE } from '../site.mjs';
 
-const kinds = ['LP 制作', 'HP 制作', '保守・運用', 'フルオーダー・その他相談', 'アプリについて', 'その他'];
+const op = SITE.operator;
 ---
 
-<form class="form" id="contact-form" action={`mailto:${SITE.operator.email}`} method="post" enctype="text/plain" novalidate>
-  <div class="form-field">
-    <label class="form-label" for="cf-kind">ご相談の種類<span class="form-req">※必須</span></label>
-    <select class="input" id="cf-kind" name="kind" required>
-      <option value="">選んでください</option>
-      {kinds.map((k) => <option value={k}>{k}</option>)}
-    </select>
+<form class="form" id="contact-form" action={CONTACT.endpoint} method="post" data-thanks="/contact-thanks.html" data-mail={op.email}>
+  <div class="form-summary" id="cf-summary" tabindex="-1" hidden>
+    <p class="form-summary__title">入力内容を確かめてください</p>
+    <ul class="form-summary__list"></ul>
   </div>
+
+  <fieldset class="form-field form-choice" id="cf-subject" aria-describedby="cf-subject-error">
+    <legend class="form-label">ご相談の種類<span class="form-req">※必須</span></legend>
+    <div class="choice-list">
+      {
+        CONTACT.kinds.map((k, i) => (
+          <label class="choice">
+            <input class="choice__input" id={`cf-subject-${i}`} type="radio" name="subject" value={k} required />
+            <span>{k}</span>
+          </label>
+        ))
+      }
+    </div>
+    <p class="form-field__error" id="cf-subject-error" hidden></p>
+  </fieldset>
+
   <div class="form-field">
     <label class="form-label" for="cf-name">お名前<span class="form-req">※必須</span></label>
-    <input class="input" id="cf-name" name="name" type="text" autocomplete="name" required />
+    <input class="input" id="cf-name" name="name" type="text" autocomplete="name" maxlength="200" required aria-describedby="cf-name-error" />
+    <p class="form-field__error" id="cf-name-error" hidden></p>
   </div>
-  <div class="form-field">
-    <label class="form-label" for="cf-org">会社名・店名<span class="form-opt">※任意</span></label>
-    <input class="input" id="cf-org" name="org" type="text" autocomplete="organization" />
-  </div>
+
   <div class="form-field">
     <label class="form-label" for="cf-email">メールアドレス<span class="form-req">※必須</span></label>
     <p class="form-support" id="cf-email-support">返信はこのアドレスにお送りします。</p>
-    <input class="input" id="cf-email" name="email" type="email" autocomplete="email" required aria-describedby="cf-email-support" />
+    <input
+      class="input"
+      id="cf-email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      maxlength="320"
+      required
+      aria-describedby="cf-email-support cf-email-error"
+    />
+    <p class="form-field__error" id="cf-email-error" hidden></p>
   </div>
+
   <div class="form-field">
-    <label class="form-label" for="cf-body">ご相談の内容<span class="form-req">※必須</span></label>
-    <p class="form-support" id="cf-body-support">
-      いまのお困りごと・ご予算・ご希望の時期がわかると、1回目の返信で具体的にお答えできます。
+    <label class="form-label" for="cf-message">ご相談の内容<span class="form-req">※必須</span></label>
+    <p class="form-support" id="cf-message-support">
+      会社名・店名、いまのお困りごと、ご予算とご希望の時期を書いていただくと、1回目の返信で具体的にお答えできます。
     </p>
-    <textarea class="input" id="cf-body" name="body" required aria-describedby="cf-body-support"></textarea>
+    <textarea class="input" id="cf-message" name="message" maxlength="8000" required aria-describedby="cf-message-support cf-message-error"
+    ></textarea>
+    <p class="form-field__error" id="cf-message-error" hidden></p>
   </div>
-  <p class="form-error" id="cf-error" tabindex="-1" hidden></p>
-  <div>
-    <button class="button button--primary button--large" type="submit">メールソフトで送信内容を開く</button>
+
+  <div class="form-hp" aria-hidden="true">
+    <label for="cf-hp">この欄は空のまま送信してください</label>
+    <input id="cf-hp" name="_hp" type="text" tabindex="-1" autocomplete="off" />
   </div>
-  <p class="form-note">
-    ボタンを押すと、お使いのメールソフトに入力内容が入った状態で開きます。そのまま送信してください。メールソフトが開かないときは、<a href={`mailto:${SITE.operator.email}`}>{SITE.operator.email}</a> へ直接お送りください。
+
+  <p class="form-note" id="cf-privacy">
+    いただいたお名前・メールアドレス・ご相談の内容は、お問い合わせへの回答とお見積もり、ご依頼の手続きのために使います。くわしくは<a
+      href="/privacy-lp.html">プライバシーポリシー</a
+    >をご覧ください。送信の前に、迷惑な送信を防ぐための確認（Cloudflare Turnstile）が自動で行われます。
   </p>
+
+  <noscript>
+    <p class="form-note">
+      このフォームの送信には JavaScript を使います。使えないときは、メール（<a href={`mailto:${op.email}`}>{op.email}</a
+      >）かお電話（{op.phone}・受付時間 {op.hours.label}）でご連絡ください。
+    </p>
+  </noscript>
+
+  <div class="form-submit" hidden>
+    <div class="form-turnstile" id="cf-turnstile" data-sitekey={CONTACT.turnstileSiteKey}></div>
+    <p class="form-field__error" id="cf-turnstile-error" hidden></p>
+    <button class="button button--primary button--large" type="submit">送信する</button>
+    <p class="form-status" id="cf-status" role="status" aria-live="polite"></p>
+  </div>
 </form>
 
 <script is:inline>
-  // 入力を件名と本文にまとめて mailto を開く。足りない欄は送信時にまとめて知らせる（DADS: エラーは送信時・具体的に）
+  // 送信の前の確認と送信（DADS・NN/g: エラーは欄ごとに具体的に、冒頭の要約から各欄へ移れるように）
   (() => {
     const form = document.getElementById('contact-form');
     if (!form) return;
-    const error = document.getElementById('cf-error');
-    form.addEventListener('submit', (e) => {
+    form.noValidate = true;
+    const submitArea = form.querySelector('.form-submit');
+    submitArea.hidden = false;
+    const summary = document.getElementById('cf-summary');
+    const list = summary.querySelector('ul');
+    const status = document.getElementById('cf-status');
+    const button = form.querySelector('button[type="submit"]');
+    const slot = document.getElementById('cf-turnstile');
+    const mail = form.dataset.mail;
+
+    // Turnstile は明示的に描く（枠が 300px 未満なら小さい形）
+    window.onEleanorTurnstile = () => {
+      const compact = slot.clientWidth < 300;
+      slot.style.minHeight = compact ? '140px' : '65px';
+      window.turnstile.render(slot, { sitekey: slot.dataset.sitekey, size: compact ? 'compact' : 'flexible', language: 'ja' });
+    };
+
+    const setError = (id, target, message) => {
+      const box = document.getElementById(id);
+      box.textContent = message ? `＊${message}` : '';
+      box.hidden = !message;
+      if (target) {
+        if (message) target.setAttribute('aria-invalid', 'true');
+        else target.removeAttribute('aria-invalid');
+      }
+    };
+    const checks = () => {
+      const out = [];
+      const subject = form.querySelector('input[name="subject"]:checked');
+      out.push(['cf-subject-error', form.querySelector('#cf-subject'), 'cf-subject-0', subject ? '' : 'ご相談の種類を選んでください']);
+      const name = form.elements.name;
+      out.push(['cf-name-error', name, 'cf-name', name.value.trim() ? '' : 'お名前を入力してください']);
+      const email = form.elements.email;
+      const ev = email.value.trim();
+      out.push([
+        'cf-email-error',
+        email,
+        'cf-email',
+        !ev ? 'メールアドレスを入力してください' : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ev) ? '' : 'メールアドレスの形で入力してください（例: name@example.com）',
+      ]);
+      const message = form.elements.message;
+      out.push(['cf-message-error', message, 'cf-message', message.value.trim() ? '' : 'ご相談の内容を入力してください']);
+      const token = form.querySelector('input[name="cf-turnstile-response"]');
+      out.push([
+        'cf-turnstile-error',
+        null,
+        'cf-turnstile',
+        token && token.value ? '' : '送信の前の確認が終わっていません。確認の表示が出るまで少しお待ちください',
+      ]);
+      return out;
+    };
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const v = (id) => document.getElementById(id).value.trim();
-      const missing = [];
-      if (!v('cf-kind')) missing.push('ご相談の種類');
-      if (!v('cf-name')) missing.push('お名前');
-      if (!v('cf-email') || !document.getElementById('cf-email').checkValidity()) missing.push('メールアドレス（例: name@example.com の形）');
-      if (!v('cf-body')) missing.push('ご相談の内容');
-      if (missing.length) {
-        error.textContent = '＊入力されていない、または形が正しくない欄があります: ' + missing.join('、');
-        error.hidden = false;
-        error.focus();
+      status.textContent = '';
+      const results = checks();
+      list.textContent = '';
+      let bad = 0;
+      for (const [id, target, anchor, message] of results) {
+        setError(id, target, message);
+        if (message) {
+          bad++;
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `#${anchor}`;
+          a.textContent = message;
+          li.appendChild(a);
+          list.appendChild(li);
+        }
+      }
+      summary.hidden = bad === 0;
+      if (bad) {
+        summary.focus();
         return;
       }
-      error.hidden = true;
-      const subject = `【${v('cf-kind')}】${v('cf-name')}様からのご相談`;
-      const body = [
-        `ご相談の種類: ${v('cf-kind')}`,
-        `お名前: ${v('cf-name')}`,
-        `会社名・店名: ${v('cf-org') || '（未記入）'}`,
-        `メールアドレス: ${v('cf-email')}`,
-        '',
-        v('cf-body'),
-      ].join('\n');
-      location.href = `${form.getAttribute('action')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      button.disabled = true;
+      status.textContent = '送信しています。';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) {
+          location.href = form.dataset.thanks;
+          return;
+        }
+        if (data.error === 'verification failed') {
+          status.textContent = '確認の有効期限が切れたため、送れませんでした。確認の表示が出直したら、もう一度「送信する」を押してください。';
+          window.turnstile?.reset(slot);
+        } else if (res.status === 429) {
+          status.textContent = `送信が続いたため、いまは受け付けられません。時間をおいてもう一度お試しいただくか、${mail} へメールでお送りください。`;
+        } else {
+          status.textContent = `送れませんでした。時間をおいてもう一度お試しいただくか、${mail} へメールでお送りください。`;
+        }
+      } catch {
+        status.textContent = `送れませんでした。通信の状態を確かめてもう一度お試しいただくか、${mail} へメールでお送りください。`;
+      } finally {
+        button.disabled = false;
+      }
     });
   })();
 </script>
+{/* 迷惑送信の確認（Cloudflare Turnstile）。上の onEleanorTurnstile が読み込み後に呼ばれて描く。サイトポリシーの外部送信の表に載せている */}
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onEleanorTurnstile" async defer></script>

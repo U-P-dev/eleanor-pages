@@ -42,7 +42,7 @@ export default defineConfig({
       // 決済の完了・取消の画面と 404 は検索に出さない。llms.txt などページでないものも載せない
       filter: (page) => {
         const p = new URL(page).pathname;
-        return !/\/(404|thanks|cancel)(\.html)?$/.test(p) && !/\.(txt|xml|json)$/.test(p);
+        return !/\/(404|thanks|cancel|contact-thanks)(\.html)?$/.test(p) && !/\.(txt|xml|json)$/.test(p);
       },
       serialize(item) {
         // format: 'file' の URL は拡張子つき（/company.html）。sitemap は拡張子なしで出すので、実際の URL に揃える

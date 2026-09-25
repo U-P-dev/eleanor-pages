@@ -95,15 +95,15 @@ const op = SITE.operator;
         </div>
         <div>
           <dt>電話番号</dt>
-          <dd>{op.phone}（留守番電話でお受けし、メールで折り返します）</dd>
+          <dd>{op.phone}（受付時間 {op.hours.label}。{op.hours.note}）</dd>
         </div>
         <div>
           <dt>メール</dt>
           <dd><a href={`mailto:${op.email}`}>{op.email}</a></dd>
         </div>
         <div>
-          <dt>受付時間</dt>
-          <dd>平日 10:00〜18:00。お問い合わせには、原則1営業日以内にメールでお返事します。</dd>
+          <dt>お返事</dt>
+          <dd>お問い合わせには、{op.reply}。営業日は{op.businessDays}です。</dd>
         </div>
         <div>
           <dt>最終更新</dt>
@@ -116,7 +116,7 @@ const op = SITE.operator;
       <h2 id="company-end">ご相談はお問い合わせから</h2>
       <p>ご相談・お見積もりは無料です。いまのお困りごとをお書きください。</p>
       <div class="button-row">
-        <a class="button button--primary button--large" href="/#contact">相談する</a>
+        <a class="button button--primary button--large" href="/contact.html">相談する</a>
       </div>
     </section>
   </div>

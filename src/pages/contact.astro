@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { breadcrumbLd } from '../lib/breadcrumb.mjs';
+import { ORG_ID, contactPoint } from '../lib/jsonld.mjs';
+import { SITE } from '../site.mjs';
+
+const crumbs = [{ label: 'お問い合わせ' }];
+const op = SITE.operator;
+const url = new URL(Astro.url.pathname, SITE.url).href;
+---
+
+<Base
+  title={`お問い合わせ（ホームページ・LP の制作と保守のご相談）｜${SITE.name}`}
+  description={`エレノアへのご相談・お見積もりのフォーム。${op.reply}。電話の受付時間は${op.hours.label}です。全国からメールとオンラインでご依頼をお受けします。`}
+  pageType="ContactPage"
+  jsonLd={[breadcrumbLd(crumbs, Astro.url.pathname), { '@id': ORG_ID, contactPoint: contactPoint() }, { '@id': `${url}#webpage`, mainEntity: { '@id': ORG_ID } }]}
+>
+  <Breadcrumb items={crumbs} />
+  <div class="wrap page-head">
+    <h1>お問い合わせ</h1>
+    <p class="page-head__lead">
+      ご相談・お見積もりは無料です。いまのお困りごとを、そのままお書きください。{op.reply}（営業日は{op.businessDays}です）。
+    </p>
+  </div>
+
+  <div class="wrap page-body">
+    <div class="grid contact">
+      <section class="grid__main" aria-labelledby="form-title">
+        <h2 class="section__title" id="form-title">フォームで送る</h2>
+        <ContactForm />
+      </section>
+      <aside class="grid__side contact__aside" aria-labelledby="direct-title">
+        <h2 class="section__title" id="direct-title">メールと電話</h2>
+        <dl class="facts">
+          <div>
+            <dt>返信</dt>
+            <dd>{op.reply}</dd>
+          </div>
+          <div>
+            <dt>メール</dt>
+            <dd><a href={`mailto:${op.email}`}>{op.email}</a></dd>
+          </div>
+          <div>
+            <dt>電話</dt>
+            <dd>{op.phone}<br />受付時間 {op.hours.label}。{op.hours.note}</dd>
+          </div>
+          <div>
+            <dt>地域</dt>
+            <dd>{SITE.area}</dd>
+          </div>
+          <div>
+            <dt>ご来訪</dt>
+            <dd>所在地（新宿）へのご来訪と、対面でのお打ち合わせはお受けしていません。</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</Base>

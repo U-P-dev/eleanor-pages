@@ -70,6 +70,7 @@ BANNED = ["会議なし", "0 meetings"]
 # 自動で読み込まれる外部の送信先 → サイトポリシーの外部送信の表に書く事業者名
 SENDERS = {
     "static.cloudflareinsights.com": "Cloudflare, Inc.",
+    "challenges.cloudflare.com": "Cloudflare, Inc.",
     "fonts.googleapis.com": "Google LLC",
     "fonts.gstatic.com": "Google LLC",
 }
@@ -115,6 +116,8 @@ CONTRAST = [
 # ── 生成 AI が作ったページの目印として挙がる型（DESIGN.md §1。出典は同じ節）を戻さない ──
 # 見た目の型をやめたときに消したクラス。出力に残っていたら、どこかの部品が古い書き方のまま
 RETIRED_CLASSES = ["section__eyebrow", "hero__eyebrow", "card--accent", "section--tint", "cta-band", "on-dark", "tag-list",
+                   # 2026-09-25: 問い合わせを専用ページとラジオボタンにした（会社名の欄と種類の選択肢の箱をやめた）
+                   "form-error",
                    # 2026-09-25: 見出しの字詰めを palt に任せた・節の余白をそろえた
                    "kern-open", "kern-close", "section--flush"]
 # 角丸は 3 段だけ（0・4px・8px）。全部に同じ角丸を付けない・丸い札を作らない
@@ -137,6 +140,12 @@ EYEBROW = re.compile(r"<p[^>]*>\s*[A-Za-z][A-Za-z0-9 &'’.\-]{0,30}\s*</p>\s*<h
 DASHES = ("—", "―")
 # ホスト名と IP アドレス（公開リポジトリと出力に持ち込まない。www は本体への転送なので許す）
 SUBDOMAIN = re.compile(r"\b(?!www\.)[a-z0-9-]+(?:\.[a-z0-9-]+)*\.eleanor-dev\.com\b", re.I)
+# 問い合わせフォームの受け口は、公開の HTML に載る前提の値。置いてよいのは定数の 1 か所と、フォームのあるページだけ
+FORM_HOST = "form." + SITE_HOST
+HOST_OK = {FORM_HOST: {"src/site.mjs", "contact.html"}}
+# 受け口（LP 事業の Worker）が保存する欄。これ以外の欄は受け取られずに捨てられる
+FORM_FIELDS = {"name", "email", "subject", "message", "_hp", "cf-turnstile-response"}
+FORM_ACTION = re.compile(r"https://" + re.escape(FORM_HOST) + r"/f/[0-9a-f]{16}")
 # 「Chrome/140.0.0.0」のような製品名/版番号は IP アドレスとして扱わない（2026-09-24 に誤検出した）
 IPV4 = re.compile(r"(?<![\d.])(?<![A-Za-z]/)(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
 IP_OK = {"0.0.0.0", "127.0.0.1"}
@@ -396,8 +405,8 @@ def draft_slugs(root: str) -> list[str]:
     return out
 
 
-def leak_findings(text: str) -> list[str]:
-    found = [m.group(0) for m in SUBDOMAIN.finditer(text)]
+def leak_findings(text: str, where: str = "") -> list[str]:
+    found = [m.group(0) for m in SUBDOMAIN.finditer(text) if where not in HOST_OK.get(m.group(0).lower(), set())]
     found += [ip for ip in IPV4.findall(text) if ip not in IP_OK and all(0 <= int(x) <= 255 for x in ip.split("."))]
     return found
 
@@ -408,7 +417,7 @@ def check_leaks(dist: str, root: str) -> tuple[list[str], list[str]]:
     notes: list[str] = []
     for p in glob.glob(os.path.join(dist, "**", "*"), recursive=True):
         if os.path.isfile(p) and p.endswith((".html", ".css", ".js", ".txt", ".xml", ".json")):
-            for hit in leak_findings(open(p, encoding="utf-8", errors="ignore").read())[:1]:
+            for hit in leak_findings(open(p, encoding="utf-8", errors="ignore").read(), os.path.relpath(p, dist))[:1]:
                 fails.append(f"  ✗ 出力 {os.path.relpath(p, dist)} にホスト名か IP アドレス「{hit}」がある")
     try:
         # まだコミットしていない新しいファイルも見る（手元で通って Cloudflare のビルドで落ちる、を防ぐ。2026-09-24）
@@ -424,7 +433,7 @@ def check_leaks(dist: str, root: str) -> tuple[list[str], list[str]]:
             continue
         path = os.path.join(root, rel)
         if os.path.isfile(path):
-            for hit in leak_findings(open(path, encoding="utf-8", errors="ignore").read())[:1]:
+            for hit in leak_findings(open(path, encoding="utf-8", errors="ignore").read(), rel)[:1]:
                 fails.append(f"  ✗ 公開リポジトリの {rel} にホスト名か IP アドレス「{hit}」がある")
     return fails, notes
 
@@ -529,6 +538,31 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
             if host_matches(host_of(url), "googleapis.com") or host_matches(host_of(url), "gstatic.com"):
                 fail(f"閲覧者のブラウザが Google Fonts を直接読みにいく（書体はこのサイトから配る）: {url[:60]}")
 
+        # --- 問い合わせフォーム（受け口へ送る・受け口が保存する欄だけ・送る前に利用目的・迷惑送信の対策） ---
+        if re.search(r'<form\b[^>]*\baction="mailto:', raw, re.I):
+            fail("フォームの送り先が mailto（メールソフトが無い人は送れない。受け口へ送る）")
+        for form in re.findall(r"<form\b[\s\S]*?</form>", raw):
+            act = re.search(r'\baction="([^"]+)"', form)
+            if not act or not FORM_ACTION.fullmatch(act.group(1)):
+                fail(f"フォームの送り先が受け口の形でない: {act.group(1)[:40] if act else '(action が無い)'}")
+                continue
+            extra = set(re.findall(r'<(?:input|textarea|select)\b[^>]*\bname="([^"]+)"', form)) - FORM_FIELDS
+            if extra:
+                fail(f"受け口が保存しない欄がある（送っても捨てられる）: {sorted(extra)}")
+            if 'name="_hp"' not in form:
+                fail("フォームに迷惑送信の罠（_hp）が無い")
+            if 'data-sitekey="' not in form or "challenges.cloudflare.com/turnstile" not in raw:
+                fail("フォームに迷惑送信の確認（Turnstile）が無い")
+            submit_at = form.find('type="submit"')
+            privacy_at = form.find('href="/privacy-lp.html"')
+            if privacy_at == -1 or (submit_at != -1 and privacy_at > submit_at):
+                fail("送信ボタンの前に、利用目的とプライバシーポリシーへのリンクが無い（個人情報保護法 21 条 2 項）")
+        header = re.search(r'<header class="site-header"[\s\S]*?</header>', raw)
+        if header and 'href="/#lp"' in header.group(0):
+            fail("ヘッダーのメニューがトップの料金表（/#lp）を指している（料金は「サービスと料金」のページ）")
+        if path != "/" and re.search(r'href="/(?:index\.html)?#contact"', raw):
+            fail("お問い合わせへのリンクがトップの節（/#contact）を指している（/contact.html へ）")
+
         # --- 画像: 代替テキスト・大きさ・ファイルの実在 ---
         for img in page.imgs:
             alt = img.get("alt")
@@ -577,6 +611,14 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
                             fail(f"構造化データの FAQ の{label}が画面の文字と一致しない: {value[:40]!r}")
         if path == "/" and not any(n.get("@type") == "WebSite" for n in graph_nodes):
             fail("トップの構造化データに WebSite が無い（検索結果のサイト名）")
+        if path == "/contact.html":
+            if not any(n.get("@type") == "ContactPage" for n in graph_nodes):
+                fail("お問い合わせのページの構造化データに ContactPage が無い")
+            points = [n.get("contactPoint") for n in graph_nodes if n.get("contactPoint")]
+            if not points or not str(points[0].get("telephone", "")).startswith("+81"):
+                fail("構造化データの ContactPoint が無いか、電話番号に国番号（+81）が無い")
+        if path == "/contact-thanks.html" and "noindex" not in page.meta.get("robots", ""):
+            fail("送信のあとの画面が検索に出る設定になっている（noindex にする）")
 
         # --- 題名と説明文 ---
         if "エレノア" not in page.title:
@@ -639,9 +681,11 @@ def check(dist: str, root: str) -> tuple[list[str], list[str]]:
             fail(f"横スクロールの枠に入っていない表がある（{page.tables.count(False)} 個）")
 
     sitemap = "".join(open(p, encoding="utf-8").read() for p in glob.glob(os.path.join(dist, "sitemap-*.xml")))
-    for p in ("/", "/services.html", "/company.html", "/products.html", "/blog.html", "/site-policy.html"):
+    for p in ("/", "/services.html", "/company.html", "/products.html", "/blog.html", "/site-policy.html", "/contact.html"):
         if f"<loc>{SITE_URL}{p}</loc>" not in sitemap:
             fails.append(f"  ✗ sitemap に {p} が無い")
+    if "/contact-thanks" in sitemap:
+        fails.append("  ✗ sitemap に送信のあとの画面（/contact-thanks.html）が載っている")
 
     for label, table in (("title", titles), ("description", descriptions)):
         for value, where in table.items():

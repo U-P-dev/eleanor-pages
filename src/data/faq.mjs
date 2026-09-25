@@ -2,7 +2,7 @@
 // 金額・日数・条件は prices.json（料金の正本から抜き出したもの）から入れる。ここに数字を直書きしない。
 // html は画面用（リンクを含む）、text は構造化データ用（タグなしで同じ内容）。
 import prices from './prices.json';
-import { SITE } from '../site.mjs';
+import { CONTACT, SITE } from '../site.mjs';
 import { yen } from '../lib/format.mjs';
 
 const tokusho = (label = '特定商取引法に基づく表示') => `<a href="/tokusho.html">${label}</a>`;
@@ -19,7 +19,7 @@ const methods = prices.payment_methods.join('・');
 const items = [
   {
     q: 'お打ち合わせや電話は必要ですか？',
-    html: `LP の制作と保守はメールだけで進みます。フルオーダーは${meeting}があります。お電話は留守番電話でお受けし、メールで折り返します。`,
+    html: `LP の制作と保守はメールだけで進みます。フルオーダーは${meeting}があります。お電話の受付時間は${SITE.operator.hours.label}です。${SITE.operator.hours.note}`,
   },
   {
     q: 'どの地域から依頼できますか？',
@@ -49,7 +49,7 @@ const items = [
   },
   {
     q: 'いま使っているサイトの引っ越しだけを頼めますか？',
-    html: '内容によってお受けできます。お問い合わせの種類で「フルオーダー・その他相談」を選び、いまの状況をお書きください。',
+    html: `内容によってお受けできます。<a href="/contact.html">お問い合わせ</a>の種類で「${CONTACT.kinds.find((k) => k.startsWith('フルオーダー'))}」を選び、いまの状況をお書きください。`,
   },
 ];
 
