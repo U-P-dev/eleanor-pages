@@ -7,6 +7,8 @@ export const SAMPLES = [
   {
     id: 'r-01',
     tier: 'rich',
+    // 看板に置く見本（写真に白い覆いの無い、くっきりした画面。見本の棚では最後に回して、看板の直後に同じ画面を続けない）
+    hero: true,
     shop: 'hair atelier 澪',
     industry: '美容院',
     madeAt: '2026-09-18',

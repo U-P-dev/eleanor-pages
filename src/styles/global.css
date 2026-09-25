@@ -1,59 +1,73 @@
 /*
- * エレノアの見た目。デジタル庁デザインシステム（DADS）の値と部品の構造に沿って書いている（MIT 表示は tokens.css）。
- * 決まりと出典（文字の段・格子・余白・罫・色の使い方）は DESIGN.md。値は tokens.css の段からだけ選ぶ。
+ * エレノアの見た目（2026-09-25「白と明朝」）。決まりと出典は DESIGN.md、値は tokens.css の段からだけ選ぶ。
  * 文字サイズと余白は rem（ブラウザの文字サイズ設定に追従させる。px で書くと設定が効かない）。
- * 段組みの切り替えは DADS と同じ 48rem（768px）の 1 本。ヘッダーの水平メニューだけは項目が収まる 60rem から出す。
- * 決まりから外れたもの（段に無い文字の大きさ・表の縦罫・紫の飾り使いなど）は scripts/check_site.py が出力を調べて止める。
+ * 段組みの切り替えは 48rem（768px）。看板の横組みは 64rem、ヘッダーの水平メニューは項目が収まる 60rem から。
+ * 動きの指定はすべて末尾の「動き」の節（prefers-reduced-motion: no-preference の中）に置く。
+ * 決まりから外れたもの（段に無い文字の大きさ・角丸・画面以外の影・紫の飾り使い・節ごとの動きなど）は
+ * scripts/check_site.py が出力を調べて止める。
  */
 
-/* 本文の幅は「本文の文字で 41 字ぶん」を長さとして子に受け継がせる（見出しの大きな文字で測り直させない） */
+/* 本文の幅は「本文の文字で 40 字ぶん」を長さとして子に受け継がせる（見出しの大きな文字で測り直させない） */
 @property --measure {
   syntax: '<length>';
   inherits: true;
-  initial-value: 43rem;
+  initial-value: 40rem;
 }
+
+/* Windows の游ゴシック。family 名で書くと太字が偽の太字になることがあるので、local() で太さごとに指す（通信なし） */
+@font-face {
+  font-family: 'Eleanor Gothic';
+  src: local('Yu Gothic Medium'), local('YuGothic-Medium');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Eleanor Gothic';
+  src: local('Yu Gothic Bold'), local('YuGothic-Bold');
+  font-weight: 600 700;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
-  --text: var(--color-neutral-solid-gray-800);
-  --text-strong: var(--color-neutral-solid-gray-900);
-  --text-mid: var(--color-neutral-solid-gray-700);
-  --text-sub: var(--color-neutral-solid-gray-600);
-  --bg: var(--color-neutral-white);
-  --bg-sub: var(--color-neutral-solid-gray-50);
-  --border: var(--color-neutral-solid-gray-420);
+  --text: var(--color-ink);
+  --text-strong: var(--color-ink);
+  --text-mid: var(--color-ink-2);
+  --text-sub: var(--color-ink-2);
+  --bg: var(--color-ground);
+  --surface: var(--color-surface);
+  --line: var(--color-line);
   --key: var(--color-brand);
   --key-hover: var(--color-brand-hover);
   --key-press: var(--color-brand-press);
-  --link: var(--color-primitive-blue-1000);
-  --link-hover: var(--color-primitive-blue-900);
-  --link-visited: var(--color-primitive-magenta-900);
-  --link-active: var(--color-primitive-orange-800);
-  --error: var(--color-error-2);
-  --rule: 1px solid var(--border);
-  --rule-strong: 1px solid var(--text-strong);
-  --gutter: 1rem;
-  /* ページの最大幅 */
-  --content: 72rem;
-  /* 節の余白は重要度で 2 段（主の節は広く、従の節は狭く） */
-  --section-major: var(--space-64);
-  --section-minor: var(--space-40);
-  /* 役割ごとの文字の大きさ（SP は 看板／32／24／20／16、PC は 看板／45／32／24／20／17） */
-  --fs-hero: min(8.8vw, 2.5rem);
-  --fs-h1: var(--font-size-32);
-  --fs-h2: var(--font-size-24);
-  --fs-h2-minor: var(--font-size-24);
+  --error: var(--color-error);
+  /* 罫は表と説明リストの行の間だけ（細罫）。見出し行の下と入力欄の枠は 3:1 の線の色 */
+  --rule: 1px solid var(--color-hairline);
+  --rule-strong: 1px solid var(--color-line);
+  --gutter: var(--space-24);
+  /* 節の上下の余白（節と節の間はこの 2 倍: SP 96・タブレット 128・PC 160） */
+  --section: var(--space-48);
+  /* 役割ごとの文字の大きさ（SP は 看板／30／26／20／16、PC は 看板／40／32／24／16） */
+  --fs-hero: min(9.2vw, 3rem);
+  --fs-h1: var(--font-size-30);
+  --fs-h2: var(--font-size-26);
   --fs-h3: var(--font-size-20);
   --fs-body: var(--font-size-16);
 }
 @media (min-width: 48rem) {
   :root {
-    --gutter: 2rem;
-    --section-major: var(--space-96);
-    --section-minor: var(--space-64);
-    --fs-hero: clamp(2.5rem, 5.2vw, 3.5625rem);
-    --fs-h1: var(--font-size-45);
+    --gutter: 2.5rem;
+    --section: var(--space-64);
+    --fs-h1: var(--font-size-40);
     --fs-h2: var(--font-size-32);
-    --fs-body: var(--font-size-17);
+    --fs-h3: var(--font-size-24);
+  }
+}
+@media (min-width: 64rem) {
+  :root {
+    --gutter: var(--space-64);
+    --section: 5rem;
+    --fs-hero: clamp(2.5rem, 4vw, 3.25rem);
   }
 }
 
@@ -66,25 +80,19 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
 body {
-  --measure: 41ic;
+  --measure: 40ic;
   margin: 0;
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-family-sans);
-  /* Std-16N-170（768px 以上は Std-17N-170）。本文はベタ組み（JLREQ） */
   font-size: var(--fs-body);
-  line-height: var(--line-height-170);
-  letter-spacing: 0.02em;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
   overflow-wrap: break-word;
   /* 行頭に小さい「ぁ」や長音を置かない（JLREQ の行頭禁則を厳しめに） */
   line-break: strict;
-  /* 和文と欧文・数字の間を空ける（JLREQ 3.2.6・CSS Text 4）。原稿の半角空白が無いところにも入る */
+  /* 和文と欧文・数字の間を空ける（JLREQ 3.2.6・CSS Text 4） */
   text-autospace: normal;
 }
 pre,
@@ -101,39 +109,36 @@ img {
 img {
   height: auto;
 }
+strong {
+  font-weight: 600;
+}
 
-/* ── リンク（DADS 標準: 青・訪問済みはマゼンタ・下線は常に付ける・ホバーは下線を太く）。
-   ヘッダーのメニュー・ロゴ・フッターのユーティリティリンクは墨（それぞれの部品で上書き） ── */
+/* ── リンク: 墨の字に細い下線。ホバーで下線を紫の太い線に（色だけで示さない）。訪問済みは下線を線の色に。
+   ヘッダーのメニュー・ロゴ・ボタンはそれぞれの部品で上書きする ── */
 a:any-link {
-  color: var(--link);
+  color: inherit;
   text-decoration-line: underline;
-  text-decoration-thickness: 0.0625rem;
-  text-underline-offset: 0.1875rem;
+  text-decoration-thickness: 1px;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.25em;
 }
 a:visited {
-  color: var(--link-visited);
+  text-decoration-color: var(--line);
 }
 @media (hover: hover) {
   a:any-link:hover {
-    color: var(--link-hover);
-    text-decoration-thickness: 0.1875rem;
+    text-decoration-color: var(--key);
+    text-decoration-thickness: 2px;
   }
 }
 a:any-link:active {
-  color: var(--link-active);
-  text-decoration-thickness: 0.0625rem;
+  text-decoration-color: var(--key-press);
 }
 
-/* ── フォーカス（DADS: Yellow-300 と黒の二重。どの部品でも変えない） ── */
+/* ── フォーカス: 墨の 2px の輪を 2px 離して描く（地との比 12.87。塗りのボタンとの間に地の色をはさむ） ── */
 :focus-visible {
-  outline: 0.25rem solid var(--color-neutral-black);
-  outline-offset: 0.125rem;
-  border-radius: var(--border-radius-4);
-  box-shadow: 0 0 0 0.125rem var(--color-primitive-yellow-300);
-}
-/* 文中のリンクは地も黄色に。ボタン型のリンクは各ボタンの地の指定（詳細度が高い）が勝つので、二重の枠だけで示す */
-a:focus-visible {
-  background-color: var(--color-primitive-yellow-300);
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
 }
 
 .visually-hidden {
@@ -153,7 +158,7 @@ a:focus-visible {
   left: var(--gutter);
   z-index: 20;
   padding: var(--space-8) var(--space-16);
-  background-color: var(--bg);
+  background-color: var(--surface);
 }
 .skip-link:focus {
   top: var(--space-8);
@@ -172,10 +177,10 @@ main {
   display: block;
 }
 
-/* ── 格子（12 列・列間 2rem）。2 列の節は、左を 1〜7 列、右を 8〜12 列にそろえる（右の列の左端が節ごとにずれないように） ── */
+/* ── 格子（12 列・列間 32px）。2 列の節は、左を 1〜7 列、右を 8〜12 列にそろえる ── */
 .grid {
   display: grid;
-  row-gap: var(--space-40);
+  row-gap: var(--space-48);
 }
 @media (min-width: 48rem) {
   .grid {
@@ -193,18 +198,19 @@ main {
   }
 }
 
-/* ── 見出し ──
-   書体は見出し用（Noto Sans JP 700 を切り出したもの）。見出しだけ字詰め（palt）を効かせる（JLREQ・本文はベタ組み）。
-   約物の連続（「」。」など）も palt で詰まるので、手で詰める指定は置かない。
-   改行は文節の区切り（scripts/headings.mjs が入れる <wbr>）と空白だけにする。iPhone の Safari は auto-phrase が効かないため */
+/* ── 見出し: 明朝（Noto Serif JP 500 の切り出し）。この書体には palt が無いので、約物の連続は書体の chws で詰める
+   （ブラウザの自動の詰めは切って、どのブラウザでも同じ組みにする）。太さは 500 だけ（偽の太字を作らない）。
+   改行は文節の区切り（scripts/headings.mjs が入れる <wbr>）と空白だけにする ── */
 h1,
 h2,
 h3,
 h4 {
   color: var(--text-strong);
   font-family: var(--font-family-heading);
-  font-weight: 700;
-  font-feature-settings: 'palt';
+  font-weight: 500;
+  font-synthesis: none;
+  font-feature-settings: 'chws';
+  text-spacing-trim: space-all;
   word-break: keep-all;
   overflow-wrap: anywhere;
   text-wrap: balance;
@@ -223,29 +229,39 @@ h4 {
 h1 {
   margin: 0 0 var(--space-24);
   font-size: var(--fs-h1);
-  line-height: var(--line-height-140);
-  letter-spacing: 0;
+  line-height: var(--leading-h1);
+  letter-spacing: var(--tracking-heading);
 }
 h2 {
   margin: 0 0 var(--space-24);
   font-size: var(--fs-h2);
-  line-height: var(--line-height-150);
-  letter-spacing: 0.01em;
+  line-height: var(--leading-h2);
+  letter-spacing: var(--tracking-heading);
 }
 h3 {
-  margin: 0 0 var(--space-8);
+  margin: 0 0 var(--space-16);
   font-size: var(--fs-h3);
-  line-height: var(--line-height-150);
-  letter-spacing: 0.02em;
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-heading);
 }
 h4 {
   margin: 0 0 var(--space-8);
-  font-size: var(--fs-body);
-  line-height: var(--line-height-170);
+  font-size: var(--font-size-20);
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-heading);
+}
+/* 見出しの外で明朝を使うところ（価格・段の名前・メニュー）。字は headings.mjs が data-font="mincho" から集める */
+.mincho {
+  font-family: var(--font-family-heading);
+  font-weight: 500;
+  font-synthesis: none;
+  font-feature-settings: 'chws';
+  text-spacing-trim: space-all;
+  letter-spacing: var(--tracking-heading);
 }
 
-/* ── ボタン（DADS: 塗りは1画面に1つ・アウトラインは補助。高さ M 48px / L 56px・角丸 8px・押せる範囲 44px 以上）
-   塗りだけがブランド色。アウトラインは墨（ブランド色を飾りに増やさない） ── */
+/* ── ボタン: 角は 0。塗り（紫）は 1 ページに 1 つ（お問い合わせの面・送信・下層ページの終わり）。ほかは墨の線。
+   押せる範囲は 44px 以上 ── */
 .button {
   display: inline-flex;
   align-items: center;
@@ -253,14 +269,14 @@ h4 {
   gap: var(--space-8);
   min-width: 8.5rem;
   min-height: 3rem;
-  padding: var(--space-8) var(--space-24);
-  border: 2px solid transparent;
-  border-radius: var(--border-radius-8);
+  padding: var(--space-8) var(--space-32);
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: none;
   font: inherit;
-  font-weight: 700;
   font-size: var(--font-size-16);
-  line-height: var(--line-height-140);
-  letter-spacing: 0.02em;
+  line-height: var(--leading-ui);
+  letter-spacing: var(--tracking-ui);
   text-align: center;
   cursor: pointer;
 }
@@ -269,61 +285,62 @@ a.button:any-link {
 }
 .button--large {
   min-height: 3.5rem;
-  padding-inline: 2rem;
+  padding-inline: var(--space-48);
 }
 .button--primary,
 a.button--primary:any-link {
   border-color: var(--key);
   background-color: var(--key);
-  color: var(--color-neutral-white);
+  color: var(--color-on-brand);
 }
 @media (hover: hover) {
   .button--primary:hover,
   a.button--primary:any-link:hover {
     border-color: var(--key-hover);
     background-color: var(--key-hover);
-    color: var(--color-neutral-white);
-    text-decoration: underline;
+    color: var(--color-on-brand);
   }
 }
 .button--primary:active,
 a.button--primary:any-link:active {
   border-color: var(--key-press);
   background-color: var(--key-press);
-  color: var(--color-neutral-white);
+  color: var(--color-on-brand);
 }
 .button--secondary,
 a.button--secondary:any-link {
   border-color: var(--text-strong);
-  background-color: var(--bg);
+  background-color: transparent;
   color: var(--text-strong);
 }
 @media (hover: hover) {
   .button--secondary:hover,
   a.button--secondary:any-link:hover {
-    background-color: var(--bg-sub);
-    color: var(--text-strong);
-    text-decoration: underline;
+    background-color: var(--text-strong);
+    color: var(--bg);
   }
+}
+.button--secondary:active,
+a.button--secondary:any-link:active {
+  background-color: var(--text-strong);
+  color: var(--bg);
+}
+.button--small {
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: var(--space-4) var(--space-24);
 }
 .button-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-16) var(--space-24);
-  margin: var(--space-24) 0 0;
-}
-/* ボタンの横に置く文中リンク（塗りのボタンを 1 画面 1 つに保つための「もう一つの行き先」） */
-.button-row__link {
-  display: inline-block;
-  padding-block: 0.625rem;
-  font-weight: 700;
+  margin: var(--space-32) 0 0;
 }
 
-/* ── ヘッダー（DADS ヘッダーコンテナ: ロゴ・水平メニュー・「メニュー」ボタン） ── */
+/* ── ヘッダー: 固定しない（フォーカスを隠さない）。下に罫を引かず、地の色だけで区切る ── */
 .site-header {
   position: relative;
-  border-bottom: var(--rule);
   background-color: var(--bg);
 }
 .site-header__inner {
@@ -334,18 +351,23 @@ a.button--secondary:any-link {
   min-height: 4rem;
   padding-block: var(--space-8);
 }
+@media (min-width: 48rem) {
+  .site-header__inner {
+    min-height: 4.5rem;
+  }
+}
 .site-logo:any-link {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-8);
-  padding-block: 0.25rem;
+  gap: 0.75rem;
+  padding-block: var(--space-4);
   color: var(--text-strong);
   font-family: var(--font-family-heading);
-  font-weight: 700;
-  font-feature-settings: 'palt';
+  font-weight: 500;
+  font-synthesis: none;
   font-size: var(--font-size-20);
-  line-height: 1.3;
-  letter-spacing: 0.04em;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-ui);
   text-decoration: none;
 }
 .site-logo__mark {
@@ -355,12 +377,10 @@ a.button--secondary:any-link {
 }
 .site-logo__en {
   display: block;
+  margin-top: 0.125rem;
   color: var(--text-sub);
-  font-family: var(--font-family-sans);
-  font-weight: 400;
-  font-feature-settings: normal;
   font-size: var(--font-size-14);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-ui);
 }
 .global-nav {
   display: none;
@@ -368,28 +388,31 @@ a.button--secondary:any-link {
 .global-nav__list {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--space-8);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .global-nav__list a:not(.button):any-link {
   display: inline-block;
-  padding: 0.625rem 0.75rem;
+  padding: 0.75rem var(--space-8);
   color: var(--text-strong);
-  text-decoration: none;
-  line-height: var(--line-height-150);
+  line-height: var(--leading-ui);
+  letter-spacing: var(--tracking-ui);
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.6em;
 }
-.global-nav__list a:not(.button):any-link:hover {
-  text-decoration: underline;
-  text-decoration-thickness: 0.1875rem;
+@media (hover: hover) {
+  .global-nav__list a:not(.button):any-link:hover {
+    text-decoration-color: var(--key);
+  }
 }
-/* 今いるページ（ブランド色を使う 3 か所の 1 つ） */
+/* 今いるページ（紫の 2px の下線） */
 .global-nav__list a:not(.button)[aria-current='page'] {
-  text-decoration: underline;
   text-decoration-color: var(--key);
-  text-decoration-thickness: 0.1875rem;
-  text-underline-offset: 0.5rem;
+  text-decoration-thickness: 2px;
 }
 .global-nav__cta {
   margin-left: var(--space-16);
@@ -402,7 +425,7 @@ a.button--secondary:any-link {
     display: none !important;
   }
 }
-/* 「メニュー」ボタン（DADS: アイコンだけにせずラベルを付ける） */
+/* 「メニュー」ボタン（アイコンだけにせず文字を添える。押せる範囲 48px 以上） */
 .menu-button {
   display: inline-flex;
   flex-direction: column;
@@ -411,14 +434,15 @@ a.button--secondary:any-link {
   gap: 0.125rem;
   min-width: 3.5rem;
   min-height: 3rem;
-  padding: 0.25rem var(--space-8);
-  border: var(--rule);
-  border-radius: var(--border-radius-8);
-  background-color: var(--bg);
+  padding: var(--space-4) var(--space-8);
+  border: 0;
+  border-radius: 0;
+  background: none;
   color: var(--text-strong);
   font: inherit;
   font-size: var(--font-size-14);
   line-height: 1.2;
+  letter-spacing: var(--tracking-ui);
   cursor: pointer;
 }
 .menu-button svg {
@@ -430,7 +454,6 @@ a.button--secondary:any-link {
   display: none;
 }
 .mobile-menu {
-  border-top: var(--rule);
   background-color: var(--bg);
 }
 .mobile-menu[hidden] {
@@ -438,25 +461,40 @@ a.button--secondary:any-link {
 }
 .mobile-menu__list {
   margin: 0;
-  padding: var(--space-8) 0 var(--space-16);
+  padding: var(--space-16) 0 var(--space-48);
   list-style: none;
 }
 .mobile-menu__list > li > a:not(.button):any-link {
   display: block;
   padding: var(--space-16) 0;
-  border-bottom: 1px solid var(--color-neutral-solid-gray-100);
   color: var(--text-strong);
-  font-weight: 700;
-  text-decoration: none;
+  font-family: var(--font-family-heading);
+  font-weight: 500;
+  font-synthesis: none;
+  font-feature-settings: 'chws';
+  font-size: var(--font-size-24);
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-heading);
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
 }
-.mobile-menu__list > li > a:not(.button):any-link:hover {
-  text-decoration: underline;
+.mobile-menu__list > li > a:not(.button)[aria-current='page'] {
+  text-decoration-color: var(--key);
+  text-decoration-thickness: 2px;
 }
 .mobile-menu__cta {
-  padding-top: var(--space-16);
+  padding-top: var(--space-24);
 }
 .mobile-menu__cta .button {
   width: 100%;
+}
+.mobile-menu__contact {
+  margin: var(--space-32) 0 0;
+  color: var(--text-sub);
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
 }
 @media (min-width: 60rem) {
   .mobile-menu {
@@ -464,17 +502,20 @@ a.button--secondary:any-link {
   }
 }
 
-/* ── パンくず（DADS: 16px・山形の区切り。H1 の上） ── */
+/* ── パンくず（H1 の上。小さい字・薄墨） ── */
 .breadcrumb {
-  padding-block: var(--space-16) 0;
-  font-size: var(--font-size-16);
-  line-height: var(--line-height-170);
+  padding-block: var(--space-24) 0;
+  color: var(--text-sub);
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
 }
 .breadcrumb__list {
   margin: 0;
 }
+/* 小さい字でも押せる範囲は 24px 以上に（WCAG 2.2 達成基準 2.5.8） */
 .breadcrumb a {
-  padding-block: 0.125rem;
+  display: inline-block;
+  padding-block: var(--space-4);
 }
 .breadcrumb__sep::before,
 .breadcrumb__sep::after {
@@ -485,309 +526,354 @@ a.button--secondary:any-link {
   width: 0.75rem;
   height: 0.75rem;
   vertical-align: middle;
-  color: var(--text-strong);
+  color: var(--text-sub);
 }
 
 /* ── ページの見出し（下層ページ）。リードは大きさを変えず、色で分ける ── */
 .page-head {
-  padding-block: var(--space-24) var(--space-8);
+  padding-block: var(--space-32) var(--space-16);
+}
+@media (min-width: 48rem) {
+  .page-head {
+    padding-block: var(--space-64) var(--space-32);
+  }
 }
 .page-head h1 {
-  margin-bottom: var(--space-16);
+  margin-bottom: var(--space-24);
 }
 .page-head__lead {
   max-width: var(--measure);
   margin: 0 0 var(--space-16);
   color: var(--text-mid);
 }
-@media (min-width: 48rem) {
-  .page-head {
-    padding-block: var(--space-40) var(--space-16);
-  }
-}
 
-/* ── 看板（トップ）: 白地に墨の文字。右に実物の画面。ブランド色とグラデーションで面を塗らない ── */
-.hero__inner {
-  padding-block: var(--space-40) var(--space-64);
+/* ── 看板（トップ）: 大胆に見せるのはここだけ。標語を明朝で、見本の LP の画面を窓の右端まで裁ち落として置き、
+   スマートフォンの画面を手前に重ねる。裁ち落としの幅は 100vw で計算しない（Windows ではスクロールバーの分はみ出す）。
+   看板を「入れ物」にして、その幅（cqi）から右端までの長さを出す ── */
+.hero {
+  --bleed: calc((100cqi - min(100cqi, var(--content) + 2 * var(--gutter))) / 2 + var(--gutter));
+  container-type: inline-size;
+  overflow-x: clip;
 }
-@media (min-width: 48rem) {
+.hero__inner {
+  display: grid;
+  row-gap: var(--space-48);
+  padding-block: var(--space-32) var(--space-64);
+}
+@media (min-width: 64rem) {
   .hero__inner {
-    align-items: center;
-    padding-block: var(--space-64) var(--space-96);
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: start;
+    padding-block: var(--space-48) var(--space-96);
+  }
+  .hero__text {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / 6;
+    grid-row: 1;
+    padding-top: var(--space-64);
+  }
+  .hero__media {
+    grid-column: 6 / -1;
+    grid-row: 1;
   }
 }
 .hero__title {
-  margin: 0 0 var(--space-24);
+  margin: 0;
 }
 .hero__copy {
   display: block;
   font-size: var(--fs-hero);
-  line-height: var(--line-height-140);
-  letter-spacing: 0;
+  line-height: var(--leading-hero);
+  letter-spacing: var(--tracking-hero);
 }
 .hero__line {
   display: block;
   white-space: nowrap;
 }
+/* Chrome は nowrap の中でも <wbr>（headings.mjs が入れる文節の区切り）で折り返すので、標語の行の中では消す */
+.hero__line wbr {
+  display: none;
+}
+/* 行頭の「を半角にして左の余白へぶら下げ、「つ」を本文の左端にそろえる */
+.hang {
+  font-feature-settings: 'halt';
+  margin-inline-start: -0.5em;
+}
 .hero__what {
   display: block;
-  margin-top: var(--space-16);
+  margin-top: var(--space-24);
   color: var(--text-mid);
-  font-size: var(--font-size-20);
-  line-height: var(--line-height-150);
-  letter-spacing: 0.02em;
+  font-size: var(--font-size-16);
+  line-height: var(--leading-h2);
+  letter-spacing: var(--tracking-heading);
 }
 @media (min-width: 48rem) {
   .hero__what {
-    font-size: var(--font-size-24);
-  }
-}
-.hero__lead {
-  margin: 0 0 var(--space-16);
-  color: var(--text-strong);
-}
-@media (min-width: 48rem) {
-  .hero__lead {
     font-size: var(--font-size-20);
   }
 }
-.hero__facts {
-  margin: 0 0 var(--space-8);
+.hero__cta {
+  margin-top: var(--space-32);
 }
-/* 数字は太字と桁そろえだけ（行の中の数字だけを大きくすると行送りが崩れる。JLREQ 2.4.2） */
-.hero__facts strong {
-  color: var(--text-strong);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+@media (min-width: 64rem) {
+  .hero__cta {
+    margin-top: var(--space-48);
+  }
 }
-/* 看板の見本の画面。広い画面は右の列いっぱいにパソコンの画面、狭い画面は看板の文のすぐ後にスマートフォンの画面 */
 .hero__media {
+  min-width: 0;
   margin: 0;
+  margin-right: calc(-1 * var(--bleed));
 }
-@media (max-width: 47.99rem) {
-  .hero__media {
-    width: min(100%, 18rem);
-  }
-}
-/* つくったもの: 広い画面はパソコンの画面、狭い画面はスマートフォンの画面（パソコンの画面を縮めると読めない） */
-.shot--sp {
-  width: min(100%, 18rem);
-}
-@media (max-width: 47.99rem) {
-  .shot--pc {
-    display: none;
-  }
-}
-@media (min-width: 48rem) {
-  .shot--sp {
-    display: none;
-  }
+/* 画面の説明は窓の端に付けない */
+.hero .shot-pair__note {
+  max-width: 30rem;
+  padding-right: var(--gutter);
 }
 
-/* ── 実物の画面（スクリーンショット）: 1px の枠だけ。影・傾き・ブラウザ風の飾り枠は付けない ── */
-.shot {
-  margin: 0;
+/* ── 画面の組（components/ShotPair.astro）: PC と SP の画面を同じ縮尺で重ねる。端末の枠は描かない。
+   組そのものを入れ物にして、重ね方の寸法を組の幅（cqi）で決める。
+   狭い画面: PC の画面は左を 3rem あけ、SP の画面は組の幅の 36% で左下に重ねる ── */
+.shot-pair {
+  --pc-inset: 3rem;
+  --sp-width: 36cqi;
+  --sp-shift: 0px;
+  --sp-rise: calc((100cqi - 3rem) * -0.3);
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
 }
-.shot img,
-.hero__media img {
+.shot-pair__pc {
+  display: block;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-width: 0;
+  margin-left: var(--pc-inset);
+}
+.shot-pair__sp {
+  display: block;
+  grid-column: 1;
+  grid-row: 2;
+  width: var(--sp-width);
+  margin-top: var(--sp-rise);
+  margin-left: var(--sp-shift);
+}
+.shot-pair img {
   display: block;
   width: 100%;
   height: auto;
-  border: var(--rule);
+  background-color: var(--surface);
 }
-.shot figcaption,
-.hero__media figcaption {
-  margin-top: var(--space-8);
-  color: var(--text-mid);
-  font-size: var(--font-size-16);
-  line-height: 1.6;
+.shot-pair__pc img {
+  box-shadow: var(--shadow-screen);
 }
-/* 画面の説明の後ろに置く短いリンクは、途中で折り返さない（「ほ／かの見本」と割れないように） */
-.hero__media figcaption a {
-  white-space: nowrap;
+.shot-pair__sp img {
+  box-shadow: var(--shadow-screen-front);
+}
+.shot-pair__note {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;
+  padding: var(--space-16) 0 0 var(--space-24);
+  color: var(--text-sub);
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
+}
+/* 看板（広い画面）: PC の画面は列いっぱい。SP の画面は PC と同じ縮尺（390/1280）で、PC の左端より 9% 左、高さの 55% の位置から */
+@media (min-width: 64rem) {
+  .shot-pair--hero {
+    --pc-inset: 0px;
+    --sp-width: 30.47cqi;
+    --sp-shift: -9cqi;
+    --sp-rise: -28.125cqi;
+  }
+}
+/* 展示（広い画面）: PC の画面は 2〜8 列、SP の画面は 1 列目から、PC と同じ縮尺で重ねる */
+@media (min-width: 48rem) {
+  .shot-pair--exhibit {
+    --pc-inset: calc((100cqi - 7 * var(--grid-gap)) / 8 + var(--grid-gap));
+    --sp-width: calc((100cqi - var(--pc-inset)) * 0.3047);
+    --sp-rise: calc((100cqi - var(--pc-inset)) * -0.28125);
+  }
 }
 
-/* ── 節 ──
-   主の節は余白だけで区切る。従の節は余白を詰め、罫で区切る。罫は本文の幅に引く
-   （トップの節は画面幅なので中の .wrap の頭に、下層ページの節は本文の枠の中にあるので節そのものに） */
-.section {
-  padding-block: var(--section-major);
-}
+/* ── 節: 余白だけで区切る（罫を引かない）。節と節の間は SP 96・PC 160 ── */
+.section,
 .section--minor {
-  padding-block: var(--section-minor);
-}
-.section--minor > .wrap::before {
-  content: '';
-  display: block;
-  margin-bottom: var(--section-minor);
-  border-top: var(--rule);
-}
-.section--minor:has(> .wrap) {
-  padding-top: 0;
-}
-.page-body > .section--minor {
-  border-top: var(--rule);
-}
-.section--minor .section__title {
-  font-size: var(--fs-h2-minor);
-}
-/* 灰の地はお問い合わせとフッターだけ（節ごとに地の色を交互に変えない） */
-.section--sub {
-  background-color: var(--bg-sub);
-}
-/* 灰の地の上では Gray-420 の枠が 3:1 に届かない（2.7）ので、枠の色を Gray-536 に上げる（DADS: 外枠は背景との比 3:1 以上）。
-   押している間のリンクも Orange-800 では 4.5:1 に届かないので Orange-900 にする */
-.section--sub,
-.site-footer {
-  --border: var(--color-neutral-solid-gray-536);
-  --link-active: var(--color-primitive-orange-900);
+  padding-block: var(--section);
 }
 .section__title {
-  margin-bottom: var(--space-16);
+  margin-bottom: var(--space-24);
 }
 .section__lead {
   max-width: var(--measure);
-  margin: 0 0 var(--space-24);
+  margin: 0 0 var(--space-48);
   color: var(--text-mid);
+}
+@media (min-width: 48rem) {
+  .section__lead {
+    margin-bottom: var(--space-64);
+  }
 }
 .section__more {
   max-width: var(--measure);
-  margin: var(--space-24) 0 0;
+  margin: var(--space-32) 0 0;
 }
-
-/* ── LP の見本: パソコンの画面を左、説明とスマートフォンの画面を右。狭い画面はスマートフォンの画面だけ ── */
-.sample {
-  margin: 0;
-}
-.sample + .sample {
-  margin-top: var(--space-40);
-  padding-top: var(--space-40);
-  border-top: var(--rule);
-}
-.sample__pc img,
-.sample__sp img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: var(--rule);
-}
-.sample__pc picture,
-.sample__sp picture {
-  display: block;
-}
-@media (max-width: 47.99rem) {
-  .sample__pc {
-    display: none;
-  }
-}
-.sample__side {
-  display: grid;
-  align-content: start;
-  gap: var(--space-24);
-}
-.sample__sp {
-  width: min(100%, 18rem);
+/* お問い合わせの面（トップの #contact だけ）: 白い紙。罫も影も付けず、地との差だけで見せる。狭い画面は幅いっぱい */
+.panel__inner {
+  margin-inline: calc(-1 * var(--gutter));
+  padding: var(--space-48) var(--gutter);
+  background-color: var(--surface);
 }
 @media (min-width: 48rem) {
-  .sample__sp {
-    width: 12rem;
+  .panel__inner {
+    margin-inline: 0;
+    padding: var(--space-64);
   }
 }
-.sample__title {
-  margin-bottom: var(--space-8);
-  font-size: var(--font-size-20);
+
+/* ── 見本の展示（components/SampleShelf.astro）: 画面は 1〜8 列、説明は 9〜12 列。左右を入れ替えない。
+   見本と見本の間は広くとる（展示の間隔が格を上げる） ── */
+.samples {
+  display: grid;
+  gap: var(--space-96);
 }
-.sample__shop {
+@media (min-width: 48rem) {
+  .samples {
+    gap: var(--space-128);
+  }
+}
+.exhibit {
+  display: grid;
+  row-gap: var(--space-32);
   margin: 0;
+}
+@media (min-width: 48rem) {
+  .exhibit {
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: start;
+  }
+  .exhibit > .exhibit__media {
+    grid-column: 1 / 9;
+  }
+  .exhibit > .exhibit__info {
+    grid-column: 9 / -1;
+  }
+}
+.exhibit__info {
+  display: grid;
+  align-content: start;
+  gap: var(--space-8);
+}
+.exhibit__info > * {
+  margin: 0;
+}
+.exhibit__title {
+  margin: 0;
+}
+.exhibit__shop {
   color: var(--text-mid);
 }
-.sample__caption .facts {
-  margin-bottom: 0;
+.exhibit__info > .exhibit__price {
+  margin-top: var(--space-16);
+  font-size: var(--fs-h3);
+  line-height: var(--leading-h3);
+}
+.exhibit__info .facts {
+  margin-top: var(--space-16);
+}
+.exhibit__info > p:last-child {
+  margin-top: var(--space-16);
 }
 .sample-notes {
   max-width: var(--measure);
-  margin: var(--space-24) 0 0;
+  margin: calc(-1 * var(--space-48)) 0 0;
   padding-left: var(--space-24);
   color: var(--text-mid);
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
 }
 
-/* ── お知らせ・沿革: 日付と一文。日付は補足の色で桁をそろえる ── */
+/* ── お知らせ・沿革: 日付と一文。罫を引かず、余白で区切る。日付は小さい薄墨で桁をそろえる ── */
 .news {
+  display: grid;
+  gap: var(--space-24);
   max-width: 48rem;
   margin: 0;
   padding: 0;
-  border-top: var(--rule);
   list-style: none;
 }
 .news__item {
   display: grid;
-  gap: 0.25rem;
-  padding-block: var(--space-16);
-  border-bottom: var(--rule);
+  gap: var(--space-4);
 }
 @media (min-width: 48rem) {
   .news__item {
-    grid-template-columns: 11rem minmax(0, 1fr);
-    gap: var(--space-24);
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: var(--space-32);
   }
 }
 .news__date {
   color: var(--text-sub);
+  font-size: var(--font-size-14);
+  line-height: var(--leading-body);
   font-variant-numeric: tabular-nums;
 }
 .news__text {
   margin: 0;
 }
 
-/* ── 頼めること（トップ）: 主力の LP を大きく、残りを右に小さく。同じ形のカードを並べない ── */
-.offer {
-  padding-top: var(--space-24);
-  border-top: var(--rule-strong);
+/* ── 頼めること（トップ）: 3 つを行で並べ、箱に入れない。左に名前・価格・条件、右に説明とリンク。行の間は余白だけ。
+   価格のすぐ下に、同じ大きさの字で条件を置く（消費者庁: 強調と条件を離さない） ── */
+.offer-rows {
+  display: grid;
+  gap: var(--space-48);
 }
-.offer__title {
+@media (min-width: 48rem) {
+  .offer-rows {
+    gap: var(--space-64);
+  }
+}
+.offer-row {
+  display: grid;
+  row-gap: var(--space-16);
+}
+@media (min-width: 48rem) {
+  .offer-row {
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+  .offer-row__head {
+    grid-column: 1 / 6;
+  }
+  .offer-row__body {
+    grid-column: 7 / -1;
+  }
+}
+.offer-row__title {
   margin-bottom: var(--space-8);
-  font-size: var(--font-size-20);
 }
-@media (min-width: 48rem) {
-  .offer__main .offer__title {
-    font-size: var(--font-size-24);
-  }
+.offer-row__price {
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-h3);
+  line-height: var(--leading-h3);
 }
-.offer__price {
+.offer-row__terms {
+  margin: 0;
+}
+.offer-row__body > p {
   margin: 0 0 var(--space-16);
-  color: var(--text-strong);
-  line-height: var(--line-height-150);
 }
-.offer__price strong {
-  font-size: var(--font-size-20);
-  font-variant-numeric: tabular-nums;
-}
-.offer__main .offer__price strong {
-  font-size: var(--font-size-24);
-}
-@media (min-width: 48rem) {
-  .offer__price strong {
-    font-size: var(--font-size-24);
-  }
-  .offer__main .offer__price strong {
-    font-size: var(--font-size-32);
-  }
-}
-.offer__item + .offer__item {
-  margin-top: var(--space-24);
-  padding-top: var(--space-24);
-  border-top: var(--rule);
-}
-.offer p {
-  margin-block: 0 var(--space-16);
-}
-/* 価格のすぐ下に条件（保守とあわせてのお申し込み・1 年間の合計）を置く（消費者庁: 強調と条件を離さない） */
-.offer__terms {
-  color: var(--text-strong);
+.offer-row__body > :last-child {
+  margin-bottom: 0;
 }
 .offer__more {
   max-width: var(--measure);
-  margin: var(--space-40) 0 0;
+  margin: var(--space-64) 0 0;
 }
 
 /* ── チェックつきの箇条（含まれるもの）。印は墨 ── */
@@ -812,18 +898,17 @@ a.button--secondary:any-link {
 .check-list > li::before {
   content: '';
   position: absolute;
-  top: 0.45em;
+  top: 0.5em;
   left: 0.25rem;
-  width: 0.5rem;
-  height: 0.875rem;
+  width: 0.4375rem;
+  height: 0.75rem;
   border: solid var(--text-strong);
-  border-width: 0 0.1875rem 0.1875rem 0;
+  border-width: 0 1.5px 1.5px 0;
   transform: rotate(45deg);
 }
 
-/* ── 時系列（ご依頼の流れ）: 予定表のように縦に並べる（同じ幅の箱を横に 3 つ並べない）。
-   番号は文字で書く（DADS: <ol> を使わない）。印は墨の小さな四角。
-   見出しと本文は近く（8px）、段と段は離す（40px）。まとまりを余白で見せる（NN/g: 近さ） ── */
+/* ── 時系列（ご依頼の流れ・フルオーダーの進め方）: 予定表のように並べる。印は墨の小さな四角。番号は読み上げだけ。
+   縦（既定）: 左に線。横（.timeline--row・広い画面）: 1 本の線を本文の幅いっぱいに引き、「いつ」を線の上に置く ── */
 .timeline {
   display: grid;
   max-width: 60rem;
@@ -833,8 +918,8 @@ a.button--secondary:any-link {
 }
 .timeline__step {
   position: relative;
-  padding: 0 0 var(--space-40) var(--space-24);
-  border-left: var(--rule-strong);
+  padding: 0 0 var(--space-48) var(--space-32);
+  border-left: 1px solid var(--color-ink);
 }
 .timeline__step:last-child {
   padding-bottom: 0;
@@ -843,26 +928,11 @@ a.button--secondary:any-link {
 .timeline__step::before {
   content: '';
   position: absolute;
-  top: 0.4rem;
-  left: -0.3125rem;
-  width: 0.625rem;
-  height: 0.625rem;
+  top: 0.5rem;
+  left: -0.25rem;
+  width: 0.5rem;
+  height: 0.5rem;
   background-color: var(--text-strong);
-}
-@media (min-width: 48rem) {
-  .timeline__step {
-    display: grid;
-    grid-template-columns: 11rem minmax(0, 1fr);
-    column-gap: var(--grid-gap);
-    align-content: start;
-  }
-  .timeline__when {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-  }
-  .timeline__step > :not(.timeline__when) {
-    grid-column: 2;
-  }
 }
 .timeline__step > p {
   margin: 0;
@@ -870,24 +940,54 @@ a.button--secondary:any-link {
 .timeline__when {
   margin: 0 0 var(--space-8);
   color: var(--text-mid);
-  font-weight: 700;
-}
-.timeline__num {
-  margin-right: var(--space-8);
-  color: var(--text-strong);
-  font-variant-numeric: tabular-nums;
 }
 .timeline__title {
   margin-bottom: var(--space-8);
 }
+@media (min-width: 48rem) {
+  .timeline--row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+  }
+  .timeline--row .timeline__step {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border: 0;
+  }
+  .timeline--row .timeline__step::before {
+    content: none;
+  }
+  .timeline--row .timeline__step > * {
+    padding-right: var(--grid-gap);
+  }
+  .timeline--row .timeline__when {
+    margin-bottom: var(--space-16);
+  }
+  .timeline--row .timeline__title {
+    position: relative;
+    margin: 0;
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-8);
+    border-top: 1px solid var(--color-ink);
+  }
+  .timeline--row .timeline__title::before {
+    content: '';
+    position: absolute;
+    top: -0.25rem;
+    left: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--text-strong);
+  }
+}
 
-/* ── つくったもの（事例）: 画面・事実・設計へのリンク ── */
+/* ── つくったもの（下層ページの事例）: 画面・事実・設計へのリンク ── */
 .work {
-  margin-top: var(--space-40);
+  margin-top: var(--space-48);
 }
 .work + .work {
-  padding-top: var(--space-40);
-  border-top: var(--rule);
+  margin-top: var(--space-96);
 }
 @media (min-width: 48rem) {
   .work {
@@ -895,15 +995,7 @@ a.button--secondary:any-link {
   }
 }
 .work__title {
-  font-size: var(--font-size-20);
-}
-@media (min-width: 48rem) {
-  .work__title {
-    font-size: var(--font-size-24);
-  }
-  .work--small .work__title {
-    font-size: var(--font-size-20);
-  }
+  font-size: var(--fs-h3);
 }
 .work__shots {
   display: grid;
@@ -918,28 +1010,35 @@ a.button--secondary:any-link {
 .work__body p {
   margin-block: 0 var(--space-16);
 }
+.work-note {
+  max-width: var(--measure);
+  margin-top: var(--space-96);
+}
+.work-note p {
+  margin-block: 0 var(--space-16);
+}
 .facts {
   margin: var(--space-16) 0;
-  border-top: var(--rule);
 }
 .facts > div {
   display: grid;
-  grid-template-columns: 5.5rem 1fr;
+  grid-template-columns: 5rem minmax(0, 1fr);
   gap: var(--space-16);
   padding-block: var(--space-8);
-  border-bottom: var(--rule);
+}
+.facts > div + div {
+  border-top: var(--rule);
 }
 .facts dt {
-  color: var(--text-strong);
-  font-weight: 700;
+  color: var(--text-sub);
 }
 .facts dd {
   margin: 0;
 }
 
-/* ── 代表の紹介: 本文を左（1〜7 列）、写真を右（8〜12 列）。狭い画面は写真が先。写真が無ければ文章だけ（空の枠は置かない） ── */
+/* ── 代表の紹介: 本文を左（1〜7 列）、写真を右（8〜12 列）。狭い画面は写真が先。写真が無ければ文章だけ ── */
 .person__photo {
-  max-width: 20rem;
+  max-width: 22rem;
   margin: 0;
 }
 @media (max-width: 47.99rem) {
@@ -959,42 +1058,42 @@ a.button--secondary:any-link {
   margin-block: 0 var(--space-16);
 }
 
-/* ── 表（DADS テーブル: 見出しセルは太字＋黒の下罫。行は横罫だけで区切り、縦の罫は引かない）。
-   横にはみ出す分は枠の中でスクロールし、端の影で知らせる。
-   端の影はスクロールできることを知らせる機能なので、グラデーションを使ってよい唯一の場所（check_site.py の許可） ── */
+/* ── 表: 見出し行の下は線の色（3:1）、行の間は細罫。縦の罫は引かない。行は高くとる。
+   横にはみ出す分は枠の中でスクロールし、端の影で知らせる（機能なので、グラデーションを使ってよい唯一の場所） ── */
 .table-region {
   margin-block: var(--space-16) var(--space-24);
   overflow-x: auto;
   background:
-    linear-gradient(to right, var(--bg) 30%, rgb(255 255 255 / 0)) left / 2.5rem 100% no-repeat local,
-    linear-gradient(to left, var(--bg) 30%, rgb(255 255 255 / 0)) right / 2.5rem 100% no-repeat local,
-    radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 0.25), rgb(0 0 0 / 0)) left / 0.75rem 100% no-repeat scroll,
-    radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 0.25), rgb(0 0 0 / 0)) right / 0.75rem 100% no-repeat scroll,
+    linear-gradient(to right, var(--bg) 30%, rgb(244 244 244 / 0)) left / 2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--bg) 30%, rgb(244 244 244 / 0)) right / 2.5rem 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 0.2), rgb(0 0 0 / 0)) left / 0.75rem 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 0.2), rgb(0 0 0 / 0)) right / 0.75rem 100% no-repeat scroll,
     var(--bg);
 }
 .table-region table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--font-size-16);
-  line-height: var(--line-height-170);
+  line-height: var(--leading-body);
 }
 .table-region :is(th, td) {
   min-width: 7em;
-  padding: var(--space-16);
+  padding: var(--space-24) var(--space-16);
   border: 0;
   border-bottom: var(--rule);
   text-align: left;
   vertical-align: top;
 }
 .table-region thead th {
-  border-bottom: 1px solid var(--color-neutral-black);
-  color: var(--text-strong);
-  font-weight: 700;
+  padding-block: var(--space-8);
+  border-bottom: var(--rule-strong);
+  color: var(--text-sub);
+  font-weight: 400;
 }
 .table-region tbody th {
   min-width: 9em;
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
 .table-region .desc {
   min-width: 18em;
@@ -1027,14 +1126,34 @@ a.button--secondary:any-link {
   padding-left: 1.25em;
 }
 .cell-list > li + li {
-  margin-top: 0.25rem;
+  margin-top: var(--space-4);
 }
-/* 狭い画面では、料金表が枠の中に収まるように最小幅と余白を詰める（横スクロールで金額が隠れないように）。
-   行の見出しは「スタンダード」（6 字）が 1 行に入る幅を残す（押し潰すと 1 字ずつ縦に折り返す） */
+/* 献立表のような料金表（LP の段）: 段の名前と価格を明朝で。行の間を広くとる */
+.table--menu tbody th .table-tier,
+.table--menu .num {
+  font-family: var(--font-family-heading);
+  font-weight: 500;
+  font-synthesis: none;
+  font-feature-settings: 'chws';
+  font-size: var(--fs-h3);
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-heading);
+}
+.table--menu tbody th .table-note {
+  display: block;
+  margin: var(--space-4) 0 0;
+  color: var(--text-sub);
+}
+@media (min-width: 48rem) {
+  .table--menu tbody :is(th, td) {
+    padding-block: var(--space-32);
+  }
+}
+/* 狭い画面では、料金表が枠の中に収まるように最小幅と余白を詰める（横スクロールで金額が隠れないように） */
 @media (max-width: 47.99rem) {
   .table-region :is(th, td) {
     min-width: 0;
-    padding: var(--space-8);
+    padding: var(--space-16) var(--space-8);
   }
   .table-region tbody th {
     min-width: 6em;
@@ -1061,10 +1180,10 @@ a.button--secondary:any-link {
     white-space: nowrap;
   }
   .table--stack tbody {
-    border-top: 1px solid var(--color-neutral-black);
+    border-top: var(--rule-strong);
   }
   .table--stack tr {
-    padding-block: var(--space-16);
+    padding-block: var(--space-24);
     border-bottom: var(--rule);
   }
   .table--stack :is(th, td),
@@ -1080,17 +1199,25 @@ a.button--secondary:any-link {
   .table--stack tbody th .table-note {
     font-size: var(--font-size-16);
   }
-  /* 列の名前は補足の色で細く、値（金額）を太く。読み上げでは列の名前を二重に読ませない（対応していなければ上の宣言が残る） */
+  /* 列の名前は左に薄墨で、値は右に。読み上げでは列の名前を二重に読ませない（対応していなければ上の宣言が残る） */
+  .table--stack td[data-label] {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-16);
+  }
   .table--stack td[data-label]::before {
-    content: attr(data-label) '：';
-    content: attr(data-label) '：' / '';
+    content: attr(data-label);
+    content: attr(data-label) / '';
     color: var(--text-mid);
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-16);
     font-weight: 400;
+    letter-spacing: var(--tracking-body);
+    text-align: left;
   }
   .table--stack .num {
     color: var(--text-strong);
-    font-weight: 700;
-    text-align: left;
+    text-align: right;
     white-space: normal;
   }
   .table--stack .num .table-note {
@@ -1099,12 +1226,15 @@ a.button--secondary:any-link {
   .table--stack .desc {
     min-width: 0;
   }
+  .table--menu tbody th .table-tier,
+  .table--menu .num {
+    font-size: var(--font-size-20);
+  }
 }
 .table-caption {
-  margin: var(--space-40) 0 var(--space-8);
+  margin: var(--space-48) 0 var(--space-8);
   color: var(--text-strong);
-  font-weight: 700;
-  font-size: var(--font-size-20);
+  font-size: var(--fs-h3);
 }
 .table-note {
   max-width: var(--measure);
@@ -1112,27 +1242,28 @@ a.button--secondary:any-link {
   color: var(--text-mid);
 }
 
-/* ── 説明リスト（DADS: dl > div > dt + dd） ── */
+/* ── 説明リスト（dl > div > dt + dd）。行の間だけ細罫 ── */
 .dl {
   display: grid;
   margin: 0;
-  border-top: var(--rule);
 }
 .dl > div {
   display: grid;
-  gap: 0.25rem;
+  gap: var(--space-4);
   padding-block: var(--space-16);
-  border-bottom: var(--rule);
+}
+.dl > div + div {
+  border-top: var(--rule);
 }
 @media (min-width: 48rem) {
   .dl > div {
-    grid-template-columns: 11rem 1fr;
+    grid-template-columns: 11rem minmax(0, 1fr);
     gap: var(--space-24);
+    padding-block: var(--space-24);
   }
 }
 .dl dt {
-  color: var(--text-strong);
-  font-weight: 700;
+  color: var(--text-sub);
 }
 .dl dd {
   max-width: var(--measure);
@@ -1143,14 +1274,18 @@ a.button--secondary:any-link {
 .qa {
   max-width: var(--measure);
   margin: 0;
-  border-top: var(--rule);
 }
 .qa__item {
-  padding-block: var(--space-24);
-  border-bottom: var(--rule);
+  padding-block: var(--space-32);
+}
+.qa__item + .qa__item {
+  border-top: var(--rule);
+}
+.qa__item:first-child {
+  padding-top: 0;
 }
 .qa__q {
-  margin: 0 0 var(--space-8);
+  margin: 0 0 var(--space-16);
   font-size: var(--font-size-20);
 }
 .qa__a > :first-child {
@@ -1160,10 +1295,10 @@ a.button--secondary:any-link {
   margin-bottom: 0;
 }
 
-/* ── 問い合わせフォーム（DADS: ラベルは上・「※必須」「※任意」・入力例は補足文に・プレースホルダーは使わない） ── */
+/* ── 問い合わせフォーム（ラベルは上・「※必須」「※任意」・入力例は補足文に・プレースホルダーは使わない） ── */
 .form {
   display: grid;
-  gap: var(--space-24);
+  gap: var(--space-32);
   max-width: var(--measure);
 }
 .form-field {
@@ -1172,7 +1307,7 @@ a.button--secondary:any-link {
 }
 .form-label {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
 .form-req,
 .form-opt {
@@ -1195,53 +1330,60 @@ a.button--secondary:any-link {
   width: 100%;
   min-height: 3rem;
   padding: 0.75rem var(--space-16);
-  border: 1px solid var(--color-neutral-solid-gray-600);
-  border-radius: var(--border-radius-8);
-  background-color: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background-color: var(--surface);
   color: var(--text);
   font: inherit;
   font-size: var(--font-size-16);
-  line-height: var(--line-height-150);
+  line-height: var(--leading-ui);
+  letter-spacing: var(--tracking-body);
 }
 textarea.input {
   min-height: 11rem;
+  line-height: var(--leading-body);
   resize: vertical;
 }
 @media (hover: hover) {
   .input:hover {
-    border-color: var(--color-neutral-black);
+    border-color: var(--text-strong);
   }
+}
+.input:focus-visible {
+  border-color: var(--text-strong);
 }
 .form-note {
   margin: 0;
   color: var(--text-mid);
 }
-/* エラー: 冒頭の要約（各欄へのリンク）と、欄ごとの「＊」で始まる文。欄の枠も赤にする（色だけに頼らず文でも示す） */
+/* エラー: 冒頭の要約（各欄へのリンク）と、欄ごとの「＊」で始まる文。欄の枠も赤の 2px にする（色だけに頼らず文でも示す） */
 .form-summary {
   padding: var(--space-16) var(--space-24);
   border: 2px solid var(--error);
+  background-color: var(--surface);
 }
 .form-summary__title {
   margin: 0 0 var(--space-8);
   color: var(--error);
-  font-weight: 700;
+  font-weight: 600;
 }
 .form-summary__list {
   margin: 0;
   padding-left: var(--space-24);
 }
 .form-summary__list > li + li {
-  margin-top: 0.25rem;
+  margin-top: var(--space-4);
 }
 .form-field__error {
   margin: 0;
   color: var(--error);
-  font-weight: 700;
+  font-weight: 600;
 }
 .input[aria-invalid='true'] {
-  border-color: var(--error);
+  padding: calc(0.75rem - 1px) calc(var(--space-16) - 1px);
+  border: 2px solid var(--error);
 }
-/* 選ぶ欄（ラジオボタン）。印は OS の部品のまま墨で塗る（ブランド色は押すボタンだけ）。押せる範囲は 44px */
+/* 選ぶ欄（ラジオボタン）。印は OS の部品のまま墨で塗る（紫は押すボタンだけ）。押せる範囲は 44px */
 .form-choice {
   min-width: 0;
   margin: 0;
@@ -1254,7 +1396,7 @@ textarea.input {
 }
 .choice-list {
   display: grid;
-  gap: 0.25rem var(--space-24);
+  gap: var(--space-4) var(--space-24);
 }
 @media (min-width: 48rem) {
   .choice-list {
@@ -1296,7 +1438,7 @@ textarea.input {
 .form-status {
   margin: 0;
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
 .form-status:empty {
   display: none;
@@ -1304,13 +1446,17 @@ textarea.input {
 .contact__aside h3 {
   margin-bottom: var(--space-8);
 }
+.contact__lead {
+  max-width: var(--measure);
+  margin: 0;
+  color: var(--text-mid);
+}
 
-/* ── 注釈ブロック（DADS: 強調された補足情報） ── */
+/* ── 注釈ブロック（強調された補足情報）。白い面で地から分ける ── */
 .notice {
   margin-block: var(--space-24);
   padding: var(--space-16) var(--space-24);
-  border: var(--rule);
-  background-color: var(--bg-sub);
+  background-color: var(--surface);
 }
 .notice > :first-child {
   margin-top: 0;
@@ -1320,7 +1466,7 @@ textarea.input {
 }
 .notice__title {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* ── 本文（ブログ・固定ページ）。見出しは大きさと余白だけで区切る（下線や左の帯の飾りは付けない） ── */
@@ -1328,11 +1474,11 @@ textarea.input {
   max-width: var(--measure);
 }
 .prose h2 {
-  margin: var(--space-40) 0 var(--space-16);
+  margin: var(--space-64) 0 var(--space-16);
   font-size: var(--font-size-24);
 }
 .prose h3 {
-  margin: var(--space-40) 0 var(--space-16);
+  margin: var(--space-48) 0 var(--space-16);
   font-size: var(--font-size-20);
 }
 .prose h4 {
@@ -1340,30 +1486,21 @@ textarea.input {
 }
 @media (min-width: 48rem) {
   .prose h2 {
-    margin-top: var(--space-64);
+    margin-top: var(--space-96);
   }
 }
 .prose :is(h2, h3, h4) {
   scroll-margin-top: var(--space-16);
 }
 .prose p {
-  margin-block: var(--space-16);
-}
-@media (min-width: 48rem) {
-  .prose p {
-    margin-block: var(--space-24);
-  }
-}
-/* 記事の本文は行間を少し広げる（長く読むため） */
-.article .prose {
-  line-height: var(--line-height-175);
+  margin-block: var(--space-24);
 }
 .prose ul {
   margin-block: var(--space-16);
-  padding-left: 2rem;
+  padding-left: var(--space-32);
 }
 .prose li {
-  margin-block: 0.25rem;
+  margin-block: var(--space-4);
 }
 .prose li > a:only-child {
   padding-block: 0.125rem;
@@ -1373,33 +1510,31 @@ textarea.input {
   list-style: none;
 }
 .list-number > li {
-  padding-left: 2rem;
+  padding-left: var(--space-32);
 }
 .list-number__num {
   display: inline-block;
-  min-width: 2rem;
-  margin-left: -2rem;
+  min-width: var(--space-32);
+  margin-left: calc(-1 * var(--space-32));
   white-space: nowrap;
 }
 .prose hr {
-  margin-block: var(--space-40);
+  margin-block: var(--space-48);
   border: 0;
   border-top: var(--rule);
 }
 .prose code {
   padding: 0.0625em 0.25em;
-  border-radius: var(--border-radius-4);
-  background-color: var(--bg-sub);
+  background-color: var(--surface);
   font-family: var(--font-family-mono);
   overflow-wrap: anywhere;
 }
 .prose pre {
   overflow-x: auto;
-  padding: var(--space-16);
-  border: var(--rule);
-  background-color: var(--bg-sub);
-  font-size: var(--font-size-16);
-  line-height: 1.6;
+  padding: var(--space-16) var(--space-24);
+  background-color: var(--surface);
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
 }
 .prose pre code {
   padding: 0;
@@ -1408,7 +1543,7 @@ textarea.input {
 .prose blockquote {
   margin: var(--space-24) 0;
   padding: var(--space-8) var(--space-16) var(--space-8) var(--space-24);
-  border-left: 0.5rem solid var(--color-neutral-solid-gray-536);
+  border-left: 2px solid var(--line);
 }
 .prose blockquote > :first-child {
   margin-top: 0;
@@ -1424,21 +1559,29 @@ textarea.input {
 }
 .prose .quote > figcaption {
   margin-top: var(--space-8);
-  padding-left: 2rem;
+  padding-left: var(--space-32);
   color: var(--text-mid);
 }
 .prose figure {
-  margin: var(--space-40) 0;
+  margin: var(--space-48) 0;
+}
+.prose figure img {
+  display: block;
+}
+.prose figcaption {
+  color: var(--text-sub);
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
 }
 .banner {
-  --_c: var(--color-neutral-solid-gray-536);
+  --_c: var(--line);
   margin-block: var(--space-24);
   padding: var(--space-8) var(--space-16) var(--space-24);
-  border: 3px solid var(--_c);
-  background-color: var(--bg);
+  border: 2px solid var(--_c);
+  background-color: var(--surface);
 }
 .banner--warning {
-  --_c: var(--color-primitive-yellow-900);
+  --_c: var(--color-warning);
 }
 .banner__heading {
   display: flex;
@@ -1446,8 +1589,8 @@ textarea.input {
   gap: var(--space-8);
   margin: 0;
   color: var(--text-strong);
-  font-weight: 700;
-  line-height: var(--line-height-170);
+  font-weight: 600;
+  line-height: var(--leading-body);
 }
 .banner__icon {
   flex: none;
@@ -1458,20 +1601,21 @@ textarea.input {
 .prose .banner__body > * {
   margin-block: var(--space-8) 0;
 }
-/* 目次（記事とサービスのページ）。リンクは本文と同じ色（行き先であることを色でも示す） */
+/* 目次（記事とサービスのページ）。枠で囲まず、小さい見出しとリンクの並びだけ */
 .toc {
-  width: fit-content;
   max-width: 100%;
-  margin-block: var(--space-24) var(--space-40);
-  padding: var(--space-16) var(--space-24) var(--space-24);
-  border: var(--rule);
+  margin-block: var(--space-24) var(--space-48);
 }
 .toc__heading {
   margin: 0 0 var(--space-8);
   padding: 0;
   border: 0;
-  font-size: var(--font-size-16);
-  line-height: var(--line-height-170);
+  color: var(--text-sub);
+  font-family: var(--font-family-sans);
+  font-weight: 400;
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
+  letter-spacing: var(--tracking-body);
 }
 .toc__list {
   margin: 0;
@@ -1493,17 +1637,24 @@ textarea.input {
   max-width: var(--measure);
   margin: 0;
   padding: 0;
-  border-top: var(--rule);
   list-style: none;
 }
 .article-list__item {
-  padding-block: var(--space-24);
-  border-bottom: var(--rule);
+  padding-block: var(--space-32);
+}
+.article-list__item + .article-list__item {
+  border-top: var(--rule);
+}
+.article-list__item:first-child {
+  padding-top: 0;
 }
 .article-list__link {
-  font-weight: 700;
+  font-family: var(--font-family-heading);
+  font-weight: 500;
+  font-synthesis: none;
   font-size: var(--font-size-20);
-  line-height: var(--line-height-150);
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-heading);
 }
 .article-list__desc,
 .article-list__meta {
@@ -1511,12 +1662,11 @@ textarea.input {
 }
 .article-list__meta {
   color: var(--text-sub);
+  font-size: var(--font-size-14);
 }
 .article-about {
   max-width: var(--measure);
-  margin-top: var(--space-64);
-  padding-top: var(--space-24);
-  border-top: var(--rule-strong);
+  margin-top: var(--space-96);
 }
 .article-about h2 {
   margin: 0 0 var(--space-16);
@@ -1525,20 +1675,18 @@ textarea.input {
 
 /* ── 本文の下の余白（下層ページ） ── */
 .page-body {
-  padding-block: var(--space-16) var(--space-64);
+  padding-block: var(--space-16) var(--space-96);
 }
-/* 下層ページの節はすべて同じ間隔で並べる（主役は見出しの大きさと中身で示す。節の間の余白をそろえる） */
+/* 下層ページの節はすべて同じ間隔で並べる（主役は見出しの大きさと中身で示す） */
 .page-body > .section {
-  padding-block: var(--section-minor);
+  padding-block: var(--section);
 }
-/* ページの見出しのすぐ後の節は、上の余白を詰め、罫を引かない（見出しと最初の節の間が間延びしないように） */
+/* ページの見出しのすぐ後の節は、上の余白を詰める（見出しと最初の節の間が間延びしないように） */
 .page-body > .section:first-child {
   padding-top: var(--space-24);
-  border-top: 0;
 }
 
-/* ── ページの終わりの一言とボタン（帯で塗らない。従の節として罫で区切るだけ） ── */
-/* 罫は節の幅（本文の幅）に引き、中の文だけを文章の幅にする */
+/* ── ページの終わりの一言とボタン（帯で塗らない） ── */
 .page-end > * {
   max-width: var(--measure);
 }
@@ -1549,17 +1697,16 @@ textarea.input {
   margin: 0;
 }
 
-/* ── フッター ── */
+/* ── フッター: 地の色のまま、余白で区切る ── */
 .site-footer {
   margin-top: 0;
-  border-top: var(--rule);
-  background-color: var(--bg-sub);
+  background-color: var(--bg);
   font-size: var(--font-size-16);
 }
 .site-footer__inner {
   display: grid;
-  gap: var(--space-40) var(--grid-gap);
-  padding-block: var(--space-64) var(--space-40);
+  gap: var(--space-48) var(--grid-gap);
+  padding-block: var(--space-96) var(--space-48);
 }
 @media (min-width: 48rem) {
   .site-footer__inner {
@@ -1569,6 +1716,7 @@ textarea.input {
 @media (min-width: 64rem) {
   .site-footer__inner {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding-top: var(--space-128);
   }
 }
 .site-footer__about p {
@@ -1577,16 +1725,23 @@ textarea.input {
 .site-footer__tagline {
   color: var(--text-strong);
   font-family: var(--font-family-heading);
-  font-weight: 700;
-  font-feature-settings: 'palt';
+  font-weight: 500;
+  font-synthesis: none;
+  font-feature-settings: 'chws';
+  font-size: var(--font-size-20);
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-heading);
 }
 .site-footer__heading {
   margin: 0 0 var(--space-8);
-  color: var(--text-strong);
-  font-weight: 700;
-  font-size: var(--font-size-16);
+  color: var(--text-sub);
+  font-family: var(--font-family-sans);
+  font-weight: 400;
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
+  letter-spacing: var(--tracking-body);
 }
-/* DADS ユーティリティリンク: 本文色・下線 */
+/* ユーティリティリンク: 墨の字・下線 */
 .utility-links {
   margin: 0;
   padding: 0;
@@ -1597,51 +1752,20 @@ textarea.input {
   word-break: auto-phrase;
   padding-block: 0.3125rem;
   color: var(--text);
-  line-height: var(--line-height-140);
-  letter-spacing: 0;
+  line-height: var(--leading-ui);
 }
-/* 下の罫は本文の幅に引く（.wrap の左右の余白まで伸ばさない） */
 .site-footer__bottom {
-  padding-block: 0 var(--space-40);
-}
-.site-footer__bottom::before {
-  content: '';
-  display: block;
-  margin-bottom: var(--space-24);
-  border-top: var(--rule);
+  padding-block: 0 var(--space-48);
 }
 .site-footer__copy {
   margin: 0;
   color: var(--text-sub);
-}
-
-/* 強制カラーモード（Windows のハイコントラスト等）: 枠と焦点をシステム色で残す */
-@media (forced-colors: active) {
-  :focus-visible {
-    outline-color: Highlight;
-  }
-  .notice,
-  .toc,
-  .banner,
-  .shot img,
-  .hero__media img {
-    border-color: CanvasText;
-  }
-  .timeline__step::before,
-  .flow__step::before {
-    background-color: CanvasText;
-  }
-  .button {
-    border-color: ButtonText;
-  }
-  .table-region {
-    background: Canvas;
-  }
+  font-size: var(--font-size-14);
 }
 
 /* ── 仕組みの流れ図（つくったもの・ブログ）。説明（図の名前）は図の上に置く ── */
 .flow {
-  margin: var(--space-24) 0 var(--space-40);
+  margin: var(--space-24) 0 var(--space-48);
 }
 .flow__caption {
   margin: 0 0 var(--space-16);
@@ -1665,22 +1789,21 @@ textarea.input {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-4);
   padding: var(--space-16) 0 0;
-  border-top: var(--rule-strong);
+  border-top: 1px solid var(--color-ink);
 }
 .flow__step::before {
   content: '';
   position: absolute;
-  top: -0.3125rem;
+  top: -0.25rem;
   left: 0;
-  width: 0.625rem;
-  height: 0.625rem;
+  width: 0.5rem;
+  height: 0.5rem;
   background-color: var(--text-strong);
 }
 .flow__num {
   color: var(--text-mid);
-  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 .flow__title,
@@ -1690,33 +1813,31 @@ textarea.input {
 }
 .flow__title {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
 .flow__body {
   font-size: var(--font-size-16);
-  line-height: 1.6;
+  line-height: var(--leading-small);
 }
 
-/* ── 移したページ（アプリのサポート・規約、決済の完了・取消）: 旧サイトの本文のクラスをそのまま受ける ── */
+/* ── 移したページ（アプリのサポート・規約、決済の完了・取消）: 旧サイトの本文のクラスをそのまま受ける（本文は変えない） ── */
 .h1-sub {
   display: block;
   margin-top: var(--space-8);
   color: var(--text-mid);
-  font-weight: 400;
   font-size: var(--font-size-20);
-  letter-spacing: 0.02em;
 }
 .legal {
   max-width: var(--measure);
 }
 .legal section {
-  margin-block: var(--space-40);
+  margin-block: var(--space-48);
 }
 .legal h2,
 .legal .section-heading {
-  margin: var(--space-40) 0 var(--space-16);
+  margin: var(--space-48) 0 var(--space-16);
   font-size: var(--font-size-20);
-  line-height: var(--line-height-150);
+  line-height: var(--leading-h3);
 }
 .legal section h2 {
   margin-top: 0;
@@ -1734,15 +1855,14 @@ textarea.input {
 .legal ul,
 .legal ol {
   margin-block: var(--space-16);
-  padding-left: 2rem;
+  padding-left: var(--space-32);
 }
 .legal .lang-label {
   display: inline-block;
-  margin: var(--space-16) 0 0.25rem;
+  margin: var(--space-16) 0 var(--space-4);
   padding: 0.125rem 0.75rem;
-  border: 1px solid var(--color-neutral-solid-gray-536);
+  border: 1px solid var(--line);
   color: var(--text-strong);
-  font-weight: 700;
 }
 .legal .updated {
   color: var(--text-sub);
@@ -1755,11 +1875,11 @@ textarea.input {
 .legal .faq-item {
   margin-block: var(--space-16);
   padding: var(--space-16) var(--space-24);
-  border: var(--rule);
+  background-color: var(--surface);
 }
 .legal .faq-q {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
 .legal .faq-a {
   margin-top: var(--space-8);
@@ -1781,20 +1901,18 @@ textarea.input {
   width: 2rem;
   height: 2rem;
   background-color: var(--text-strong);
-  color: var(--color-neutral-white);
-  font-weight: 700;
+  color: var(--surface);
 }
 .legal .step-title {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
 .legal .card,
 .legal .contact-box {
   display: block;
   margin-block: var(--space-24);
   padding: var(--space-24);
-  border: var(--rule);
-  background-color: var(--bg);
+  background-color: var(--surface);
 }
 .legal .card h2 {
   margin-top: 0;
@@ -1807,18 +1925,16 @@ textarea.input {
 }
 .legal .contact-box-title {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
 .legal .note,
 .legal .warning {
   margin-block: var(--space-24);
   padding: var(--space-16) var(--space-24);
-  border: var(--rule);
-  background-color: var(--bg-sub);
+  background-color: var(--surface);
 }
 .legal .warning {
-  border: 3px solid var(--color-primitive-yellow-900);
-  background-color: var(--bg);
+  border: 2px solid var(--color-warning);
 }
 /* 移したページの表も、行の横罫だけで区切る（縦の罫を引かない。本文は変えない） */
 .legal table {
@@ -1835,20 +1951,143 @@ textarea.input {
 }
 .legal table th {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
 }
-/* 旧サイトの本文に残っているインラインの紫のリンク（2 か所）は、ほかのリンクと同じ色に戻す（紫を飾りに使わない） */
+/* 旧サイトの本文に残っているインラインの紫のリンク（2 か所）は、ほかのリンクと同じ墨に戻す（紫を飾りに使わない） */
 .legal a[style*='color:var(--purple)'] {
-  color: var(--link) !important;
-}
-.legal a[style*='color:var(--purple)']:visited {
-  color: var(--link-visited) !important;
+  color: var(--text) !important;
 }
 
 /* <Picture> は <picture> で包まれるので、画像の並びの中ではブロックにする */
-.hero__media picture,
 .work__shots picture,
 .shot picture,
 .person__photo picture {
   display: block;
+}
+.shot {
+  margin: 0;
+}
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.shot figcaption {
+  margin-top: var(--space-8);
+  color: var(--text-sub);
+  font-size: var(--font-size-14);
+  line-height: var(--leading-small);
+}
+/* つくったもの（下層ページ）: 広い画面はパソコンの画面、狭い画面はスマートフォンの画面 */
+.shot--sp {
+  width: min(100%, 18rem);
+}
+@media (max-width: 47.99rem) {
+  .shot--pc {
+    display: none;
+  }
+}
+@media (min-width: 48rem) {
+  .shot--sp {
+    display: none;
+  }
+}
+
+/* 強制カラーモード（Windows のハイコントラスト等）: 影は消えるので、画面と枠と焦点をシステム色で残す */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline-color: Highlight;
+  }
+  .shot-pair img,
+  .shot img {
+    outline: 1px solid CanvasText;
+  }
+  .panel__inner,
+  .notice,
+  .banner,
+  .legal .card,
+  .legal .contact-box,
+  .legal .note,
+  .legal .faq-item {
+    border: 1px solid CanvasText;
+  }
+  .timeline__step::before,
+  .timeline__title::before,
+  .flow__step::before {
+    background-color: CanvasText;
+  }
+  .button {
+    border-color: ButtonText;
+  }
+  .table-region {
+    background: Canvas;
+  }
+}
+
+/* 印刷: メニューと裁ち落としをやめ、画面の中に収める */
+@media print {
+  .site-header .global-nav,
+  .menu-button,
+  .mobile-menu,
+  .skip-link {
+    display: none !important;
+  }
+  .hero__media {
+    margin-right: 0;
+  }
+}
+
+/* ── 動き（2026-09-25 👤: 看板の登場と操作への反応だけ）。すべてこの節の中に置き、
+   「動きを減らす」設定・JS なしでは何も動かず最初から全部見える（DESIGN.md §4）。
+   看板の入りは同じタブで 2 回目は出さない（トップの <head> が data-hero-seen を付ける） ── */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  a:any-link,
+  .global-nav__list a:not(.button):any-link,
+  .mobile-menu__list > li > a:not(.button):any-link {
+    transition: text-decoration-color var(--dur-feedback) var(--ease-standard);
+  }
+  .button,
+  .input,
+  .menu-button {
+    transition:
+      background-color var(--dur-feedback) var(--ease-standard),
+      border-color var(--dur-feedback) var(--ease-standard),
+      color var(--dur-feedback) var(--ease-standard);
+  }
+  @keyframes hero-enter-slide {
+    from {
+      opacity: 0;
+      transform: translateX(2.5rem);
+    }
+  }
+  @keyframes hero-enter-rise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--rise, 0.75rem));
+    }
+  }
+  @keyframes hero-enter-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  :root:not([data-hero-seen]) .hero .shot-pair__pc {
+    animation: hero-enter-slide var(--dur-hero) var(--ease-enter) both;
+  }
+  :root:not([data-hero-seen]) .hero .hero__line {
+    animation: hero-enter-rise var(--dur-hero) var(--ease-enter) 120ms both;
+  }
+  :root:not([data-hero-seen]) .hero .hero__line + .hero__line {
+    animation-delay: 220ms;
+  }
+  :root:not([data-hero-seen]) .hero .shot-pair__sp {
+    --rise: 1.5rem;
+    animation: hero-enter-rise var(--dur-hero) var(--ease-enter) 360ms both;
+  }
+  :root:not([data-hero-seen]) .hero :is(.hero__what, .hero__cta, .shot-pair__note) {
+    animation: hero-enter-fade 400ms var(--ease-standard) 520ms both;
+  }
 }

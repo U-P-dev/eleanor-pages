@@ -4,6 +4,7 @@
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\preview\evaluate.ps1 `
 #     -Url http://localhost:4321/__preview/a11y.html -Expr "runAll().then(r => JSON.stringify(r))" -Out C:\path\result.json
 #
+# -ReducedMotion / -ForcedColors / -Print emulate the OS setting or print media (the motion and hero checks in a11y.html).
 # The expression must return (or resolve to) a string. Headless tabs are not throttled like a background tab in a normal window.
 # ASCII only on purpose: Windows PowerShell 5.1 reads BOM-less UTF-8 scripts as the ANSI code page.
 param(
@@ -13,6 +14,9 @@ param(
   [int]$Width = 1280,
   [int]$Height = 800,
   [int]$Port = 9334,
+  [switch]$ReducedMotion,
+  [switch]$ForcedColors,
+  [switch]$Print,
   [int]$WaitMs = 1000
 )
 $ErrorActionPreference = 'Stop'
@@ -61,6 +65,15 @@ try {
   [void]$ws.ConnectAsync([Uri]$page.webSocketDebuggerUrl, [Threading.CancellationToken]::None).GetAwaiter().GetResult()
 
   [void](Send-Command 'Emulation.setDeviceMetricsOverride' @{ width = $Width; height = $Height; deviceScaleFactor = 1; mobile = $false })
+  # -ReducedMotion / -ForcedColors / -Print: emulate the OS setting or print media before the page loads
+  $features = @()
+  if ($ReducedMotion) { $features += @{ name = 'prefers-reduced-motion'; value = 'reduce' } }
+  if ($ForcedColors) { $features += @{ name = 'forced-colors'; value = 'active' } }
+  if ($features.Count -gt 0 -or $Print) {
+    $media = @{ features = $features }
+    if ($Print) { $media.media = 'print' }
+    [void](Send-Command 'Emulation.setEmulatedMedia' $media)
+  }
   [void](Send-Command 'Page.enable' @{})
   [void](Send-Command 'Page.navigate' @{ url = $Url })
   [void](Send-Command 'Runtime.evaluate' @{ expression = 'new Promise((ok) => document.readyState === "complete" ? ok(true) : addEventListener("load", () => ok(true)))'; awaitPromise = $true })

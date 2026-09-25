@@ -1,54 +1,29 @@
 ---
-// 看板の見本の画面（主力の LP の見本。NN/g: 主画像は主力の提供物を代表させる）。
-// 広い画面はパソコンの画面、狭い画面はスマートフォンの画面を、1 つの <picture> で出し分ける（片方を CSS で隠すと両方を読み込む）。
-// 最初の画面に入るので遅延読み込みにせず、先に取りにいかせる（web.dev: LCP の画像を lazy にしない）。画像が無ければ何も出さない。
-import { getImage } from 'astro:assets';
-import prices from '../data/prices.json';
+// 看板の見本の画面（主力の LP の見本。NN/g: 主画像は主力の提供物を代表させる）。大胆に見せるのはここだけ（DESIGN.md §1）。
+// PC の画面は 6 列目から窓の右端まで裁ち落とし、SP の画面を同じ縮尺で手前に重ねる。
+// 最初の画面に入るので遅延読み込みにしない（web.dev）。料金は書かない（料金は条件と一緒に下の節で出す）。画像が無ければ何も出さない。
+import ShotPair from './ShotPair.astro';
 import { SAMPLES } from '../data/samples.mjs';
 import { TIERS } from '../data/tiers.mjs';
-import { yen } from '../lib/format.mjs';
-import { tax } from '../lib/prices.mjs';
 
 const images = import.meta.glob<{ default: ImageMetadata }>('../assets/samples/*.webp', { eager: true });
-const s = SAMPLES[0];
+const s = SAMPLES.find((x) => x.hero) ?? SAMPLES[0];
 const pc = images[`../assets/samples/${s.id}-pc.webp`]?.default;
 const sp = images[`../assets/samples/${s.id}-sp.webp`]?.default;
-const variants =
-  pc && sp
-    ? await Promise.all([
-        getImage({ src: pc, widths: [480, 720, 960], format: 'avif' }),
-        getImage({ src: pc, widths: [480, 720, 960], format: 'webp' }),
-        getImage({ src: sp, widths: [320, 480, 640], format: 'avif' }),
-        getImage({ src: sp, widths: [320, 480, 640], format: 'webp' }),
-      ])
-    : null;
-const bundle = prices.plans[`bundle_${s.tier}`];
-const pcSizes = '(min-width: 72rem) 29rem, 40vw';
-const spSizes = '18rem';
 ---
 
 {
-  variants && pc && sp && (
-    <figure class="grid__side hero__media">
-      <picture>
-        <source media="(min-width: 48rem)" type="image/avif" srcset={variants[0].srcSet.attribute} sizes={pcSizes} width={pc.width} height={pc.height} />
-        <source media="(min-width: 48rem)" type="image/webp" srcset={variants[1].srcSet.attribute} sizes={pcSizes} width={pc.width} height={pc.height} />
-        <source type="image/avif" srcset={variants[2].srcSet.attribute} sizes={spSizes} />
-        <source type="image/webp" srcset={variants[3].srcSet.attribute} sizes={spSizes} />
-        <img
-          src={variants[3].src}
-          width={sp.width}
-          height={sp.height}
-          alt={`${s.alt.sp}（見本・架空の店）`}
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-        />
-      </picture>
-      <figcaption>
-        LP の見本：{s.shop}（{s.industry}・架空の店）。{TIERS[s.tier].label}のデザインで、LP＋保守は{yen(bundle.price)}（{tax}）です。<a
-          href="#samples">ほかの見本</a
-        >
+  pc && sp && (
+    <figure class="hero__media shot-pair shot-pair--hero">
+      <ShotPair
+        pc={pc}
+        sp={sp}
+        alt={{ pc: `${s.alt.pc}（見本・架空の店）`, sp: `${s.alt.sp}（見本・架空の店）` }}
+        sizes={{ pc: '(min-width: 64rem) 57vw, calc(100vw - 4.5rem)', sp: '(min-width: 64rem) 18vw, 36vw' }}
+        priority
+      />
+      <figcaption class="shot-pair__note hero__caption">
+        見本：架空の{s.industry}の LP（{TIERS[s.tier].label}）
       </figcaption>
     </figure>
   )

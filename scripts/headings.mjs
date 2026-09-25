@@ -1,11 +1,12 @@
 // ビルドの後に dist/ の HTML の見出しを仕上げる（npm run build の中で astro build と copy_generated.mjs の後に走る）。
 //   1. 見出し（h1〜h4）の文節の区切りに <wbr> を入れる。iPhone の Safari は word-break: auto-phrase が効かないので、
 //      CSS の keep-all と組み合わせて「文節の途中で折り返さない」を全ブラウザで揃える（移したページの本文には入れない）
-//   2. 見出しとロゴに使っている字だけを、Google Fonts から Noto Sans JP 700 の woff2 として切り出し、
-//      dist/fonts/ に置いてこのサイトから配る（閲覧者の情報を外部に送らない。書体は SIL OFL 1.1・public/fonts/OFL.txt）。
-//      見出しは字詰め（palt）を効かせるので、切り出した書体に palt が入っているかを確かめて報告に書く
-//   3. 各ページの <head> に @font-face と preload を差し込む
-// 書体の取得に失敗しても終了コードは 0（見出しは本文と同じ OS の書体で出る。scripts/check_site.py が WARN を出す）。
+//   2. 明朝で出す字（見出し・ロゴ・フッターの標語・data-font="mincho" の要素・数字と価格の字）だけを、Google Fonts から
+//      Noto Serif JP 500 の woff2 として切り出し、dist/fonts/ に置いてこのサイトから配る（閲覧者の情報を外部に送らない。
+//      書体は SIL OFL 1.1・public/fonts/OFL.txt）。この書体には palt が無いので、見出しは約物の詰めを chws（と halt）で組む。
+//      切り出した書体の GPOS の機能と、著作権の表示（name 表）を読んで報告に書く（check_site.py が確かめる）
+//   3. 各ページの <head> に @font-face と preload を差し込む（font-display: optional。表示の途中で書体を切り替えない）
+// 書体の取得に失敗しても終了コードは 0（見出しは端末の明朝で出る。scripts/check_site.py が WARN を出す）。
 // HEADING_FONT=off で 2 と 3 を飛ばす（書体なしでも組めるかを確かめるとき）。
 import { createHash } from 'node:crypto';
 import { brotliDecompressSync } from 'node:zlib';
@@ -14,8 +15,12 @@ import path from 'node:path';
 
 const ROOT = path.dirname(path.dirname(new URL(import.meta.url).pathname));
 const DIST = path.join(ROOT, 'dist');
-const FAMILY = 'Noto Sans JP';
-const WEIGHT = 700;
+const FAMILY = 'Noto Serif JP';
+const WEIGHT = 500;
+// 見出しの組みが前提にしている書体の機能（chws: 約物の連続を詰める・halt: 行頭の「をぶら下げる）
+const REQUIRED_FEATURES = ['chws', 'halt'];
+// 見出しの外で明朝を使う字（価格の数字と単位）。ページに無くても常に入れる
+const ALWAYS = '0123456789,.円月からの（）・／＋';
 const CSS_NAME = 'Eleanor Heading';
 const REPORT = path.join(ROOT, '.astro', 'heading-font.json');
 // 自動生成の 3 枚（別の仕組みが書く）と Search Console の確認ファイルには触らない
@@ -31,6 +36,8 @@ const HEADING = /<(h[1-4])(\s[^>]*)?>([\s\S]*?)<\/\1>/g;
 const NARROW = /<(th|span)(\s[^>]*?(?:scope=|class="flow__(?:title|body)")[^>]*)>([\s\S]*?)<\/\1>/g;
 const LOGO = /<a class="site-logo"[^>]*>([\s\S]*?)<\/a>/g;
 const TAGLINE = /<p class="site-footer__tagline">([\s\S]*?)<\/p>/g;
+// 見出しの外で明朝を使う要素（価格・段の名前・メニュー）。印は data-font="mincho"（入れ子にしない）
+const MINCHO = /<([a-z][a-z0-9]*)\b[^>]*\bdata-font="mincho"[^>]*>([\s\S]*?)<\/\1>/g;
 
 function pages(dir) {
   const out = [];
@@ -102,9 +109,10 @@ async function fetchFont(chars) {
   return buf;
 }
 
-// woff2 の中の表（圧縮された 1 本の流れ）を開き、GPOS の機能一覧に palt（字詰め）があるかを見る。
-// 見出しの CSS は font-feature-settings: 'palt' を前提にしているので、書体に無ければ報告して check_site.py が止める
-function hasPalt(buf) {
+// woff2 の中の表（圧縮された 1 本の流れ）を開き、GPOS の機能の一覧と、name 表の著作権の表示（nameID 0）を読む。
+// 見出しの CSS は chws と halt を前提にしているので、書体に無ければ報告して check_site.py が止める。
+// 著作権の表示は public/fonts/OFL.txt の 1 行目と突き合わせる（書体を替えたのにライセンスの表示が古いまま、を防ぐ）
+function fontInfo(buf) {
   let p = 12;
   const numTables = buf.readUInt16BE(p);
   const compressed = buf.readUInt32BE(20);
@@ -133,18 +141,37 @@ function hasPalt(buf) {
     tables.push({ tag, length: transformed ? base128() : length });
   }
   const data = brotliDecompressSync(buf.subarray(p, p + compressed));
+  const info = { features: [], copyright: null };
   let offset = 0;
   for (const t of tables) {
+    const table = data.subarray(offset, offset + t.length);
     if (t.tag === 'GPOS') {
-      const gpos = data.subarray(offset, offset + t.length);
-      const list = gpos.readUInt16BE(6);
-      const count = gpos.readUInt16BE(list);
-      for (let i = 0; i < count; i++) if (gpos.toString('latin1', list + 2 + i * 6, list + 6 + i * 6) === 'palt') return true;
-      return false;
+      const list = table.readUInt16BE(6);
+      const count = table.readUInt16BE(list);
+      const tags = new Set();
+      for (let i = 0; i < count; i++) tags.add(table.toString('latin1', list + 2 + i * 6, list + 6 + i * 6));
+      info.features = [...tags].sort();
+    }
+    if (t.tag === 'name') {
+      const count = table.readUInt16BE(2);
+      const strings = table.readUInt16BE(4);
+      let fallback = null;
+      for (let i = 0; i < count; i++) {
+        const r = 6 + i * 12;
+        const [platform, , , nameId, length, at] = [0, 2, 4, 6, 8, 10].map((o) => table.readUInt16BE(r + o));
+        if (nameId !== 0) continue;
+        const raw = table.subarray(strings + at, strings + at + length);
+        if (platform === 3) {
+          info.copyright = Buffer.from(raw).swap16().toString('utf16le');
+          break;
+        }
+        if (platform === 1) fallback = raw.toString('latin1');
+      }
+      info.copyright ??= fallback;
     }
     offset += t.length;
   }
-  return false;
+  return info;
 }
 
 async function main() {
@@ -166,12 +193,14 @@ async function main() {
       return `<${tag}${attrs}>${withWbr(inner)}</${tag}>`;
     });
     for (const re of [LOGO, TAGLINE]) for (const [, inner] of html.matchAll(re)) for (const ch of textOf(inner)) chars.add(ch);
+    for (const [, , inner] of html.matchAll(MINCHO)) for (const ch of textOf(inner)) chars.add(ch);
     fs.writeFileSync(file, html);
     wbrPages++;
   }
+  for (const ch of ALWAYS) chars.add(ch);
   // 空白・改行は書体に要らない
   const glyphs = [...chars].filter((c) => c.trim()).sort().join('');
-  const report = { family: FAMILY, weight: WEIGHT, glyphs: glyphs.length, file: null, bytes: 0, palt: null, error: null };
+  const report = { family: FAMILY, weight: WEIGHT, glyphs: glyphs.length, file: null, bytes: 0, features: [], chws: null, halt: null, copyright: null, error: null };
 
   if (process.env.HEADING_FONT === 'off') {
     report.error = 'HEADING_FONT=off（書体を取りに行かなかった）';
@@ -194,7 +223,7 @@ async function main() {
       const href = `/fonts/${name}`;
       const head =
         `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin>` +
-        `<style>@font-face{font-family:"${CSS_NAME}";src:url(${href}) format("woff2");font-weight:${WEIGHT};font-style:normal;font-display:swap}</style>`;
+        `<style>@font-face{font-family:"${CSS_NAME}";src:url(${href}) format("woff2");font-weight:${WEIGHT};font-style:normal;font-display:optional}</style>`;
       for (const file of files) {
         const html = fs.readFileSync(file, 'utf8').replace(/<link rel="preload" href="\/fonts\/heading-[^"]+"[^>]*><style>@font-face\{font-family:"Eleanor Heading"[^<]*<\/style>/g, '');
         if (html.includes('</head>')) fs.writeFileSync(file, html.replace('</head>', `${head}</head>`));
@@ -202,10 +231,13 @@ async function main() {
       report.file = href;
       report.bytes = buf.length;
       try {
-        report.palt = hasPalt(buf);
+        const info = fontInfo(buf);
+        report.features = info.features;
+        report.copyright = info.copyright;
+        report.chws = info.features.includes('chws');
+        report.halt = info.features.includes('halt');
       } catch (e) {
-        report.palt = null;
-        report.error = `palt を確かめられなかった: ${e.message || e}`;
+        report.error = `書体の機能を確かめられなかった: ${e.message || e}`;
       }
     } catch (e) {
       report.error = String(e.message || e);
@@ -216,7 +248,9 @@ async function main() {
   const mark = report.file ? '✅' : '⚠️';
   console.log(
     `${mark} 見出し: <wbr> を ${wbrPages} ページに入れた・字 ${report.glyphs} 種` +
-      (report.file ? `・書体 ${report.file}（${(report.bytes / 1024).toFixed(1)}KB・palt ${report.palt ? 'あり' : 'なし'}）` : `・書体なし（${report.error}）`),
+      (report.file
+        ? `・書体 ${report.file}（${(report.bytes / 1024).toFixed(1)}KB・${REQUIRED_FEATURES.map((f) => `${f} ${report[f] ? 'あり' : 'なし'}`).join('・')}）`
+        : `・書体なし（${report.error}）`),
   );
 }
 

@@ -1,9 +1,8 @@
 /*
- * エレノアのデザイントークン。
+ * エレノアのデザイントークン（2026-09-25「白と明朝」。値の出典と使い方は DESIGN.md §2〜§4）。
  *
- * 色・角丸・書体の値は「デジタル庁デザインシステム」のデザイントークンから、このサイトで使う分だけを写したもの
- * （npm @digital-go-jp/design-tokens 2.0.1・2026-05-28）。部品の CSS（global.css）は同システムの
- * HTML コードスニペット（v20260909）を参考に書き直した。どちらも MIT License。
+ * フォームと表の組み方（ラベルの位置・エラーの要約・表の枠と見出しセル）は「デジタル庁デザインシステム」の
+ * HTML コードスニペット（v20260909）とデザイントークン（npm @digital-go-jp/design-tokens 2.0.1）を参考にしている。どちらも MIT License。
  *   https://github.com/digital-go-jp/design-tokens                       Copyright (c) 2023 デジタル庁
  *   https://github.com/digital-go-jp/design-system-example-components-html  Copyright (c) 2025 デジタル庁
  *
@@ -19,86 +18,90 @@
  *   IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
  *   THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * キーカラーだけは DADS 既定の Blue ではなく、エレノアのブランド色 #7b3a87 にしている。ロゴの赤 #d7263d と青 #1f4fd1 を
- * 半分ずつ混ぜた値で、「赤と青が混ざって紫」がそのまま色の値になっている（2026-09-25 👤。旧 #7c3aed は Tailwind の既定色と同じ値だった）。
- * 使うのは「塗りのボタン」「メニューの今いるページの印」「ロゴの重なり」の 3 か所だけ（DESIGN.md §2）。
- * 文字の大きさ・行の高さ・余白・格子の段もここに置く（値の出典は DESIGN.md §3・§4）。
- * 値を変えたら scripts/check_site.py のコントラスト検査が通るか確かめる（変数名で読んでいる。色は 16 進で書く）。
+ * 色・文字・余白・角・影・動きの値は、このサイトで決めたもの（DADS の値ではない）。
+ * 色は 16 進の 6 桁で書く（scripts/check_site.py のコントラスト検査が変数名で読んでいる）。
  */
 :root {
-  --color-neutral-white: #ffffff;
-  --color-neutral-black: #000000;
-  --color-neutral-solid-gray-50: #f2f2f2;
-  --color-neutral-solid-gray-100: #e6e6e6;
-  --color-neutral-solid-gray-420: #949494;
-  --color-neutral-solid-gray-536: #767676;
-  --color-neutral-solid-gray-600: #666666;
-  --color-neutral-solid-gray-700: #4d4d4d;
-  --color-neutral-solid-gray-800: #333333;
-  --color-neutral-solid-gray-900: #1a1a1a;
-
-  /* ブランド色（ロゴの赤と青の平均）と、ホバー（黒を 20% 混ぜる）・押下（40%） */
+  /* 色: 色味のない灰と墨、差し色は紫の 1 色だけ。地と白が約 70%、墨が約 25%、紫は 5% 以下（DESIGN.md §2） */
+  --color-ground: #f4f4f4;
+  --color-surface: #ffffff;
+  --color-ink: #2b2b2b;
+  --color-ink-2: #5c5c5c;
+  /* 部品の境界（入力欄の枠・表の見出し行の罫）。地と白のどちらの上でも 3:1 以上 */
+  --color-line: #767676;
+  /* 表と説明リストの行の間だけ（飾り。意味を持たせない） */
+  --color-hairline: #d9d9d9;
+  /* ブランド色（ロゴの赤と青の平均）と、ホバー（黒を 20% 混ぜる）・押下（40%）。文字の色には使わない */
   --color-brand: #7b3a87;
   --color-brand-hover: #622e6c;
   --color-brand-press: #4a2351;
-
+  /* 塗りのボタンの字 */
+  --color-on-brand: #ffffff;
+  /* 「※必須」とエラー（ロゴの赤と同じ色相を暗くした値） */
+  --color-error: #c01f33;
+  /* 注意の枠（移したページの「注意」） */
+  --color-warning: #927200;
   /* ロゴの印だけに使う赤と青（重なりはブランド色）。文字には使わない */
   --color-logo-red: #d7263d;
   --color-logo-blue: #1f4fd1;
 
-  /* リンク（DADS 標準の組み合わせ）。灰色の地で押している間は Orange-900（Orange-800 では 4.5:1 に届かない） */
-  --color-primitive-blue-900: #0017c1;
-  --color-primitive-blue-1000: #00118f;
-  --color-primitive-magenta-900: #8b008b;
-  --color-primitive-orange-800: #c74700;
-  --color-primitive-orange-900: #ac3e00;
-
-  /* フォーカス（Yellow-300 と黒の二重。DADS は変更を禁止） */
-  --color-primitive-yellow-300: #ffd43d;
-
-  /* 警告（Warning Yellow-2） */
-  --color-primitive-yellow-900: #927200;
-
-  /* エラー（Error-2）。フォームの「※必須」とエラーの表示 */
-  --color-error-2: #ce0000;
-
-  /* 角丸は 3 段だけ: 0（節・表・画像・囲み）／4px（文中のコード・フォーカスの輪）／8px（ボタン・入力欄）。
-     「角が丸いものは押せる」。全部に同じ角丸を付けない（DESIGN.md §3） */
-  --border-radius-4: 0.25rem;
-  --border-radius-8: 0.5rem;
-
-  /* 文字の大きさの段（DADS: Std-16N-170・Std-17N-170・Std-20B-150・Std-24B-150・Std-32B-150・Std-45B-140・Dsp-57B-140）。
-     ここに無い大きさは使わない（scripts/check_site.py が止める）。14px はメニューのボタンとロゴの英字だけ（DADS: 制約のある場所） */
+  /* 文字の大きさの段（DESIGN.md §3）。ここに無い大きさは使わない（scripts/check_site.py が止める）。
+     14px は画面の説明・日付・©・パンくず・ロゴの英字だけ（価格の条件には使わない） */
   --font-size-14: 0.875rem;
   --font-size-16: 1rem;
-  --font-size-17: 1.0625rem;
   --font-size-20: 1.25rem;
   --font-size-24: 1.5rem;
+  --font-size-26: 1.625rem;
+  --font-size-30: 1.875rem;
   --font-size-32: 2rem;
-  --font-size-45: 2.8125rem;
-  --font-size-57: 3.5625rem;
-  --line-height-140: 1.4;
-  --line-height-150: 1.5;
-  --line-height-170: 1.7;
-  --line-height-175: 1.75;
+  --font-size-40: 2.5rem;
+  --leading-hero: 1.35;
+  --leading-h1: 1.4;
+  --leading-h2: 1.5;
+  --leading-h3: 1.55;
+  --leading-body: 1.8;
+  --leading-small: 1.7;
+  --leading-ui: 1.5;
+  /* 字間は 0〜.08em だけ。大きい見出しは詰め、本文はわずかに開け、メニューとボタンの文字だけ .08em */
+  --tracking-hero: 0.02em;
+  --tracking-heading: 0.04em;
+  --tracking-body: 0.05em;
+  --tracking-ui: 0.08em;
 
-  /* 余白の段（8 の倍数。96 は PC の主の節だけ）。部品の中の微調整（押せる範囲・印の位置）はこの段の外 */
+  /* 余白の段 */
+  --space-4: 0.25rem;
   --space-8: 0.5rem;
   --space-16: 1rem;
   --space-24: 1.5rem;
-  --space-40: 2.5rem;
+  --space-32: 2rem;
+  --space-48: 3rem;
   --space-64: 4rem;
   --space-96: 6rem;
+  --space-128: 8rem;
+  --space-160: 10rem;
 
-  /* 格子（12 列・列間 2rem。2 列の節は 1〜7 列／8〜12 列にそろえる） */
+  /* 格子（12 列・列間 32px・最大幅 72rem） */
   --grid-columns: 12;
   --grid-gap: 2rem;
+  --content: 72rem;
 
-  /* 本文は OS の和文フォント（Noto Sans JP が入っていればそれ）。
-     見出しとロゴだけ Noto Sans JP 700（SIL OFL 1.1）を、使っている字だけ切り出してこのサイトから配る
-     （scripts/headings.mjs がビルドの後に作る。字詰め palt を見出しにだけ効かせる。取れなければ OS の書体で出る） */
-  --font-family-heading: 'Eleanor Heading', var(--font-family-sans);
-  --font-family-sans: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
-    'BIZ UDPGothic', Meiryo, sans-serif;
-  --font-family-mono: 'Noto Sans Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'BIZ UDGothic', monospace;
+  /* 影は実物の画面にだけ（奥の PC の画面と、手前の SP の画面）。1 層目は画面の縁取りの代わり、残りは接地と光の影 */
+  --shadow-screen: 0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.06), 0 16px 32px -16px rgb(0 0 0 / 0.2);
+  --shadow-screen-front: 0 0 0 1px rgb(0 0 0 / 0.06), 0 2px 4px rgb(0 0 0 / 0.08), 0 28px 48px -20px rgb(0 0 0 / 0.3);
+
+  /* 動きの時間と加減速（Material 3 の short3・short4・medium2・long4 と emphasized／standard） */
+  --dur-feedback: 150ms;
+  --dur-exit: 200ms;
+  --dur-enter: 300ms;
+  --dur-hero: 600ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+  /* 見出しは Noto Serif JP 500（SIL OFL 1.1）を、使っている字だけ切り出してこのサイトから配る
+     （scripts/headings.mjs がビルドの後に作る。取れなければ端末の明朝で出る）。
+     本文は端末のゴシック。Windows は游ゴシック Medium を 'Eleanor Gothic' として指す（global.css の @font-face。通信なし） */
+  --font-family-heading: 'Eleanor Heading', 'Hiragino Mincho ProN', 'Yu Mincho', YuMincho, serif;
+  --font-family-sans: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Eleanor Gothic', Meiryo, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }

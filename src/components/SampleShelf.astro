@@ -1,14 +1,15 @@
 ---
-// LP の見本の棚（トップ・サービス・つくったもので共用）。見本 1 つにつき、パソコンの画面を左（1〜7 列）、
-// 説明とスマートフォンの画面を右（8〜12 列）に置く。狭い画面ではスマートフォンの画面だけを出す（パソコンの画面を縮めると読めない）。
-// 画像が無い見本は出さない（仮の枠や絵は置かない）。架空の店であることと段・料金を、画面の横に必ず書く（誤認させない）。
-import { Picture } from 'astro:assets';
+// LP の見本の展示（トップ・サービス・つくったもので共用）。見本 1 つにつき、画面の組を 1〜8 列、説明を 9〜12 列に置く。
+// 左右は入れ替えない（NN/g: 画像を左右交互に置くと流し読みしにくい）。見本と見本の間は広くとる（展示の間隔が格を上げる）。
+// 画像が無い見本は出さない（仮の枠や絵は置かない）。架空の店であること・段・料金と条件・撮影日を必ず書く（誤認させない）。
+// 画像はリンクにせず、ホバーの動きも付けない（押せない物に反応を付けない）。
+import ShotPair from './ShotPair.astro';
 import prices from '../data/prices.json';
 import { SAMPLES, SAMPLE_NOTES } from '../data/samples.mjs';
 import { TIERS } from '../data/tiers.mjs';
 import { jaDate } from '../lib/date.mjs';
 import { yen } from '../lib/format.mjs';
-import { tax } from '../lib/prices.mjs';
+import { careFrom, tax } from '../lib/prices.mjs';
 
 interface Props {
   /** 見本 1 つずつの見出しの段（節の見出しの 1 つ下） */
@@ -17,7 +18,8 @@ interface Props {
 const { level = 'h3' } = Astro.props;
 const Heading = level;
 const images = import.meta.glob<{ default: ImageMetadata }>('../assets/samples/*.webp', { eager: true });
-const shelf = SAMPLES.map((s) => ({
+// 看板に置いた見本は最後に回す（看板の直後に同じ画面を続けない）
+const shelf = [...SAMPLES].sort((a, b) => Number(Boolean(a.hero)) - Number(Boolean(b.hero))).map((s) => ({
   ...s,
   pc: images[`../assets/samples/${s.id}-pc.webp`]?.default,
   sp: images[`../assets/samples/${s.id}-sp.webp`]?.default,
@@ -31,47 +33,39 @@ const shelf = SAMPLES.map((s) => ({
   shelf.length > 0 && (
     <div class="samples">
       {shelf.map((s) => (
-        <figure class="sample">
-          <div class="grid sample__grid">
-            <div class="grid__main sample__pc">
-              <Picture
-                src={s.pc}
-                alt={s.alt.pc}
-                widths={[640, 960, 1280]}
-                sizes="(min-width: 72rem) 40rem, 55vw"
-                formats={['avif', 'webp']}
-              />
-            </div>
-            <div class="grid__side sample__side">
-              <figcaption class="sample__caption">
-                <Heading class="sample__title">{s.label}の見本</Heading>
-                <p class="sample__shop">
-                  {s.shop}（{s.industry}・架空の店）
-                </p>
-                <dl class="facts">
-                  <div>
-                    <dt>料金</dt>
-                    <dd>
-                      LP＋保守 {yen(s.bundle.price)}、LP単体 {yen(s.standalone.price)}（{tax}）
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>納期</dt>
-                    <dd>最短{s.bundle.delivery_days}</dd>
-                  </div>
-                  <div>
-                    <dt>画面</dt>
-                    <dd>
-                      {jaDate(s.shotAt)}に撮影（見本は{jaDate(s.madeAt)}に作成）
-                    </dd>
-                  </div>
-                </dl>
-              </figcaption>
-              <div class="sample__sp">
-                <Picture src={s.sp} alt={s.alt.sp} widths={[240, 360, 480]} sizes="(min-width: 48rem) 12rem, 18rem" formats={['avif', 'webp']} />
-              </div>
-            </div>
+        <figure class="sample exhibit">
+          <div class="exhibit__media shot-pair shot-pair--exhibit">
+            <ShotPair
+              pc={s.pc!}
+              sp={s.sp!}
+              alt={s.alt}
+              sizes={{ pc: '(min-width: 72rem) 41rem, (min-width: 48rem) 52vw, calc(100vw - 6rem)', sp: '(min-width: 72rem) 12.5rem, (min-width: 48rem) 16vw, 36vw' }}
+            />
           </div>
+          <figcaption class="exhibit__info">
+            <Heading class="exhibit__title">{s.label}の見本</Heading>
+            <p class="exhibit__shop">
+              {s.shop}（{s.industry}・架空の店）
+            </p>
+            <p class="exhibit__price mincho" data-font="mincho">
+              {yen(s.bundle.price)}
+            </p>
+            <p class="exhibit__terms">
+              LP＋保守の制作料金です（{tax}）。保守メンテナンス（月{yen(careFrom)}から）とあわせてのお申し込みです。LP だけなら{yen(s.standalone.price)}（{tax}）です。
+            </p>
+            <dl class="facts">
+              <div>
+                <dt>納期</dt>
+                <dd>お支払いの確認から、確認用の実物まで最短{s.bundle.delivery_days}</dd>
+              </div>
+              <div>
+                <dt>画面</dt>
+                <dd>
+                  {jaDate(s.shotAt)}に撮影（見本は{jaDate(s.madeAt)}に作成）
+                </dd>
+              </div>
+            </dl>
+          </figcaption>
         </figure>
       ))}
       <ul class="sample-notes">

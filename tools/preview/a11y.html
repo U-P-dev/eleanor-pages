@@ -65,13 +65,13 @@ function checkPage(doc, win) {
     if (r.height < 24 || r.width < 24) small.push(a.textContent.trim().slice(0, 12) + ` ${Math.round(r.width)}x${Math.round(r.height)}`);
   }
   out.smallTargets = small;
-  // 6. フォーカス表示（黄＋黒の二重が付くか）
+  // 6. フォーカス表示（墨の 2px の輪が付くか。DESIGN.md §5）
   const focusables = [...doc.querySelectorAll('a[href], [tabindex="0"], summary, button, input, select, textarea')].filter((e) => e.getClientRects().length);
   let noRing = [];
   for (const el of focusables) {
     el.focus({ focusVisible: true });
     const cs = win.getComputedStyle(el);
-    const ok = cs.outlineStyle === 'solid' && parseFloat(cs.outlineWidth) >= 3 && cs.boxShadow.includes('rgb(255, 212, 61)');
+    const ok = cs.outlineStyle === 'solid' && parseFloat(cs.outlineWidth) >= 2;
     if (!ok) noRing.push(el.textContent.trim().slice(0, 12) || el.className);
   }
   doc.activeElement?.blur();
@@ -90,6 +90,76 @@ function spacingOverride(doc) {
   const clipped = [...doc.querySelectorAll('body *')].filter((e) => { const cs = e.ownerDocument.defaultView.getComputedStyle(e); return (cs.overflow === 'hidden' || cs.overflowY === 'hidden') && e.scrollHeight > e.clientHeight + 1 && !e.classList.contains('visually-hidden') && cs.clipPath !== 'inset(50%)'; }).length;
   return { clipped, hOverflow: doc.documentElement.scrollWidth - doc.documentElement.clientWidth };
 }
+
+// 看板の標語が、幅 320〜1440px で折り返さず、窓の外や見本の画面に食い込まないか。字間を 0.12em に広げても同じか（WCAG 1.4.12）
+window.heroFit = async () => {
+  const out = [];
+  for (const w of [320, 360, 375, 390, 414, 768, 1024, 1280, 1440]) {
+    for (const spacing of [false, true]) {
+      await load('/', w);
+      const doc = f.contentDocument;
+      if (spacing) spacingOverride(doc);
+      await new Promise((ok) => setTimeout(ok, 50));
+      const vw = doc.documentElement.clientWidth;
+      const media = doc.querySelector('.hero__media');
+      const pc = doc.querySelector('.shot-pair__pc');
+      const lines = [...doc.querySelectorAll('.hero__line')].map((l) => {
+        const r = doc.createRange(); r.selectNodeContents(l);
+        const b = r.getBoundingClientRect();
+        return { left: Math.round(b.left), right: Math.round(b.right), height: Math.round(b.height) };
+      });
+      const lineH = parseFloat(f.contentWindow.getComputedStyle(doc.querySelector('.hero__copy')).lineHeight);
+      const pcLeft = pc ? Math.round(pc.getBoundingClientRect().left) : null;
+      const sideBySide = media && f.contentWindow.getComputedStyle(media).gridRowStart === '1';
+      const problems = [];
+      for (const l of lines) {
+        if (l.left < 0) problems.push('「 が窓の左の外');
+        if (l.right > vw) problems.push(`窓の右を ${l.right - vw}px 越える`);
+        if (l.height > lineH * 1.5) problems.push('折り返している');
+        // 字間を広げたとき（利用者の設定）は画面に少し重なってよい（文字は画面より上に描くので読める。.hero__text の z-index）
+        if (sideBySide && !spacing && pcLeft !== null && l.right > pcLeft) problems.push(`見本の画面に ${l.right - pcLeft}px 食い込む`);
+      }
+      out.push({ w, spacing, lines, pcLeft, problems });
+    }
+  }
+  return out;
+};
+
+// 動き: 動いている要素が看板（とメニュー）だけで、長さと遅れが決まりの中か。「動きを減らす」の設定では何も動かないか
+window.motionCheck = async () => {
+  try { sessionStorage.removeItem('e-hero'); } catch (e) {}
+  await load('/', 1280);
+  const doc = f.contentDocument, win = f.contentWindow;
+  const reduce = win.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const anims = doc.getAnimations().map((a) => {
+    const t = a.effect && a.effect.getTiming ? a.effect.getTiming() : {};
+    const el = a.effect && a.effect.target;
+    return { name: a.animationName || a.transitionProperty || '', cls: el ? String(el.className).slice(0, 40) : '', inHero: !!(el && el.closest('.hero, .mobile-menu')), duration: t.duration, delay: t.delay, iterations: t.iterations };
+  });
+  let longTransitions = [];
+  let transitions = 0;
+  for (const el of doc.querySelectorAll('body *')) {
+    const d = win.getComputedStyle(el).transitionDuration.split(',').map((v) => parseFloat(v) * (v.trim().endsWith('ms') ? 0.001 : 1));
+    if (d.some((v) => v > 0)) transitions++;
+    if (d.some((v) => v > 0.4)) longTransitions.push(String(el.className).slice(0, 30));
+  }
+  const bad = anims.filter((a) => !a.inHero || a.duration > 800 || a.delay > 520 || a.iterations === Infinity);
+  return { reduce, animations: anims.length, bad, transitions, longTransitions: longTransitions.slice(0, 5) };
+};
+
+// LCP（最も大きい要素が描かれた時刻）。動きのある・なしで比べる（evaluate.ps1 -ReducedMotion の有無で 2 回）
+window.lcpCheck = async () => {
+  try { sessionStorage.removeItem('e-hero'); } catch (e) {}
+  await load('/', 1280);
+  await new Promise((ok) => setTimeout(ok, 1200));
+  const win = f.contentWindow;
+  return await new Promise((ok) => {
+    new win.PerformanceObserver((list) => {
+      const e = list.getEntries().at(-1);
+      ok({ lcp: Math.round(e.startTime), element: e.element ? e.element.tagName + '.' + String(e.element.className).slice(0, 30) : '', url: (e.url || '').slice(-40) });
+    }).observe({ type: 'largest-contentful-paint', buffered: true });
+  });
+};
 
 window.runAll = async () => {
   const res = {};

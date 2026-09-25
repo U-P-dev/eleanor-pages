@@ -2,6 +2,7 @@
 // LP の料金表（デザインの段ごと）。値の正本は LP 事業の pricing.json で、公開してよい項目だけを src/data/prices.json に写している
 // （scripts/check_prices.py）。ここに金額を直書きしない（特定商取引法に基づく表示・Stripe の請求と食い違うため）。
 // 保守・フルオーダー・追加の料金はサービスのページにある（トップには主力の LP の表だけを置く）。
+// 献立表のように、段の名前と価格を明朝で出す（.table--menu。DESIGN.md §5）。
 // 狭い画面では表をやめ、行ごとに縦に積む（.table--stack。列の見出しは各セルの data-label で出す）。
 // 表示を変えても表として読み上げられるように、role を明示している（CSS の display を変えると表の意味が落ちるブラウザがある）。
 import prices from '../data/prices.json';
@@ -35,7 +36,7 @@ const tiers = (Object.keys(TIERS) as (keyof typeof TIERS)[]).map((key) => ({
 
 <h3 class="table-caption" id={id}>LP（1ページのサイト）の制作</h3>
 <p class="table-note">「LP＋保守」は公開と保守メンテナンス（月額）までまとめてお任せいただく形、「LP単体」は HTML 一式をお渡しする形です。</p>
-<div class="table-region table--stack" role="region" tabindex="0" aria-labelledby={id}>
+<div class="table-region table--stack table--menu" role="region" tabindex="0" aria-labelledby={id}>
   <table role="table">
     <thead role="rowgroup">
       <tr role="row">
@@ -50,14 +51,13 @@ const tiers = (Object.keys(TIERS) as (keyof typeof TIERS)[]).map((key) => ({
         tiers.map((t) => (
           <tr role="row">
             <th role="rowheader" scope="row">
-              {t.label}
-              <br />
+              <span class="table-tier" data-font="mincho">{t.label}</span>
               <span class="table-note">{t.note}</span>
             </th>
-            <td role="cell" class="num" data-label="LP＋保守（制作料金）">
+            <td role="cell" class="num" data-font="mincho" data-label="LP＋保守（制作料金）">
               {yen(t.bundle.price)}
             </td>
-            <td role="cell" class="num" data-label="LP単体">
+            <td role="cell" class="num" data-font="mincho" data-label="LP単体">
               {yen(t.standalone.price)}
             </td>
             <td role="cell" class="nowrap" data-label="納期（最短）">

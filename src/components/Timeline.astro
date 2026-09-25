@@ -1,20 +1,23 @@
 ---
-// 時系列（ご依頼の流れ・フルオーダーの進め方）。予定表のように縦に並べ、番号は文字で書く（DADS: <ol> を使わない）。
+// 時系列（ご依頼の流れ・フルオーダーの進め方）。予定表のように並べ、番号は文字で書く（<ol> を使わない）。
+// 番号は読み上げだけに残し、画面では「いつ」と墨の小さな四角で示す（大きな番号の飾りは置かない。DESIGN.md §1）。
+// layout="row" は広い画面で横に並べ、1 本の線を本文の幅いっぱいに引く（トップ）。既定は縦（サービスのページ）。
 // 本文は HTML で渡せる（リンクや強調を含められる）。値は呼ぶ側が料金データから入れる（ここに数字を持たない）。
 interface Props {
   steps: { when: string; title: string; body: string }[];
   /** 段の題の見出しの段（節の見出しの 1 つ下） */
   level?: 'h3' | 'h4';
+  layout?: 'row' | 'column';
 }
-const { steps, level = 'h3' } = Astro.props;
+const { steps, level = 'h3', layout = 'column' } = Astro.props;
 const Heading = level;
 ---
 
-<ul class="timeline" role="list">
+<ul class:list={['timeline', { 'timeline--row': layout === 'row' }]} role="list">
   {
     steps.map((s, i) => (
       <li class="timeline__step">
-        <p class="timeline__when"><span class="visually-hidden">手順</span><span class="timeline__num">{i + 1}</span>{s.when}</p>
+        <p class="timeline__when"><span class="visually-hidden">手順{i + 1}　</span>{s.when}</p>
         <Heading class="timeline__title">{s.title}</Heading>
         <p set:html={s.body} />
       </li>

@@ -1,0 +1,40 @@
+---
+// 実物の PC と SP の画面の組（看板・見本の展示・つくったもの）。2 枚を同じ縮尺で重ねる。端末の枠は描かない（DESIGN.md §5）。
+// 包む要素（class="shot-pair shot-pair--hero|exhibit"）は呼ぶ側が書く（<figure> の子に <figcaption> を置けるように）。
+// 看板だけ priority（PC の画面を遅延読み込みにせず先に取りにいく。SP の画面も遅延読み込みにしない。web.dev: LCP の画像）。
+// 代わりの形式は webp（avif も webp も読めない古いブラウザ向け。PNG を作らない）。
+import { Picture } from 'astro:assets';
+
+interface Props {
+  pc: ImageMetadata;
+  sp: ImageMetadata;
+  alt: { pc: string; sp: string };
+  /** 画面の幅に対する表示幅（CSS の寸法に合わせる） */
+  sizes: { pc: string; sp: string };
+  priority?: boolean;
+}
+const { pc, sp, alt, sizes, priority = false } = Astro.props;
+const pcWidths = [640, 960, 1280, 1600, 1920].filter((w) => w <= pc.width);
+const spWidths = [240, 360, 480, 640].filter((w) => w <= sp.width);
+---
+
+<Picture
+  src={pc}
+  alt={alt.pc}
+  widths={pcWidths}
+  sizes={sizes.pc}
+  formats={['avif', 'webp']}
+  fallbackFormat="webp"
+  pictureAttributes={{ class: 'shot-pair__pc' }}
+  priority={priority}
+/>
+<Picture
+  src={sp}
+  alt={alt.sp}
+  widths={spWidths}
+  sizes={sizes.sp}
+  formats={['avif', 'webp']}
+  fallbackFormat="webp"
+  pictureAttributes={{ class: 'shot-pair__sp' }}
+  loading={priority ? 'eager' : 'lazy'}
+/>

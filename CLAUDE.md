@@ -32,7 +32,8 @@ node tools/preview/icons.mjs         # ロゴの印（public/favicon.svg）か�
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\preview\shoot.ps1 -Url <URL> -Out <Windows のパス> -Width 390 -Height 844 -Mobile
                                      # 画面を撮る（Windows の Chrome。幅 500px 未満は -Mobile で端末を真似る）
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\preview\evaluate.ps1 -Url http://localhost:4321/__preview/a11y.html -Expr "runAll().then(r => JSON.stringify(r))" -Out <Windows のパス>
-                                     # アクセシビリティの自己試験（裏で動く Chrome。拡張が無くても回る）
+                                     # アクセシビリティの自己試験（裏で動く Chrome。拡張が無くても回る）。
+                                     # -ReducedMotion・-ForcedColors・-Print で OS の設定や印刷を真似る（shoot.ps1 も同じ）
 ```
 
 ## どこに何があるか
@@ -56,7 +57,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\preview\evaluate.p
 - **ページを足す** → `src/pages/<名前>.astro` → メニューに載せるなら `src/site.mjs` の `NAV` → フッター（`layouts/Base.astro`）
 - **記事を公開する** → 代表の OK を取ってから `draft` を外す（完全自動化はしない）
 - **公開する（push）前** → `npm run build` と上の非公開の検査が両方とも合格。`hp-redesign` への push は確認用サイトに自動で出る
-- **見た目を変える** → 先に `DESIGN.md`（出典の無い決まりは足さない）。段に無い文字の大きさ・表の縦罫・グラデーション・見出しの上の英字・紫の飾りはビルドが止める
+- **見た目を変える** → 先に `DESIGN.md`（「白と明朝」。出典の無い決まりは足さない）。段に無い文字の大きさ・角丸・画面以外の影・
+  表の縦罫・グラデーション・見出しの上の英字・紫の飾り・看板とメニュー以外の動き・「動きを減らす」の外の動きはビルドが止める。
+  直したら `a11y.html` の `runAll()`・`heroFit()`・`motionCheck()`（`-ReducedMotion` の有無で 2 回）を回す
 - **お知らせを足す** → `src/data/news.json`（確かめられる事実と日付だけ）
 - **LP の見本を撮り直す・足す** → `DESIGN.md` §9（承認済みのテンプレートだけ・架空の店と書く）
 - **電話の受付時間を変える** → `src/site.mjs` の `operator.hours` と LP 事業の `config.json` の `support_hours`（特商法の表示を作り直す）

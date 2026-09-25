@@ -4,6 +4,7 @@
 #
 #   powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\preview\shoot.ps1 `
 #     -Url https://example.com/ -Out C:\path\shot.png -Width 390 -Height 844 -Mobile [-Full] [-Tabs 3]
+# -ReducedMotion / -ForcedColors / -Print emulate the OS setting or print media.
 # -Tabs N presses the Tab key N times as real key input before the shot (to see the focus ring; scripted focus() does not show it).
 #
 # ASCII only on purpose: Windows PowerShell 5.1 reads BOM-less UTF-8 scripts as the ANSI code page.
@@ -17,6 +18,9 @@ param(
   [switch]$Full,
   [int]$Port = 9333,
   [int]$Tabs = 0,
+  [switch]$ReducedMotion,
+  [switch]$ForcedColors,
+  [switch]$Print,
   [int]$WaitMs = 1500
 )
 $ErrorActionPreference = 'Stop'
@@ -68,6 +72,15 @@ try {
   [void]$ws.ConnectAsync([Uri]$page.webSocketDebuggerUrl, [Threading.CancellationToken]::None).GetAwaiter().GetResult()
 
   [void](Send-Command 'Emulation.setDeviceMetricsOverride' @{ width = $Width; height = $Height; deviceScaleFactor = $Scale; mobile = [bool]$Mobile })
+  # -ReducedMotion / -ForcedColors / -Print: emulate the OS setting or print media before the page loads
+  $features = @()
+  if ($ReducedMotion) { $features += @{ name = 'prefers-reduced-motion'; value = 'reduce' } }
+  if ($ForcedColors) { $features += @{ name = 'forced-colors'; value = 'active' } }
+  if ($features.Count -gt 0 -or $Print) {
+    $media = @{ features = $features }
+    if ($Print) { $media.media = 'print' }
+    [void](Send-Command 'Emulation.setEmulatedMedia' $media)
+  }
   if ($Mobile) { [void](Send-Command 'Emulation.setTouchEmulationEnabled' @{ enabled = $true }) }
   [void](Send-Command 'Page.enable' @{})
   $script:loaded = $false
